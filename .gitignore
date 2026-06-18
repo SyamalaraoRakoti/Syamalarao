@@ -1,0 +1,10 @@
+.DS_Store
+*.zip
+*.rtf
+*.rtfd
+*.py
+__pycache__/
+NEWASSIGN/
+AI project1.rtfd/
+Digital Colleague Prompt.rtf
+analyze_inkwell.py

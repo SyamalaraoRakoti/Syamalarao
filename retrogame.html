@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retro Neon Brick Breaker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a12;
+            color: #fff;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: #00ffcc;
+            text-shadow: 0 0 10px #00ffcc, 0 0 20px #00ffcc;
+        }
+
+        #game-container {
+            position: relative;
+            border: 4px solid #ff0077;
+            box-shadow: 0 0 20px #ff0077, inset 0 0 10px #ff0077;
+            background: #111122;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        .ui-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(10, 10, 18, 0.85);
+            transition: opacity 0.3s ease;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            font-size: 1.2rem;
+            font-family: inherit;
+            background: transparent;
+            color: #ff0077;
+            border: 2px solid #ff0077;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-weight: bold;
+            box-shadow: 0 0 10px #ff0077;
+            transition: all 0.2s ease;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            background: #ff0077;
+            color: #111122;
+            box-shadow: 0 0 20px #ff0077;
+        }
+
+        #game-over-text {
+            font-size: 3rem;
+            color: #ff0055;
+            text-shadow: 0 0 15px #ff0055;
+            margin-bottom: 10px;
+        }
+        
+        .controls-hint {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #8888aa;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Neon Breaker</h1>
+    
+    <div id="game-container">
+        <canvas id="gameCanvas" width="600" height="450"></canvas>
+        
+        <div id="start-screen" class="ui-layer">
+            <p style="color: #00ffcc; font-size: 1.2rem;">BREAK THE NEON GRID</p>
+            <button class="btn" onclick="startGame()">Start Game</button>
+            <p class="controls-hint">Use Left / Right Arrows or Mouse to move</p>
+        </div>
+
+        <div id="end-screen" class="ui-layer hidden">
+            <h2 id="game-over-text">GAME OVER</h2>
+            <p id="final-score" style="font-size: 1.5rem;"></p>
+            <button class="btn" onclick="startGame()">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+        
+        const startScreen = document.getElementById("start-screen");
+        const endScreen = document.getElementById("end-screen");
+        const gameOverText = document.getElementById("game-over-text");
+        const finalScoreText = document.getElementById("final-score");
+
+        // Game state
+        let score = 0;
+        let lives = 3;
+        let gameRunning = false;
+
+        // Paddle details
+        const paddleHeight = 12;
+        const paddleWidth = 90;
+        let paddleX = (canvas.width - paddleWidth) / 2;
+        const paddleSpeed = 7;
+
+        // Ball details
+        const ballRadius = 8;
+        let x, y, dx, dy;
+        const baseSpeed = 4;
+
+        // Control flags
+        let rightPressed = false;
+        let leftPressed = false;
+
+        // Brick configuration
+        const brickRowCount = 5;
+        const brickColumnCount = 7;
+        const brickWidth = 72;
+        const brickHeight = 20;
+        const brickPadding = 10;
+        const brickOffsetTop = 50;
+        const brickOffsetLeft = 15;
+        
+        const brickColors = ["#ff0055", "#ff5500", "#ffcc00", "#00ff66", "#00ccff"];
+        let bricks = [];
+
+        // Event listeners
+        document.addEventListener("keydown", keyDownHandler);
+        document.addEventListener("keyup", keyUpHandler);
+        document.addEventListener("mousemove", mouseMoveHandler);
+
+        function keyDownHandler(e) {
+            if(e.key === "Right" || e.key === "ArrowRight") rightPressed = true;
+            else if(e.key === "Left" || e.key === "ArrowLeft") leftPressed = true;
+        }
+
+        function keyUpHandler(e) {
+            if(e.key === "Right" || e.key === "ArrowRight") rightPressed = false;
+            else if(e.key === "Left" || e.key === "ArrowLeft") leftPressed = false;
+        }
+
+        function mouseMoveHandler(e) {
+            const relativeX = e.clientX - canvas.getBoundingClientRect().left;
+            if(relativeX > 0 && relativeX < canvas.width) {
+                paddleX = relativeX - paddleWidth / 2;
+            }
+        }
+
+        function initBricks() {
+            bricks = [];
+            for(let c=0; c<brickColumnCount; c++) {
+                bricks[c] = [];
+                for(let r=0; r<brickRowCount; r++) {
+                    bricks[c][r] = { x: 0, y: 0, status: 1, color: brickColors[r] };
+                }
+            }
+        }
+
+        function resetBallAndPaddle() {
+            x = canvas.width / 2;
+            y = canvas.height - 30;
+            dx = baseSpeed * (Math.random() > 0.5 ? 1 : -1);
+            dy = -baseSpeed;
+            paddleX = (canvas.width - paddleWidth) / 2;
+        }
+
+        function startGame() {
+            score = 0;
+            lives = 3;
+            initBricks();
+            resetBallAndPaddle();
+            startScreen.classList.add("hidden");
+            endScreen.classList.add("hidden");
+            gameRunning = true;
+            draw();
+        }
+
+        function gameOver(won = false) {
+            gameRunning = false;
+            endScreen.classList.remove("hidden");
+            if(won) {
+                gameOverText.textContent = "YOU WIN!";
+                gameOverText.style.color = "#00ffcc";
+                gameOverText.style.textShadow = "0 0 15px #00ffcc";
+            } else {
+                gameOverText.textContent = "GAME OVER";
+                gameOverText.style.color = "#ff0055";
+                gameOverText.style.textShadow = "0 0 15px #ff0055";
+            }
+            finalScoreText.textContent = `Score: ${score}`;
+        }
+
+        function collisionDetection() {
+            let allBricksCleared = true;
+            for(let c=0; c<brickColumnCount; c++) {
+                for(let r=0; r<brickRowCount; r++) {
+                    let b = bricks[c][r];
+                    if(b.status === 1) {
+                        allBricksCleared = false;
+                        // Check ball collision with brick boundaries
+                        if(x > b.x && x < b.x + brickWidth && y > b.y && y < b.y + brickHeight) {
+                            dy = -dy;
+                            b.status = 0;
+                            score += 10;
+                            // Add a small speed boost as score increases to make it fun
+                            dx *= 1.02;
+                            dy *= 1.02;
+                        }
+                    }
+                }
+            }
+            if(allBricksCleared && gameRunning) {
+                gameOver(true);
+            }
+        }
+
+        function drawBall() {
+            ctx.beginPath();
+            ctx.arc(x, y, ballRadius, 0, Math.PI*2);
+            ctx.fillStyle = "#ffffff";
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = "#ffffff";
+            ctx.fill();
+            ctx.closePath();
+            ctx.shadowBlur = 0; // Reset shadow
+        }
+
+        function drawPaddle() {
+            ctx.beginPath();
+            ctx.rect(paddleX, canvas.height - paddleHeight - 10, paddleWidth, paddleHeight);
+            ctx.fillStyle = "#00ffcc";
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = "#00ffcc";
+            ctx.fill();
+            ctx.closePath();
+            ctx.shadowBlur = 0;
+        }
+
+        function drawBricks() {
+            for(let c=0; c<brickColumnCount; c++) {
+                for(let r=0; r<brickRowCount; r++) {
+                    if(bricks[c][r].status === 1) {
+                        let brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
+                        let brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
+                        bricks[c][r].x = brickX;
+                        bricks[c][r].y = brickY;
+                        
+                        ctx.beginPath();
+                        ctx.rect(brickX, brickY, brickWidth, brickHeight);
+                        ctx.fillStyle = bricks[c][r].color;
+                        ctx.shadowBlur = 6;
+                        ctx.shadowColor = bricks[c][r].color;
+                        ctx.fill();
+                        ctx.closePath();
+                        ctx.shadowBlur = 0;
+                    }
+                }
+            }
+        }
+
+        function drawHUD() {
+            ctx.font = "16px 'Courier New'";
+            ctx.fillStyle = "#ff0077";
+            ctx.fillText("SCORE: " + score, 20, 25);
+            
+            ctx.fillStyle = "#00ffcc";
+            ctx.fillText("LIVES: " + "♥".repeat(lives), canvas.width - 120, 25);
+        }
+
+        function draw() {
+            if(!gameRunning) return;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawBricks();
+            drawBall();
+            drawPaddle();
+            drawHUD();
+            collisionDetection();
+
+            // Wall collisions (Left/Right)
+            if(x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
+                dx = -dx;
+            }
+            
+            // Wall collisions (Top)
+            if(y + dy < ballRadius) {
+                dy = -dy;
+            } 
+            // Bottom boundary logic
+            else if(y + dy > canvas.height - ballRadius - 10) {
+                // Check if ball hits the paddle
+                if(x > paddleX && x < paddleX + paddleWidth) {
+                    // Dynamic bounce angle based on where it hits the paddle
+                    let hitPoint = (x - (paddleX + paddleWidth/2)) / (paddleWidth/2);
+                    dx = hitPoint * baseSpeed * 1.5;
+                    dy = -Math.abs(dy); // Reverse vertical direction safely
+                } else {
+                    lives--;
+                    if(!lives) {
+                        gameOver(false);
+                    } else {
+                        resetBallAndPaddle();
+                    }
+                }
+            }
+
+            // Move Paddle
+            if(rightPressed && paddleX < canvas.width - paddleWidth) {
+                paddleX += paddleSpeed;
+            } else if(leftPressed && paddleX > 0) {
+                paddleX -= paddleSpeed;
+            }
+
+            // Move Ball
+            x += dx;
+            y += dy;
+
+            requestAnimationFrame(draw);
+        }
+    </script>
+</body>
+</html>

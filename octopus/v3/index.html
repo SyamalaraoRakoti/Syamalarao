@@ -1,0 +1,1948 @@
+<!DOCTYPE html>
+<!-- GITHUB REPO: edit the REPO const at the top of the <script type="module"> block -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Octopus v3: Self-Verifying Multi-Agent OS for Claude Code</title>
+<meta name="description" content="Octopus v3: determinism you can watch. Five agents, schema-typed handoffs, per-role model routing, a cold verifier with independent context, and a STOP-gate before any irreversible action.">
+<meta name="theme-color" content="#06070b">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Octopus v3: Determinism You Can Watch">
+<meta property="og:description" content="Five agents. Schema-typed handoffs. A cold verifier that cannot be biased by the builder. A STOP-gate before any irreversible action ships.">
+<meta property="og:url" content="https://github.com/victordelrosal/octopus">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Octopus v3: Determinism You Can Watch">
+<meta name="twitter:description" content="Orchestration is now executed code, not improvised prose.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%90%99%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://api.fontshare.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&f[]=switzer@400,500,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<!-- Progressive enhancement: add js-motion BEFORE first paint so CSS scopes hide-then-reveal correctly.
+     Without this class (no JS, or prefers-reduced-motion), all content is visible by default. -->
+<script>
+(function() {
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.documentElement.classList.add('js-motion');
+  }
+})();
+</script>
+
+<!-- Three.js ESM importmap -->
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+  }
+}
+</script>
+
+<style>
+/* ====================================================
+   RESET
+   ==================================================== */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+/* ====================================================
+   DESIGN TOKENS
+   ==================================================== */
+:root {
+  color-scheme: dark;
+  /* Substrate: slightly lifted vs v3.0 for airier feel */
+  --base:        #070a10;
+  --surface:     #0b1220;
+  --surface-alt: #0e1628;
+  --card:        #111b2c;
+  --card-hov:    #162133;
+  --code-bg:     #080c16;
+  /* Indigo structural */
+  --border:      rgba(40,60,160,0.14);
+  --border-str:  rgba(40,60,160,0.28);
+  --border-glow: rgba(40,60,160,0.50);
+  /* Amber / gold: the gate accent, reserved */
+  --gold:        #c8933a;
+  --gold-bright: #e8b44a;
+  --gold-soft:   rgba(200,147,58,0.18);
+  /* Ink scale */
+  --ink:   #e8e2f0;
+  --ink-2: #a8a0c0;
+  --ink-3: #58527a;
+  --ink-4: #302a46;
+  /* Five agent node signals */
+  --yellow: #f5c542;
+  --orange: #ff6b3d;
+  --blue:   #4a9eff;
+  --green:  #3ddc84;
+  --purple: #a86bff;
+  --cold:   #a8c0d8;
+  /* Layout */
+  --max-w: 1080px;
+  --nav-h: 64px;
+  --r:     8px;
+}
+
+/* ====================================================
+   BASE
+   ==================================================== */
+body {
+  font-family: 'Switzer', system-ui, -apple-system, sans-serif;
+  background: var(--base);
+  color: var(--ink);
+  line-height: 1.65;
+  overflow-x: hidden;
+  min-height: 100vh;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* CSS ambient grid */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(40,60,200,0.030) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(40,60,200,0.030) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ====================================================
+   READING PROGRESS
+   ==================================================== */
+#progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  width: 0%;
+  background: linear-gradient(to right, var(--yellow), var(--gold), var(--orange));
+  box-shadow: 0 0 6px var(--gold);
+  z-index: 9999;
+  pointer-events: none;
+  transition: width 0.1s linear;
+}
+
+/* ====================================================
+   SKIP LINK
+   ==================================================== */
+.skip {
+  position: absolute;
+  top: -40px; left: 16px;
+  background: var(--card);
+  color: var(--ink);
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-family: 'Switzer', sans-serif;
+  font-size: 13px;
+  z-index: 10000;
+  text-decoration: none;
+  border: 1px solid var(--border-str);
+}
+.skip:focus { top: 8px; }
+
+/* ====================================================
+   NAV
+   ==================================================== */
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  height: var(--nav-h);
+  background: rgba(7,10,16,0.80);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 28px;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  gap: 32px;
+}
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.nav-wordmark {
+  font-family: 'Clash Display', Georgia, serif;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 4px;
+  color: var(--ink);
+  text-transform: uppercase;
+}
+.nav-ver {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--gold);
+  font-weight: 500;
+  letter-spacing: 1px;
+  opacity: 0.8;
+}
+.nav-links {
+  display: flex;
+  gap: 26px;
+  flex: 1;
+  justify-content: center;
+}
+.nav-links a {
+  font-family: 'Switzer', sans-serif;
+  font-size: 13px;
+  color: var(--ink-3);
+  text-decoration: none;
+  transition: color 0.18s;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+}
+.nav-links a:hover { color: var(--ink); }
+.nav-links a:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 2px; }
+.nav-github {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 16px;
+  background: var(--gold-soft);
+  border: 1px solid rgba(200,147,58,0.32);
+  border-radius: 20px;
+  font-family: 'Switzer', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--gold-bright);
+  text-decoration: none;
+  flex-shrink: 0;
+  transition: background 0.18s, border-color 0.18s;
+}
+.nav-github:hover { background: rgba(200,147,58,0.26); border-color: var(--gold); }
+.nav-github:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+/* Brand hover reveal: the retro octopus drawing pops below the logo */
+.brand-wrap { position: relative; flex-shrink: 0; display: flex; align-items: center; }
+.logo-pop {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: -8px;
+  padding: 12px;
+  background: rgba(11,18,32,0.94);
+  border: 1px solid var(--border-str);
+  border-radius: 12px;
+  box-shadow: 0 18px 50px rgba(0,0,0,0.55);
+  backdrop-filter: saturate(160%) blur(14px);
+  -webkit-backdrop-filter: saturate(160%) blur(14px);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+  pointer-events: none;
+  z-index: 300;
+}
+.logo-pop img { display: block; width: 240px; max-width: 62vw; height: auto; border-radius: 6px; }
+.brand-wrap:hover .logo-pop,
+.brand-wrap:focus-within .logo-pop { opacity: 1; visibility: visible; transform: translateY(0); }
+@media (prefers-reduced-motion: reduce) { .logo-pop { transition: none; transform: none; } }
+@media (max-width: 480px) { .logo-pop { display: none; } }
+@media (max-width: 720px) { .nav-links { display: none; } }
+@media (max-width: 440px) { .nav-ver { display: none; } }
+
+/* ====================================================
+   LAYOUT PRIMITIVES
+   ==================================================== */
+.container {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 28px;
+  position: relative;
+  z-index: 1;
+}
+.section { padding: 112px 0; }
+.section-alt { background: var(--surface); }
+section[id] { scroll-margin-top: calc(var(--nav-h) + 12px); }
+
+.eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.eyebrow::before {
+  content: '';
+  display: block;
+  width: 28px;
+  height: 1px;
+  background: var(--gold);
+  opacity: 0.6;
+}
+h2 {
+  font-family: 'Clash Display', Georgia, serif;
+  font-size: clamp(28px, 3.5vw, 42px);
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+}
+.section-sub {
+  font-family: 'Switzer', sans-serif;
+  font-size: 17px;
+  color: var(--ink-2);
+  max-width: 640px;
+  margin-top: 18px;
+  line-height: 1.72;
+}
+
+/* ====================================================
+   HERO
+   ==================================================== */
+.hero-section {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  overflow: hidden;
+  /* CSS gradient background replaces full-screen GLSL shader */
+  background:
+    radial-gradient(ellipse 100% 60% at 50% 0%, rgba(30,55,160,0.12) 0%, transparent 65%),
+    radial-gradient(ellipse 60% 40% at 20% 80%, rgba(40,20,120,0.06) 0%, transparent 60%),
+    var(--base);
+}
+
+/* Three.js canvas: fills the hero, behind text */
+#hero-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+#hero-canvas.visible { opacity: 1; }
+
+/* CSS fallback: visible until/unless WebGL takes over */
+.hero-fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 0;
+  transition: opacity 0.4s;
+}
+.hero-fallback.hidden { opacity: 0; pointer-events: none; }
+
+/* Gradient overlay: ensures text contrast over canvas */
+.hero-section::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 60%;
+  background: linear-gradient(to bottom,
+    transparent 0%,
+    rgba(7,10,16,0.45) 40%,
+    rgba(7,10,16,0.90) 75%,
+    #070a10 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 0 28px 80px;
+  width: 100%;
+  max-width: var(--max-w);
+}
+
+.hero-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 28px;
+}
+
+.hero-h1 {
+  font-family: 'Clash Display', Georgia, serif;
+  font-size: clamp(58px, 8.5vw, 122px);
+  font-weight: 700;
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  margin-bottom: 28px;
+  overflow: hidden;
+}
+.h1-line {
+  display: block;
+  overflow: hidden;
+}
+.h1-line-inner {
+  display: block;
+}
+.h1-line:last-child .h1-line-inner {
+  color: var(--gold-bright);
+}
+
+.hero-sub {
+  font-family: 'Switzer', sans-serif;
+  font-size: clamp(15px, 2vw, 18px);
+  color: var(--ink-2);
+  max-width: 580px;
+  margin: 0 auto 36px;
+  line-height: 1.72;
+}
+
+.hero-ctas {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Buttons */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 26px;
+  background: var(--gold);
+  border: 1px solid var(--gold-bright);
+  border-radius: var(--r);
+  font-family: 'Switzer', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #07090f;
+  text-decoration: none;
+  transition: background 0.18s, box-shadow 0.18s;
+}
+.btn-primary:hover {
+  background: var(--gold-bright);
+  box-shadow: 0 0 24px rgba(200,147,58,0.5);
+}
+.btn-primary:focus-visible { outline: 2px solid var(--gold-bright); outline-offset: 3px; }
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 26px;
+  background: transparent;
+  border: 1px solid var(--border-str);
+  border-radius: var(--r);
+  font-family: 'Switzer', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink-2);
+  text-decoration: none;
+  transition: border-color 0.18s, color 0.18s;
+}
+.btn-secondary:hover { border-color: var(--gold); color: var(--gold-bright); }
+.btn-secondary:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+/* Hero note below CTAs */
+.hero-note {
+  margin-top: 24px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-4);
+  letter-spacing: 0.5px;
+}
+
+/* Hero entrance: CSS transitions (no GSAP required).
+   js-motion class hides elements; adding .anim-in triggers reveal. */
+html.js-motion .hero-eyebrow {
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+html.js-motion .hero-eyebrow.anim-in { opacity: 1; }
+
+html.js-motion .h1-line-inner {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.9s ease, transform 0.9s ease;
+}
+html.js-motion .h1-line-inner.anim-in { opacity: 1; transform: none; }
+
+html.js-motion .hero-sub {
+  opacity: 0;
+  transition: opacity 0.7s ease;
+}
+html.js-motion .hero-sub.anim-in { opacity: 1; }
+
+html.js-motion .hero-ctas {
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+html.js-motion .hero-ctas.anim-in { opacity: 1; }
+
+html.js-motion .hero-note {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+html.js-motion .hero-note.anim-in { opacity: 1; }
+
+/* ====================================================
+   HERO FALLBACK SVG PIPELINE
+   ==================================================== */
+.fallback-pipeline {
+  width: 100%;
+  max-width: 860px;
+  padding: 20px 24px 8px;
+}
+.fp-wrap {
+  background: rgba(10,16,28,0.9);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 0 48px rgba(40,60,160,0.08);
+  position: relative;
+}
+.fp-wrap::before {
+  content: 'sprint pipeline \B7 v3';
+  position: absolute;
+  top: 12px; left: 16px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8.5px;
+  letter-spacing: 1px;
+  color: var(--ink-4);
+  pointer-events: none;
+  z-index: 2;
+}
+.fp-wrap::after {
+  content: '\25CF LIVE';
+  position: absolute;
+  top: 12px; right: 16px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8.5px;
+  letter-spacing: 1.5px;
+  color: rgba(61,220,132,0.6);
+  animation: fp-blink 2.4s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 2;
+}
+@keyframes fp-blink {
+  0%, 100% { opacity: 0.6; }
+  50%       { opacity: 0.2; }
+}
+
+/* Pipeline SVG internals */
+.fp-track { fill: none; stroke: rgba(255,255,255,0.07); stroke-width: 1.5; }
+.fp-node-fill { fill: #080c14; }
+.fp-node-ring { fill: none; stroke-width: 2.5; }
+.fp-node-dot { opacity: 0.9; }
+.fp-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-anchor: middle;
+}
+.fp-model {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  text-anchor: middle;
+  fill: rgba(168,160,192,0.45);
+}
+.fp-gate-ring { fill: none; stroke-width: 2.5; }
+
+/* Pipeline pulse animations */
+.fp-pulse {
+  fill: none;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-dasharray: 10 2000;
+}
+.fp-pulse-rd { stroke: var(--yellow); filter: drop-shadow(0 0 3px var(--yellow)); animation: fpp-rd 18s linear infinite; }
+@keyframes fpp-rd { 0%{stroke-dashoffset:10} 11.11%{stroke-dashoffset:-88} 11.12%{stroke-dashoffset:10} 100%{stroke-dashoffset:10} }
+.fp-pulse-db { stroke: var(--orange); filter: drop-shadow(0 0 3px var(--orange)); animation: fpp-db 18s linear infinite; }
+@keyframes fpp-db { 0%{stroke-dashoffset:10} 11.11%{stroke-dashoffset:10} 22.22%{stroke-dashoffset:-108} 22.23%{stroke-dashoffset:10} 100%{stroke-dashoffset:10} }
+.fp-pulse-bv { stroke: var(--blue); filter: drop-shadow(0 0 3px var(--blue)); animation: fpp-bv 18s linear infinite; }
+@keyframes fpp-bv { 0%{stroke-dashoffset:10} 22.22%{stroke-dashoffset:10} 33.33%{stroke-dashoffset:-115} 33.34%{stroke-dashoffset:10} 100%{stroke-dashoffset:10} }
+.fp-pulse-vg { stroke: var(--cold); filter: drop-shadow(0 0 2px var(--cold)); animation: fpp-vg 18s linear infinite; }
+@keyframes fpp-vg { 0%{stroke-dashoffset:10} 33.33%{stroke-dashoffset:10} 41.67%{stroke-dashoffset:-88} 41.68%{stroke-dashoffset:10} 100%{stroke-dashoffset:10} }
+.fp-pulse-gm { stroke: var(--green); filter: drop-shadow(0 0 3px var(--green)); animation: fpp-gm 18s linear infinite; }
+@keyframes fpp-gm { 0%{stroke-dashoffset:10} 50%{stroke-dashoffset:10} 58.33%{stroke-dashoffset:-80} 58.34%{stroke-dashoffset:10} 100%{stroke-dashoffset:10} }
+.fp-glow-r { stroke: var(--yellow); fill: none; stroke-width: 1; animation: fpg-r 18s ease-in-out infinite; }
+@keyframes fpg-r { 0%{opacity:0} 1%{opacity:0.8} 9%{opacity:1} 11.11%{opacity:0} 100%{opacity:0} }
+.fp-glow-d { stroke: var(--orange); fill: none; stroke-width: 1; animation: fpg-d 18s ease-in-out infinite; }
+@keyframes fpg-d { 0%{opacity:0} 11.11%{opacity:0.8} 19%{opacity:1} 22.22%{opacity:0} 100%{opacity:0} }
+.fp-glow-b { stroke: var(--blue); fill: none; stroke-width: 1; animation: fpg-b 18s ease-in-out infinite; }
+@keyframes fpg-b { 0%{opacity:0} 22.22%{opacity:0.8} 30%{opacity:1} 33.33%{opacity:0} 100%{opacity:0} }
+.fp-glow-v { stroke: var(--cold); fill: none; stroke-width: 1; animation: fpg-v 18s ease-in-out infinite; }
+@keyframes fpg-v { 0%{opacity:0} 33.33%{opacity:0.7} 38%{opacity:1} 41.67%{opacity:0} 100%{opacity:0} }
+.fp-gate-anim { fill: rgba(168,107,255,0.12); stroke: var(--purple); stroke-width: 2.5; animation: fpgate 18s linear infinite; }
+@keyframes fpgate {
+  0%{fill:rgba(168,107,255,0.12);stroke:var(--purple)}
+  41%{fill:rgba(168,107,255,0.12);stroke:var(--purple)}
+  42.5%{fill:rgba(232,180,74,0.18);stroke:var(--gold-bright)}
+  49.5%{fill:rgba(232,180,74,0.18);stroke:var(--gold-bright)}
+  50%{fill:rgba(61,220,132,0.18);stroke:var(--green)}
+  58%{fill:rgba(61,220,132,0.18);stroke:var(--green)}
+  60%{fill:rgba(168,107,255,0.12);stroke:var(--purple)}
+  100%{fill:rgba(168,107,255,0.12);stroke:var(--purple)}
+}
+.fp-glow-g { stroke: var(--purple); fill: none; stroke-width: 1; animation: fpg-g 18s ease-in-out infinite; }
+@keyframes fpg-g {
+  0%{opacity:0;stroke:var(--purple)}
+  41.67%{opacity:0;stroke:var(--purple)}
+  43%{opacity:1;stroke:var(--gold-bright)}
+  50%{opacity:1;stroke:var(--green)}
+  58.33%{opacity:0}
+  100%{opacity:0}
+}
+.fp-glow-m { stroke: var(--green); fill: none; stroke-width: 1; animation: fpg-m 18s ease-in-out infinite; }
+@keyframes fpg-m { 0%{opacity:0} 50%{opacity:0} 55%{opacity:0.6} 58.33%{opacity:1} 66%{opacity:0.7} 70%{opacity:0} 100%{opacity:0} }
+.fp-gate-dot { fill: var(--purple); animation: fpgd 18s linear infinite; }
+@keyframes fpgd { 0%{fill:var(--purple)} 41%{fill:var(--purple)} 42.5%{fill:var(--gold-bright)} 50%{fill:var(--green)} 60%{fill:var(--purple)} 100%{fill:var(--purple)} }
+.fp-gate-lbl { animation: fpgl 18s linear infinite; }
+@keyframes fpgl { 0%{fill:rgba(168,107,255,0.9)} 41%{fill:rgba(168,107,255,0.9)} 42.5%{fill:var(--gold-bright)} 50%{fill:var(--green)} 60%{fill:rgba(168,107,255,0.9)} 100%{fill:rgba(168,107,255,0.9)} }
+
+/* ====================================================
+   SECTION REVEAL via IntersectionObserver
+   Progressive enhancement: visible by default.
+   Hidden only when js-motion class is present.
+   ==================================================== */
+html.js-motion .reveal {
+  opacity: 0;
+  transform: translateY(36px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+html.js-motion .reveal.revealed {
+  opacity: 1;
+  transform: none;
+}
+
+/* ====================================================
+   AGENTS SECTION
+   ==================================================== */
+.agents-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 48px;
+}
+.agent-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 26px 24px 24px;
+  border-left: 3px solid transparent;
+  transition: border-color 0.2s, background 0.2s, transform 0.2s;
+  position: relative;
+}
+.agent-card:hover {
+  background: var(--card-hov);
+  transform: translateY(-2px);
+}
+.ac-y  { border-left-color: var(--yellow); }
+.ac-ro { border-left-color: var(--orange); }
+.ac-b  { border-left-color: var(--blue); }
+.ac-g  { border-left-color: var(--green); }
+.ac-p  { border-left-color: var(--purple); }
+.agent-role {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.agent-model {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px;
+  font-weight: 400;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.09);
+  color: var(--ink-3);
+  margin-bottom: 12px;
+  letter-spacing: 0.5px;
+}
+.agent-desc {
+  font-family: 'Switzer', sans-serif;
+  font-size: 13.5px;
+  color: var(--ink-2);
+  line-height: 1.62;
+  margin-bottom: 10px;
+}
+.agent-boundary {
+  font-family: 'Switzer', sans-serif;
+  font-size: 12px;
+  color: var(--ink-4);
+  line-height: 1.5;
+}
+.cost-callout {
+  margin-top: 40px;
+  padding: 22px 26px;
+  background: rgba(200,147,58,0.05);
+  border: 1px solid rgba(200,147,58,0.18);
+  border-radius: var(--r);
+  font-family: 'Switzer', sans-serif;
+  font-size: 14px;
+  color: var(--ink-2);
+  line-height: 1.68;
+}
+.cost-callout strong { color: var(--gold-bright); }
+
+/* ====================================================
+   CODE SECTION
+   ==================================================== */
+.code-wrap {
+  margin-top: 48px;
+  border-radius: var(--r);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  box-shadow: 0 0 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(40,60,160,0.08);
+}
+.code-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 20px;
+  background: rgba(255,255,255,0.025);
+  border-bottom: 1px solid var(--border);
+}
+.code-dot { width: 11px; height: 11px; border-radius: 50%; }
+.code-filename {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-3);
+  margin-left: 4px;
+}
+.code-badge {
+  margin-left: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px;
+  color: var(--gold);
+  letter-spacing: 0.5px;
+  opacity: 0.8;
+}
+pre.code {
+  background: var(--code-bg);
+  padding: 28px 30px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  line-height: 1.78;
+  tab-size: 2;
+}
+pre.code code { background: none; padding: 0; font-size: inherit; }
+.t-kw  { color: #d0a0ee; }
+.t-fn  { color: #7eb8f4; }
+.t-str { color: #88d8a8; }
+.t-obj { color: #f0d0a0; }
+.t-cm  { color: #3c3858; }
+.t-bool{ color: #f4a261; }
+.t-yr  { color: var(--yellow); }
+.t-ro  { color: var(--orange); }
+.t-bl  { color: var(--blue); }
+.t-gr  { color: var(--green); }
+.t-pu  { color: rgba(168,107,255,0.85); }
+.code-caption {
+  margin-top: 20px;
+  font-family: 'Switzer', sans-serif;
+  font-size: 14px;
+  color: var(--ink-3);
+  line-height: 1.68;
+  max-width: 680px;
+}
+.code-note {
+  margin-top: 16px;
+  font-family: 'Switzer', sans-serif;
+  font-size: 13px;
+  font-style: italic;
+  color: var(--ink-4);
+  line-height: 1.6;
+}
+.ic {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85em;
+  background: rgba(255,255,255,0.06);
+  padding: 1px 6px;
+  border-radius: 3px;
+  color: inherit;
+}
+
+/* ====================================================
+   VERIFY / GATE SECTION
+   ==================================================== */
+.vg-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 48px;
+}
+@media (max-width: 680px) { .vg-grid { grid-template-columns: 1fr; } }
+.vg-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 32px 28px;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.vg-card:hover { border-color: var(--border-str); transform: translateY(-2px); }
+.vg-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: 20px;
+  margin-bottom: 18px;
+}
+.vg-verify { background: rgba(168,192,216,0.1); color: var(--cold); border: 1px solid rgba(168,192,216,0.22); }
+.vg-gate   { background: rgba(200,147,58,0.1); color: var(--gold-bright); border: 1px solid rgba(200,147,58,0.3); }
+.vg-card h3 {
+  font-family: 'Clash Display', Georgia, serif;
+  font-size: 21px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+.vg-card p {
+  font-family: 'Switzer', sans-serif;
+  font-size: 14px;
+  color: var(--ink-2);
+  line-height: 1.72;
+  margin-bottom: 16px;
+}
+.vg-list { list-style: none; padding: 0; margin: 0; }
+.vg-list li {
+  display: flex;
+  gap: 10px;
+  font-family: 'Switzer', sans-serif;
+  font-size: 13.5px;
+  color: var(--ink-2);
+  line-height: 1.62;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.vg-list li:last-child { border-bottom: none; }
+.vg-list li::before { content: '\2192'; color: var(--ink-4); flex-shrink: 0; margin-top: 1px; }
+
+/* ====================================================
+   SAFETY SECTION
+   ==================================================== */
+.safety-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 20px;
+  margin-top: 48px;
+}
+.safety-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 26px 24px;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.safety-card:hover { border-color: var(--border-str); transform: translateY(-2px); }
+.safety-icon {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+.safety-card h3 {
+  font-family: 'Clash Display', Georgia, serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 8px;
+  letter-spacing: -0.015em;
+}
+.safety-card p {
+  font-family: 'Switzer', sans-serif;
+  font-size: 13.5px;
+  color: var(--ink-3);
+  line-height: 1.65;
+}
+
+/* ====================================================
+   START SECTION
+   ==================================================== */
+.start-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  margin-top: 48px;
+  align-items: start;
+}
+@media (max-width: 680px) { .start-grid { grid-template-columns: 1fr; } }
+.start-block h3 {
+  font-family: 'Switzer', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-2);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.start-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: rgba(200,147,58,0.15);
+  border: 1px solid rgba(200,147,58,0.3);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--gold-bright);
+}
+pre.start-code {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 20px 22px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  line-height: 1.82;
+  color: var(--ink-2);
+  overflow-x: auto;
+}
+.sh-prompt { color: var(--ink-4); user-select: none; }
+.sh-cmd    { color: var(--ink); }
+.sh-cm     { color: var(--ink-4); font-style: italic; }
+.coming-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  background: rgba(200,147,58,0.1);
+  border: 1px solid rgba(200,147,58,0.25);
+  color: var(--gold);
+  border-radius: 20px;
+  margin-bottom: 10px;
+}
+.start-callout {
+  margin-top: 40px;
+  padding: 24px 28px;
+  background: rgba(40,60,160,0.05);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+}
+.start-callout p {
+  font-family: 'Switzer', sans-serif;
+  font-size: 14px;
+  color: var(--ink-2);
+  line-height: 1.72;
+}
+.start-callout strong { color: var(--gold-bright); }
+
+/* ====================================================
+   FOOTER
+   ==================================================== */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 48px 0;
+}
+.footer-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 18px;
+}
+.footer-brand {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--ink-4);
+  letter-spacing: 0.4px;
+  line-height: 1.7;
+}
+.footer-brand a { color: var(--ink-3); text-decoration: none; }
+.footer-brand a:hover { color: var(--ink); }
+.footer-links { display: flex; gap: 22px; }
+.footer-links a {
+  font-family: 'Switzer', sans-serif;
+  font-size: 13px;
+  color: var(--ink-4);
+  text-decoration: none;
+  transition: color 0.18s;
+}
+.footer-links a:hover { color: var(--ink-2); }
+
+/* ====================================================
+   RESPONSIVE
+   ==================================================== */
+@media (max-width: 680px) {
+  .section { padding: 80px 0; }
+  .hero-section { min-height: 100svh; }
+  .agents-grid { grid-template-columns: 1fr 1fr; }
+  .footer-inner { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 420px) {
+  .agents-grid { grid-template-columns: 1fr; }
+}
+
+/* ====================================================
+   REDUCED MOTION
+   ==================================================== */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  #progress { transition: none !important; }
+  .reveal { transition: none !important; opacity: 1 !important; transform: none !important; }
+  .h1-line-inner { opacity: 1 !important; transform: none !important; }
+  .hero-eyebrow, .hero-sub, .hero-ctas, .hero-note { opacity: 1 !important; transition: none !important; }
+  #hero-canvas { display: none !important; }
+  .hero-fallback { opacity: 1 !important; }
+  .fp-pulse-rd, .fp-pulse-db, .fp-pulse-bv, .fp-pulse-vg, .fp-pulse-gm { animation: none !important; opacity: 0; }
+  .fp-glow-r, .fp-glow-d, .fp-glow-b, .fp-glow-v, .fp-glow-g, .fp-glow-m { animation: none !important; opacity: 0; }
+  .fp-gate-anim { animation: none !important; fill: rgba(168,107,255,0.12); stroke: var(--purple); }
+  .fp-gate-dot { animation: none !important; fill: var(--purple); }
+  .fp-gate-lbl { animation: none !important; fill: rgba(168,107,255,0.9); }
+  .fp-wrap::after { animation: none !important; }
+  .agent-card, .vg-card, .safety-card { transition: none !important; }
+}
+
+/* ====================================================
+   FOCUS
+   ==================================================== */
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 2px; }
+
+/* ====================================================
+   NAV MASCOT
+   ==================================================== */
+.nav-mascot {
+  display: block;
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  flex-shrink: 0;
+  border-radius: 4px;
+  transition: transform 0.18s ease;
+}
+.nav-brand:hover .nav-mascot { transform: scale(1.05); }
+
+/* ====================================================
+   HERITAGE BAND
+   ==================================================== */
+.heritage {
+  padding: 96px 0 104px;
+  background: var(--base);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+  position: relative;
+}
+.heritage-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+.heritage-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 40px;
+}
+.heritage-img {
+  display: block;
+  max-width: 540px;
+  width: 100%;
+  height: auto;
+  margin: 0 auto 48px;
+  filter: drop-shadow(0 0 32px rgba(168,107,255,0.22)) drop-shadow(0 0 8px rgba(74,158,255,0.14));
+  border-radius: 4px;
+}
+
+/* ASCII art wrapper: CRT scanlines via ::after overlay */
+.heritage-ascii-wrap {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 28px;
+}
+.heritage-ascii-wrap::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 2px,
+    rgba(0,0,0,0.18) 2px,
+    rgba(0,0,0,0.18) 3px
+  );
+  pointer-events: none;
+  opacity: 0.65;
+  border-radius: 2px;
+}
+
+.heritage-ascii {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(6.5px, 1.9vw, 13.5px);
+  line-height: 1.42;
+  letter-spacing: clamp(0px, 0.05em, 0.05em);
+  white-space: pre;
+  display: block;
+  padding: 4px 0;
+  /* Phosphor glow: gentle CRT readout feel */
+  text-shadow:
+    0 0 6px currentColor,
+    0 0 12px rgba(255,255,255,0.08);
+}
+@media (max-width: 520px) {
+  .heritage-ascii {
+    font-size: clamp(5px, 3.2vw, 8px);
+    letter-spacing: 0;
+  }
+}
+
+.heritage-ascii-line-y { color: var(--yellow); }
+.heritage-ascii-line-o { color: var(--orange); }
+.heritage-ascii-line-b { color: var(--blue); }
+.heritage-ascii-line-g { color: var(--green); }
+.heritage-ascii-line-p { color: var(--purple); }
+
+.heritage-caption {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-3);
+  letter-spacing: 1.2px;
+  margin-top: 4px;
+}
+
+/* One-time wipe-in reveal for the ASCII block.
+   Visible by default; animation added only under js-motion. */
+@keyframes heritage-wipe {
+  from { clip-path: inset(0 100% 0 0); }
+  to   { clip-path: inset(0 0% 0 0); }
+}
+/* Visible by default; the wipe only plays when .wipe-in is added by the observer,
+   so a failed/absent observer can never trap the ASCII hidden. */
+html.js-motion .heritage-ascii-wrap.wipe-in {
+  animation: heritage-wipe 0.95s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Reduced motion: show everything statically */
+@media (prefers-reduced-motion: reduce) {
+  .heritage-ascii-wrap { clip-path: none !important; animation: none !important; }
+  .heritage-img { filter: none; }
+}
+</style>
+</head>
+<body>
+
+<div id="progress" aria-hidden="true"></div>
+<a href="#main" class="skip">Skip to content</a>
+
+<!-- ===== NAV ============================================= -->
+<nav class="site-nav" aria-label="Main navigation">
+  <div class="nav-inner">
+    <div class="brand-wrap">
+      <a href="#" class="nav-brand" aria-label="Octopus v3 home">
+        <img src="img/favicon.png" alt="Octopus" class="nav-mascot" width="26" height="26" loading="eager">
+        <span class="nav-wordmark">Octopus</span>
+        <span class="nav-ver">v3</span>
+      </a>
+      <div class="logo-pop" role="img" aria-label="Octopus: five agents, one orchestrator">
+        <img src="img/octopus.png" alt="" width="240" loading="lazy">
+      </div>
+    </div>
+    <nav class="nav-links" aria-label="Page sections">
+      <a href="#agents">Agents</a>
+      <a href="#workflow">Workflow</a>
+      <a href="#verify">Verify</a>
+      <a href="#safety">Safety</a>
+      <a href="#start">Start</a>
+    </nav>
+    <a id="nav-github-cta" href="https://github.com/victordelrosal/octopus" class="nav-github" target="_blank" rel="noopener" aria-label="Star Octopus on GitHub">
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+      GitHub
+    </a>
+  </div>
+</nav>
+
+<main id="main">
+
+<!-- ===== HERO ============================================ -->
+<section class="hero-section" aria-label="Hero: Octopus v3 orchestration core">
+
+  <!-- Three.js canvas: the 3D constellation -->
+  <canvas id="hero-canvas" aria-hidden="true"></canvas>
+
+  <!-- CSS fallback: animated SVG pipeline (shows until WebGL is confirmed or if unavailable) -->
+  <div class="hero-fallback" id="hero-fallback" aria-hidden="true">
+    <div class="fallback-pipeline">
+      <div class="fp-wrap" role="img" aria-label="Animated sprint pipeline: Research, Design, Build, Verify (cold), GATE (HALT/PASS), Market">
+        <svg viewBox="0 0 860 180" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;padding:26px 14px 4px" focusable="false">
+          <title>Octopus v3 sprint pipeline</title>
+          <!-- tracks -->
+          <line x1="105" y1="92" x2="190" y2="92" class="fp-track"/>
+          <line x1="242" y1="92" x2="350" y2="92" class="fp-track"/>
+          <line x1="400" y1="92" x2="516" y2="92" class="fp-track"/>
+          <line x1="566" y1="92" x2="647" y2="92" class="fp-track"/>
+          <line x1="700" y1="92" x2="775" y2="92" class="fp-track"/>
+          <!-- pulses -->
+          <line x1="105" y1="92" x2="190" y2="92" class="fp-pulse fp-pulse-rd"/>
+          <line x1="242" y1="92" x2="350" y2="92" class="fp-pulse fp-pulse-db"/>
+          <line x1="400" y1="92" x2="516" y2="92" class="fp-pulse fp-pulse-bv"/>
+          <line x1="566" y1="92" x2="647" y2="92" class="fp-pulse fp-pulse-vg"/>
+          <line x1="700" y1="92" x2="775" y2="92" class="fp-pulse fp-pulse-gm"/>
+          <!-- glow rings -->
+          <circle cx="78" cy="92" r="32" class="fp-glow-r"/>
+          <circle cx="216" cy="92" r="32" class="fp-glow-d"/>
+          <circle cx="375" cy="92" r="32" class="fp-glow-b"/>
+          <circle cx="541" cy="92" r="32" class="fp-glow-v"/>
+          <circle cx="674" cy="92" r="36" class="fp-glow-g"/>
+          <circle cx="802" cy="92" r="32" class="fp-glow-m"/>
+          <!-- fan-out motif (research haiku) -->
+          <g opacity="0.65">
+            <line x1="78" y1="66" x2="34" y2="42" stroke="rgba(245,197,66,0.22)" stroke-width="1" stroke-dasharray="3 4"/>
+            <line x1="78" y1="66" x2="78" y2="32" stroke="rgba(245,197,66,0.22)" stroke-width="1" stroke-dasharray="3 4"/>
+            <line x1="78" y1="66" x2="122" y2="42" stroke="rgba(245,197,66,0.22)" stroke-width="1" stroke-dasharray="3 4"/>
+            <circle cx="34" cy="35" r="6.5" fill="#080c14" stroke="rgba(245,197,66,0.3)" stroke-width="1.5"/>
+            <circle cx="78" cy="25" r="6.5" fill="#080c14" stroke="rgba(245,197,66,0.42)" stroke-width="1.5"/>
+            <circle cx="122" cy="35" r="6.5" fill="#080c14" stroke="rgba(245,197,66,0.3)" stroke-width="1.5"/>
+            <text x="78" y="13" font-family="JetBrains Mono,monospace" font-size="6.5" font-weight="400" letter-spacing="1.5" text-anchor="middle" fill="rgba(245,197,66,0.28)">HAIKU FAN-OUT</text>
+          </g>
+          <!-- nodes -->
+          <circle cx="78" cy="92" r="26" class="fp-node-fill"/><circle cx="78" cy="92" r="26" class="fp-node-ring" stroke="var(--yellow)"/><circle cx="78" cy="92" r="8.5" class="fp-node-dot" fill="var(--yellow)"/>
+          <text x="78" y="129" class="fp-label" fill="var(--yellow)">RESEARCH</text>
+          <text x="78" y="141" class="fp-model">haiku-4.5</text>
+          <circle cx="216" cy="92" r="26" class="fp-node-fill"/><circle cx="216" cy="92" r="26" class="fp-node-ring" stroke="var(--orange)"/><circle cx="216" cy="92" r="8.5" class="fp-node-dot" fill="var(--orange)"/>
+          <text x="216" y="129" class="fp-label" fill="var(--orange)">DESIGN</text>
+          <text x="216" y="141" class="fp-model">sonnet-4.6</text>
+          <circle cx="375" cy="92" r="26" class="fp-node-fill"/><circle cx="375" cy="92" r="26" class="fp-node-ring" stroke="var(--blue)"/><circle cx="375" cy="92" r="8.5" class="fp-node-dot" fill="var(--blue)"/>
+          <text x="375" y="129" class="fp-label" fill="var(--blue)">BUILD</text>
+          <text x="375" y="141" class="fp-model">sonnet-4.6</text>
+          <circle cx="541" cy="92" r="26" class="fp-node-fill"/><circle cx="541" cy="92" r="26" class="fp-node-ring" stroke="var(--cold)"/><circle cx="541" cy="92" r="8.5" class="fp-node-dot" fill="var(--cold)"/>
+          <text x="541" y="129" class="fp-label" fill="var(--cold)">VERIFY</text>
+          <text x="541" y="141" class="fp-model">cold \B7 sonnet-4.6</text>
+          <!-- GATE diamond -->
+          <polygon points="674,66 700,92 674,118 648,92" class="fp-gate-anim"/>
+          <circle cx="674" cy="92" r="7.5" class="fp-gate-dot"/>
+          <text x="674" y="134" class="fp-label fp-gate-lbl">GATE</text>
+          <!-- market -->
+          <circle cx="802" cy="92" r="26" class="fp-node-fill"/><circle cx="802" cy="92" r="26" class="fp-node-ring" stroke="var(--green)"/><circle cx="802" cy="92" r="8.5" class="fp-node-dot" fill="var(--green)"/>
+          <text x="802" y="129" class="fp-label" fill="var(--green)">MARKET</text>
+          <text x="802" y="141" class="fp-model">haiku-4.5</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hero text (sits on gradient above canvas) -->
+  <div class="hero-content">
+    <p class="hero-eyebrow" aria-label="Product category">Octopus v3 &nbsp;&middot;&nbsp; Claude Code Plugin &nbsp;&middot;&nbsp; Open Source</p>
+    <h1 class="hero-h1">
+      <span class="h1-line"><span class="h1-line-inner">Determinism</span></span>
+      <span class="h1-line"><span class="h1-line-inner">you can watch.</span></span>
+    </h1>
+    <p class="hero-sub">Octopus stops roleplaying an orchestrator and becomes a self-verifying plugin that sits on the platform's native Workflow engine. Five agents. Schema-typed handoffs. A cold verifier with independent context. A STOP-gate before any irreversible action ships.</p>
+    <div class="hero-ctas">
+      <a id="hero-cta-primary" href="https://github.com/victordelrosal/octopus" class="btn-primary" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        Star on GitHub
+      </a>
+      <a href="#workflow" class="btn-secondary">See the Workflow &darr;</a>
+    </div>
+    <p class="hero-note">Workflow API is research-preview. Signatures are provisional pending GA.</p>
+  </div>
+
+</section>
+
+
+<!-- ===== HERITAGE BAND =================================== -->
+<section id="heritage" class="heritage" aria-label="Octopus heritage">
+  <div class="heritage-inner">
+
+    <p class="heritage-eyebrow">Five agents. One orchestrator.</p>
+
+    <div class="heritage-ascii-wrap" aria-label="OCTOPUS">
+      <pre class="heritage-ascii" role="img" aria-label="OCTOPUS logo in ASCII art"><span class="heritage-ascii-line-y"> ████   ████  ██████  ████  █████  ██  ██ ██████</span>
+<span class="heritage-ascii-line-o">██  ██ ██       ██   ██  ██ ██  ██ ██  ██ ██    </span>
+<span class="heritage-ascii-line-b">██  ██ ██       ██   ██  ██ █████  ██  ██ ██████</span>
+<span class="heritage-ascii-line-g">██  ██ ██       ██   ██  ██ ██     ██  ██     ██</span>
+<span class="heritage-ascii-line-p"> ████   ████    ██    ████  ██      ████  ██████</span></pre>
+    </div>
+
+    <p class="heritage-caption">Since 2026. Research, design, build, market, evaluate.</p>
+
+  </div>
+</section>
+
+
+<!-- ===== AGENTS ========================================== -->
+<section id="agents" class="section section-alt">
+  <div class="container">
+    <p class="eyebrow reveal">Five agents</p>
+    <h2 class="reveal">Real boundaries,<br>not prose pleas.</h2>
+    <p class="section-sub reveal">In v2, scope was a paragraph asking an agent to please not build. In v3, if the Researcher lacks the Write tool, it cannot write, regardless of what any prompt says. Tool allowlists are the enforcement layer; prose is not.</p>
+
+    <div class="agents-grid">
+
+      <div class="agent-card ac-y reveal">
+        <div class="agent-role" style="color:var(--yellow)">Yellow &middot; Researcher</div>
+        <span class="agent-model">claude-haiku-4-5 &middot; fan-out</span>
+        <p class="agent-desc">Scout mode: discovers opportunities and synthesizes research. Evaluate mode: grades live products with a KILL / PIVOT / SCALE verdict and supporting evidence.</p>
+        <p class="agent-boundary">Tools: Read, WebSearch, WebFetch, Bash (read-only: grep/find/curl). MCP: read-only, no write connectors.</p>
+      </div>
+
+      <div class="agent-card ac-ro reveal">
+        <div class="agent-role" style="color:var(--orange)">Red-Orange &middot; Designer</div>
+        <span class="agent-model">claude-sonnet-4-6</span>
+        <p class="agent-desc">UX flows, system architecture, wireframes, and design specs. Translates research briefs into actionable blueprints the Maker can execute without ambiguity.</p>
+        <p class="agent-boundary">Tools: Read, Write, Edit. No MCP. Cannot deploy or publish.</p>
+      </div>
+
+      <div class="agent-card ac-b reveal">
+        <div class="agent-role" style="color:var(--blue)">Blue &middot; Maker</div>
+        <span class="agent-model">claude-sonnet-4-6 &middot; worktree</span>
+        <p class="agent-desc">Code, tests, deployment. Works from specs; never redesigns without approval. Runs in git worktree isolation so in-progress builds cannot corrupt the main branch.</p>
+        <p class="agent-boundary">Tools: Read, Write, Edit, Bash, Glob, Grep. MCP: deploy-capable (Cloudflare, Stripe). Only role with this access.</p>
+      </div>
+
+      <div class="agent-card ac-g reveal">
+        <div class="agent-role" style="color:var(--green)">Green &middot; Marketer</div>
+        <span class="agent-model">claude-haiku-4-5 &middot; variants</span>
+        <p class="agent-desc">Copywriting, campaigns, growth assets, email sequences. Drafts distribution at high volume and low cost. A human sends; the Marketer never publishes autonomously.</p>
+        <p class="agent-boundary">Tools: Read, Write. No MCP. No publish action. STOP-gated always.</p>
+      </div>
+
+      <div class="agent-card ac-p reveal">
+        <div class="agent-role" style="color:var(--purple)">Purple &middot; Manager</div>
+        <span class="agent-model">claude-opus-4-8 &middot; apex</span>
+        <p class="agent-desc">Decomposes tasks, dispatches agents, enforces quality gates, synthesizes outputs. Operates at the orchestration apex only. If Purple is writing code, something is wrong.</p>
+        <p class="agent-boundary">Tools: All (orchestration use only). MCP: read-only plus approvals. Delegates execution; never does specialist work itself.</p>
+      </div>
+
+    </div>
+
+    <div class="cost-callout reveal">
+      <strong>Model routing cuts cost by ~75-80% vs running every stage at Opus.</strong> Haiku at $1/$5 per MTok for high-volume fan-out (research sweeps, copy variants). Sonnet at $3/$15 for build and design. Opus at $5/$25 for orchestration apex and final synthesis only. One field per stage: <code class="ic">model:</code>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===== WORKFLOW ======================================== -->
+<section id="workflow" class="section">
+  <div class="container">
+    <p class="eyebrow reveal">Orchestration as code</p>
+    <h2 class="reveal">The sprint pipeline<br>in 40 lines.</h2>
+    <p class="section-sub reveal">In v2, the sprint mode was prose asking one Opus instance to roleplay coordination. In v3, it is an executed Workflow script with barrier semantics, schema validation, and deterministic sequencing. Intelligence stays in the leaf agents; orchestration moves out of the token stream.</p>
+
+    <div class="code-wrap reveal">
+      <div class="code-header">
+        <span class="code-dot" style="background:#ff5f57"></span>
+        <span class="code-dot" style="background:#ffbd2e"></span>
+        <span class="code-dot" style="background:#28c840"></span>
+        <span class="code-filename">v3/workflows/sprint.workflow.js</span>
+        <span class="code-badge">research-preview API</span>
+      </div>
+<pre class="code"><code><span class="t-cm">// Workflow API: research-preview. Signatures provisional pending GA.</span>
+<span class="t-kw">import</span> { <span class="t-fn">pipeline</span>, <span class="t-fn">agent</span>, <span class="t-fn">verify</span>, <span class="t-fn">gate</span> } <span class="t-kw">from</span> <span class="t-str">'@octopus/core'</span>;
+<span class="t-kw">import</span> { ResearchBrief, DesignSpec, BuildArtifact } <span class="t-kw">from</span> <span class="t-str">'@octopus/schemas'</span>;
+
+<span class="t-kw">export default</span> <span class="t-fn">pipeline</span>({
+  <span class="t-obj">name</span>: <span class="t-str">'sprint'</span>,
+
+  <span class="t-obj">stages</span>: [
+
+    <span class="t-fn">agent</span>({
+      <span class="t-obj">type</span>:   <span class="t-yr">'researcher'</span>,        <span class="t-cm">// Haiku fan-out: fast, cheap, wide</span>
+      <span class="t-obj">model</span>:  <span class="t-str">'claude-haiku-4-5'</span>,
+      <span class="t-obj">output</span>: ResearchBrief,     <span class="t-cm">// schema-validated handoff</span>
+    }),
+
+    <span class="t-fn">agent</span>({
+      <span class="t-obj">type</span>:   <span class="t-ro">'designer'</span>,
+      <span class="t-obj">model</span>:  <span class="t-str">'claude-sonnet-4-6'</span>,
+      <span class="t-obj">input</span>:  ResearchBrief,
+      <span class="t-obj">output</span>: DesignSpec,
+    }),
+
+    <span class="t-fn">agent</span>({
+      <span class="t-obj">type</span>:      <span class="t-bl">'maker'</span>,
+      <span class="t-obj">model</span>:     <span class="t-str">'claude-sonnet-4-6'</span>,
+      <span class="t-obj">isolation</span>: <span class="t-str">'worktree'</span>,        <span class="t-cm">// git-isolated working tree</span>
+      <span class="t-obj">input</span>:     DesignSpec,
+      <span class="t-obj">output</span>:    BuildArtifact,
+    }),
+
+    <span class="t-fn">verify</span>({
+      <span class="t-obj">cold</span>:     <span class="t-bool">true</span>,               <span class="t-cm">// fresh context: cannot see builder's reasoning</span>
+      <span class="t-obj">criteria</span>: <span class="t-str">'CRITERIA.md'</span>,     <span class="t-cm">// frozen binary tests, written before the run</span>
+      <span class="t-obj">on_fail</span>:  <span class="t-str">'halt'</span>,            <span class="t-cm">// pipeline stops; blocker list returned to builder</span>
+    }),
+
+    <span class="t-fn">gate</span>({
+      <span class="t-obj">blocks</span>: [<span class="t-str">'deploy'</span>, <span class="t-str">'publish'</span>, <span class="t-str">'send'</span>, <span class="t-str">'delete'</span>],
+      <span class="t-obj">writes</span>: <span class="t-str">'PENDING-APPROVALS.md'</span>,   <span class="t-cm">// parked; waits for human</span>
+    }),
+
+    <span class="t-fn">agent</span>({
+      <span class="t-obj">type</span>:  <span class="t-gr">'marketer'</span>,            <span class="t-cm">// Haiku: high-volume copy variants</span>
+      <span class="t-obj">model</span>: <span class="t-str">'claude-haiku-4-5'</span>,
+      <span class="t-obj">input</span>: BuildArtifact,
+    }),
+
+  ],
+});</code></pre>
+    </div>
+
+    <p class="code-caption reveal">Each stage receives a schema-validated artifact from the previous stage. The <code class="ic">verify</code> stage spawns a cold agent with independent context every round. The <code class="ic">gate</code> primitive halts and writes to <code class="ic">PENDING-APPROVALS.md</code> before any irreversible action.</p>
+    <p class="code-note reveal">The orchestration adapter compiles this graph to native Workflow primitives when available, and degrades to the v2 prose-Manager path on platforms that do not yet have the Workflow tool (Codex CLI, Gemini CLI, pre-GA Claude Code). Zero config change required on upgrade.</p>
+  </div>
+</section>
+
+
+<!-- ===== VERIFY + GATE =================================== -->
+<section id="verify" class="section section-alt">
+  <div class="container">
+    <p class="eyebrow reveal">Two load-bearing primitives</p>
+    <h2 class="reveal">It grades itself.</h2>
+    <p class="section-sub reveal">The Workflow tool gives you <code class="ic">pipeline()</code> and <code class="ic">parallel()</code>. Octopus gives you <code class="ic">verify</code> and <code class="ic">gate</code>. Neither requires anything beyond the plugin. These are the differentiating layer: the Workflow tool gives you determinism; Octopus gives you trustworthiness.</p>
+
+    <div class="vg-grid">
+      <div class="vg-card reveal">
+        <div class="vg-badge vg-verify">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><circle cx="5" cy="5" r="4" stroke="var(--cold)" stroke-width="1.5"/><circle cx="5" cy="5" r="1.5" fill="var(--cold)"/></svg>
+          Cold Verify
+        </div>
+        <h3>Independent context, every round.</h3>
+        <p>Anthropic's own June 2026 loop experiments found a separate verifier beats self-critique. A builder's context is compromised by intent; Octopus does not ask the builder to grade its own work.</p>
+        <ul class="vg-list">
+          <li>Criteria are frozen at pipeline start with <code class="ic">octopus.criteria([...])</code>. Each criterion is binary: pass or fail, no partial credit.</li>
+          <li>A fresh cold agent is spawned per round. It sees only the frozen criteria and the artifact directory; never the builder's session, reasoning, or prior conversation.</li>
+          <li>Its system instruction: "Your job is to find failures. Approve only if every criterion passes without interpretation."</li>
+          <li>On failure, the pipeline halts and returns a blocker list. The next verify round is always a new cold agent, regardless of accumulated prior rounds.</li>
+          <li>Two non-disableable security checks run first: a secret scan of all staged files, and <code class="ic">npm audit --audit-level=high</code> (or equivalent). Any hit is an automatic fail.</li>
+        </ul>
+      </div>
+
+      <div class="vg-card reveal">
+        <div class="vg-badge vg-gate">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M5 1L9 5L5 9L1 5Z" stroke="var(--gold-bright)" stroke-width="1.5"/></svg>
+          STOP Gate
+        </div>
+        <h3>Human in the loop, exactly once.</h3>
+        <p>Before any action that is irreversible, outward-facing, or involves real spend, the pipeline pauses. The decision stays parked until a human clears it. This cannot be bypassed by any agent instruction.</p>
+        <ul class="vg-list">
+          <li>Triggers on: <code class="ic">deploy</code>, <code class="ic">publish</code>, <code class="ic">send</code>, <code class="ic">delete</code>, and any purchase action.</li>
+          <li>The pending action is written verbatim to <code class="ic">PENDING-APPROVALS.md</code> with full context for the reviewer.</li>
+          <li>The Marketer role is permanently STOP-gated. It drafts distribution assets; it never sends, posts, or publishes autonomously.</li>
+          <li>Gate is composable: add custom trigger patterns to your <code class="ic">CRITERIA.md</code> to block domain-specific irreversible actions.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===== SAFETY ========================================== -->
+<section id="safety" class="section">
+  <div class="container">
+    <p class="eyebrow reveal">Safe by design</p>
+    <h2 class="reveal">Zero config collision.</h2>
+    <p class="section-sub reveal">Octopus's rarest property since v1: it ships no hooks, no settings.json, no CLAUDE.md mutations. v3 preserves this guarantee explicitly while moving to a plugin architecture with materially larger capability.</p>
+
+    <div class="safety-grid">
+
+      <div class="safety-card reveal">
+        <div class="safety-icon" style="background:rgba(168,107,255,0.1);border:1px solid rgba(168,107,255,0.22)">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="3" y="3" width="10" height="10" stroke="rgba(168,107,255,0.8)" stroke-width="1.5"/></svg>
+        </div>
+        <h3>No global installation</h3>
+        <p>Installs under <code class="ic">~/.claude/plugins/octopus/</code>. Never touches your CLAUDE.md, settings.json, or any other config path. Uninstall with one command; no residual side effects.</p>
+      </div>
+
+      <div class="safety-card reveal">
+        <div class="safety-icon" style="background:rgba(74,158,255,0.1);border:1px solid rgba(74,158,255,0.22)">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="5" stroke="rgba(74,158,255,0.8)" stroke-width="1.5"/><circle cx="8" cy="8" r="1.5" fill="rgba(74,158,255,0.8)"/></svg>
+        </div>
+        <h3>Least privilege per role</h3>
+        <p>Researcher has read-only MCP; no write connectors. Maker is the only role with deploy-capable MCP (Cloudflare, Stripe). The Verifier gets nothing but Read. Privilege is not a prose plea; it is the tool allowlist.</p>
+      </div>
+
+      <div class="safety-card reveal">
+        <div class="safety-icon" style="background:rgba(61,220,132,0.1);border:1px solid rgba(61,220,132,0.22)">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 8L7 11L12 5" stroke="rgba(61,220,132,0.8)" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <h3>No autonomous distribution</h3>
+        <p>The Marketer role drafts; a human sends. This is not a setting. It is a permanent STOP-gate on every outward-facing action from the Marketer. Auto-posting to social media or Product Hunt is blocked at the architecture level.</p>
+      </div>
+
+      <div class="safety-card reveal">
+        <div class="safety-icon" style="background:rgba(168,192,216,0.1);border:1px solid rgba(168,192,216,0.22)">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2L14 5V10C14 12.5 11 14 8 15C5 14 2 12.5 2 10V5L8 2Z" stroke="rgba(168,192,216,0.8)" stroke-width="1.5"/></svg>
+        </div>
+        <h3>Security pass in every verify gate</h3>
+        <p>Before any artifact can ship: a secret scan checks all staged files for tokens, API keys, and passwords. A dependency audit runs at high severity. Both checks are non-disableable by user criteria and cannot be overridden by any agent prompt.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ===== QUICK START ===================================== -->
+<section id="start" class="section section-alt">
+  <div class="container">
+    <p class="eyebrow reveal">Quick start</p>
+    <h2 class="reveal">Try it today.</h2>
+    <p class="section-sub reveal">The v2 prose-Manager mode is available now. The v3 plugin and Workflow adapter are in active development. Star the repo to follow progress.</p>
+
+    <div class="start-grid">
+
+      <div class="start-block reveal">
+        <h3><span class="start-num">1</span> Try v2 today (stable)</h3>
+<pre class="start-code"><span class="sh-cm"># Clone and install into your project</span>
+<span class="sh-prompt">$ </span><span class="sh-cmd">git clone https://github.com/victordelrosal/octopus</span>
+<span class="sh-prompt">$ </span><span class="sh-cmd">cp octopus/octopus.md ./CLAUDE.md</span>
+
+<span class="sh-cm"># Start Claude Code in your project</span>
+<span class="sh-prompt">$ </span><span class="sh-cmd">claude</span>
+
+<span class="sh-cm"># Then at the prompt:</span>
+<span class="sh-prompt">&gt; </span><span class="sh-cmd">sprint build a micro-tool that...</span></pre>
+      </div>
+
+      <div class="start-block reveal">
+        <div class="coming-badge">Coming: v3 Plugin</div>
+        <h3><span class="start-num">2</span> v3 plugin install (in development)</h3>
+<pre class="start-code"><span class="sh-cm"># One-line install (pending plugin system GA)</span>
+<span class="sh-prompt">$ </span><span class="sh-cmd">claude plugin install octopus</span>
+
+<span class="sh-cm"># Or from source (v3 branch)</span>
+<span class="sh-prompt">$ </span><span class="sh-cmd">bash octopus/v3/install.sh</span>
+
+<span class="sh-cm"># Uninstall with zero residue</span>
+<span class="sh-prompt">$ </span><span class="sh-cmd">claude plugin remove octopus</span></pre>
+        <p style="margin-top:12px;font-family:'Switzer',sans-serif;font-size:12.5px;color:var(--ink-4);line-height:1.62;">Plugin architecture requires the Claude Code plugin system to reach GA. The Workflow adapter and per-role tool boundaries are designed and ready; watch the repo for the v3.0.0 release tag.</p>
+      </div>
+
+    </div>
+
+    <div class="start-callout reveal">
+      <p><strong>What is already in the repo:</strong> the five-agent prompt system, the venture metaskill (hunt/harvest pipeline), the pixel-agent VS Code visualizer, autonomous sprint shell scripts, and the full v3 architecture document. The repo is the reference; this page summarises design intent. Read <code class="ic">v3/ARCHITECTURE.md</code> for the full technical spec.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ===== FOOTER ========================================== -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      Octopus v3 &nbsp;&middot;&nbsp; Open Source (MIT) &nbsp;&middot;&nbsp; June 2026<br>
+      <span style="display:block;margin-top:4px;">By <a id="footer-author" href="https://github.com/victordelrosal" target="_blank" rel="noopener">Victor del Rosal</a> / <a href="https://fiveinnolabs.com" target="_blank" rel="noopener">fiveinnolabs</a></span>
+      <span style="display:block;margin-top:2px;font-size:11px;color:var(--ink-4);">v3 is in development. Workflow API is research-preview.</span>
+    </div>
+    <nav class="footer-links" aria-label="Footer links">
+      <a id="footer-github" href="https://github.com/victordelrosal/octopus" target="_blank" rel="noopener">GitHub</a>
+      <a id="footer-arch" href="https://github.com/victordelrosal/octopus/blob/main/v3/ARCHITECTURE.md" target="_blank" rel="noopener">Architecture</a>
+      <a id="footer-issues" href="https://github.com/victordelrosal/octopus/issues" target="_blank" rel="noopener">Issues</a>
+    </nav>
+  </div>
+</footer>
+
+
+<!-- ===================================================
+     MAIN MODULE SCRIPT
+     Three.js constellation (no GSAP, no ScrollTrigger, no Lenis)
+     ==================================================== -->
+<script type="module">
+import * as THREE from 'three';
+
+/* ======================================================
+   REPO CONSTANT (edit here; links are patched below)
+   ====================================================== */
+const REPO = 'https://github.com/victordelrosal/octopus';
+
+/* Patch all links that reference the repo */
+document.querySelectorAll('a[href*="github.com/victordelrosal/octopus"]').forEach(el => {
+  if (el.id === 'footer-arch') {
+    el.href = REPO + '/blob/main/v3/ARCHITECTURE.md';
+  } else if (el.id === 'footer-issues') {
+    el.href = REPO + '/issues';
+  } else {
+    el.href = REPO;
+  }
+});
+
+/* ======================================================
+   READING PROGRESS (native scroll only)
+   ====================================================== */
+const progressBar = document.getElementById('progress');
+function updateProgress() {
+  const doc = document.documentElement;
+  const st = window.scrollY || doc.scrollTop;
+  const sh = doc.scrollHeight - doc.clientHeight;
+  progressBar.style.width = (sh > 0 ? Math.min((st / sh) * 100, 100) : 0).toFixed(1) + '%';
+}
+window.addEventListener('scroll', updateProgress, { passive: true });
+updateProgress();
+
+/* ======================================================
+   REDUCED MOTION CHECK
+   ====================================================== */
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ======================================================
+   SECTION REVEAL via IntersectionObserver
+   No GSAP or ScrollTrigger; pure CSS transitions triggered by class.
+   ====================================================== */
+function setupReveal() {
+  if (reduceMotion) {
+    document.querySelectorAll('.reveal').forEach(el => el.classList.add('revealed'));
+    return;
+  }
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('revealed');
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.10, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  /* Heritage ASCII wipe-in: one-shot when the block enters the viewport */
+  const asciiWrap = document.querySelector('.heritage-ascii-wrap');
+  if (asciiWrap) {
+    const wipeObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          asciiWrap.classList.add('wipe-in');
+          wipeObs.unobserve(asciiWrap);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -20px 0px' });
+    wipeObs.observe(asciiWrap);
+  }
+}
+
+/* ======================================================
+   HERO TEXT ENTRANCE via CSS transitions
+   Staggered delays set inline; CSS handles the animation.
+   ====================================================== */
+function heroEntrance() {
+  if (reduceMotion) {
+    document.querySelectorAll('.h1-line-inner, .hero-eyebrow, .hero-sub, .hero-ctas, .hero-note')
+      .forEach(el => { el.style.opacity = '1'; el.style.transform = 'none'; });
+    return;
+  }
+  /* Defer to next frame so paint runs first, then transitions fire */
+  requestAnimationFrame(() => {
+    const eyebrow = document.querySelector('.hero-eyebrow');
+    if (eyebrow) {
+      eyebrow.style.transitionDelay = '0.05s';
+      eyebrow.classList.add('anim-in');
+    }
+    document.querySelectorAll('.h1-line-inner').forEach((el, i) => {
+      el.style.transitionDelay = (0.18 + i * 0.13) + 's';
+      el.classList.add('anim-in');
+    });
+    const sub = document.querySelector('.hero-sub');
+    if (sub) { sub.style.transitionDelay = '0.52s'; sub.classList.add('anim-in'); }
+    const ctas = document.querySelector('.hero-ctas');
+    if (ctas) { ctas.style.transitionDelay = '0.72s'; ctas.classList.add('anim-in'); }
+    const note = document.querySelector('.hero-note');
+    if (note) { note.style.transitionDelay = '0.90s'; note.classList.add('anim-in'); }
+  });
+}
+
+/* ======================================================
+   THREE.JS SETUP (lightweight)
+   Single scene. Zero scene lights. MeshBasicMaterial for nodes.
+   Emissive glow via additive sprites. Sparse starfield Points.
+   Render loop pauses on hidden tab and when canvas is offscreen.
+   ====================================================== */
+const heroCanvas = document.getElementById('hero-canvas');
+const heroSection = document.querySelector('.hero-section');
+const heroFallback = document.getElementById('hero-fallback');
+
+let renderer, scene, camera;
+let animFrameId = null;
+let webglReady = false;
+let tabHidden = false;
+let canvasVisible = true;
+
+/* Agent node definitions */
+const AGENT_DEFS = [
+  { label: 'RESEARCH', color: 0xf5c542, hex: '#f5c542', pos: [-3.4, 3.8, 0.2] },
+  { label: 'DESIGN',   color: 0xff6b3d, hex: '#ff6b3d', pos: [-1.9, 3.3, -0.3] },
+  { label: 'BUILD',    color: 0x4a9eff, hex: '#4a9eff', pos: [-0.4, 3.8, 0.2] },
+  { label: 'VERIFY',   color: 0xa8c0d8, hex: '#a8c0d8', pos: [1.1, 3.4, -0.2] },
+  { label: 'GATE',     color: 0xa86bff, hex: '#a86bff', pos: [2.6, 3.7, 0.3], isGate: true },
+  { label: 'MARKET',   color: 0x3ddc84, hex: '#3ddc84', pos: [4.0, 3.5, -0.1] },
+];
+
+function initThree() {
+  try {
+    /* Renderer: single scene, no autoClear override needed */
+    renderer = new THREE.WebGLRenderer({ canvas: heroCanvas, antialias: true, alpha: false });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+    const W = heroSection.clientWidth;
+    const H = heroSection.clientHeight || window.innerHeight;
+    renderer.setSize(W, H);
+    /* Background color matches CSS gradient base; CSS gradient handles the top glow */
+    renderer.setClearColor(0x070a10, 1);
+
+    /* Scene: no lights at all (MeshBasicMaterial + additive sprites handle glow) */
+    scene = new THREE.Scene();
+
+    /* Camera */
+    camera = new THREE.PerspectiveCamera(52, W / H, 0.1, 100);
+    camera.position.set(0.3, 1.0, 10.0);
+    camera.lookAt(0.3, 0.0, 0);
+
+    /* Sparse starfield (static Points; cheap per frame) */
+    const starCount = 280;
+    const starPos = new Float32Array(starCount * 3);
+    for (let i = 0; i < starCount; i++) {
+      starPos[i * 3]     = (Math.random() - 0.5) * 22;
+      starPos[i * 3 + 1] = (Math.random() - 0.5) * 18 + 2;
+      starPos[i * 3 + 2] = (Math.random() - 0.5) * 14 - 4;
+    }
+    const starGeo = new THREE.BufferGeometry();
+    starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+    const starMat = new THREE.PointsMaterial({
+      color: 0x6080b8,
+      size: 0.045,
+      transparent: true,
+      opacity: 0.55,
+      sizeAttenuation: true,
+    });
+    scene.add(new THREE.Points(starGeo, starMat));
+
+    /* Spine curve (CatmullRom through node positions) */
+    const curvePoints = AGENT_DEFS.map(a => new THREE.Vector3(...a.pos));
+    const curve = new THREE.CatmullRomCurve3(curvePoints);
+    const tubeGeo = new THREE.TubeGeometry(curve, 100, 0.012, 5, false);
+    const tubeMat = new THREE.MeshBasicMaterial({
+      color: 0x3a55c0,
+      transparent: true,
+      opacity: 0.40,
+    });
+    scene.add(new THREE.Mesh(tubeGeo, tubeMat));
+
+    /* Glow sprite texture (canvas radial gradient; generated once) */
+    const gc = document.createElement('canvas');
+    gc.width = gc.height = 128;
+    const gctx = gc.getContext('2d');
+    const gg = gctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+    gg.addColorStop(0,    'rgba(255,255,255,0.92)');
+    gg.addColorStop(0.32, 'rgba(255,255,255,0.18)');
+    gg.addColorStop(1,    'rgba(255,255,255,0.00)');
+    gctx.fillStyle = gg;
+    gctx.fillRect(0, 0, 128, 128);
+    const glowTex = new THREE.CanvasTexture(gc);
+
+    /* Agent nodes: MeshBasicMaterial (no lighting math) + additive glow sprite */
+    const nodeObjects = AGENT_DEFS.map((def) => {
+      /* Core mesh: MeshBasicMaterial shows color as-is, zero lighting cost */
+      const geo = def.isGate
+        ? new THREE.OctahedronGeometry(0.24, 0)
+        : new THREE.IcosahedronGeometry(0.20, 1);
+      const mat = new THREE.MeshBasicMaterial({ color: new THREE.Color(def.color) });
+      const mesh = new THREE.Mesh(geo, mat);
+      mesh.position.set(...def.pos);
+      scene.add(mesh);
+
+      /* Additive glow sprite: provides halo without any scene light */
+      const spriteMat = new THREE.SpriteMaterial({
+        map: glowTex,
+        color: new THREE.Color(def.color),
+        blending: THREE.AdditiveBlending,
+        transparent: true,
+        opacity: 0.55,
+        depthWrite: false,
+      });
+      const sprite = new THREE.Sprite(spriteMat);
+      sprite.scale.set(def.isGate ? 2.0 : 1.6, def.isGate ? 2.0 : 1.6, 1);
+      sprite.position.set(...def.pos);
+      scene.add(sprite);
+
+      return { mesh, mat, sprite, spriteMat, def, basePos: [...def.pos] };
+    });
+
+    /* Pulse orb: travels the curve on a timer loop, no GSAP needed */
+    const pulseGeo = new THREE.SphereGeometry(0.05, 8, 8);
+    const pulseMat = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.0,
+    });
+    const pulseOrb = new THREE.Mesh(pulseGeo, pulseMat);
+    scene.add(pulseOrb);
+
+    const pulseSpriteMat = new THREE.SpriteMaterial({
+      map: glowTex,
+      color: 0xffffff,
+      blending: THREE.AdditiveBlending,
+      transparent: true,
+      opacity: 0.0,
+      depthWrite: false,
+    });
+    const pulseSprite = new THREE.Sprite(pulseSpriteMat);
+    pulseSprite.scale.set(0.9, 0.9, 1);
+    scene.add(pulseSprite);
+
+    /* Show canvas, hide fallback */
+    heroCanvas.classList.add('visible');
+    if (heroFallback) heroFallback.classList.add('hidden');
+    webglReady = true;
+
+    /* ======================================================
+       RENDER LOOP: pause on hidden tab + when canvas off-screen
+       ====================================================== */
+    const clock = new THREE.Clock();
+    const PULSE_PERIOD = 9.0; /* seconds per full spine pass */
+
+    /* Tab visibility pause */
+    document.addEventListener('visibilitychange', () => { tabHidden = document.hidden; });
+
+    /* Canvas viewport pause via IntersectionObserver */
+    const canvasObs = new IntersectionObserver((entries) => {
+      canvasVisible = entries[0].isIntersecting;
+    }, { threshold: 0 });
+    canvasObs.observe(heroCanvas);
+
+    function animate() {
+      animFrameId = requestAnimationFrame(animate);
+      if (tabHidden || !canvasVisible) return;
+
+      const elapsed = clock.getElapsedTime();
+
+      /* Pulse orb: simple time-driven travel along the spine curve */
+      const rawT = (elapsed % PULSE_PERIOD) / PULSE_PERIOD; /* 0..1 */
+      const fadeIn  = rawT < 0.06  ? rawT / 0.06  : 1.0;
+      const fadeOut = rawT > 0.92  ? (1.0 - rawT) / 0.08 : 1.0;
+      const pulseAlpha = fadeIn * fadeOut * 0.70;
+      pulseMat.opacity = pulseAlpha;
+      pulseSpriteMat.opacity = pulseAlpha * 0.75;
+
+      /* Color: amber near gate, green past gate, white elsewhere */
+      if (rawT > 0.63 && rawT < 0.74) {
+        const c = new THREE.Color(0xe8b44a);
+        pulseMat.color.copy(c); pulseSpriteMat.color.copy(c);
+      } else if (rawT >= 0.74) {
+        const c = new THREE.Color(0x3ddc84);
+        pulseMat.color.copy(c); pulseSpriteMat.color.copy(c);
+      } else {
+        const c = new THREE.Color(0xffffff);
+        pulseMat.color.copy(c); pulseSpriteMat.color.copy(c);
+      }
+      const curveT = Math.min(rawT * 1.04, 0.9999);
+      const pt = curve.getPoint(curveT);
+      pulseOrb.position.copy(pt);
+      pulseSprite.position.copy(pt);
+
+      /* Idle animation: nodes float + rotate; sprites breathe */
+      nodeObjects.forEach((n, i) => {
+        n.mesh.rotation.y += 0.004;
+        n.mesh.rotation.x += 0.0014;
+        const bobY = n.basePos[1] + Math.sin(elapsed * 0.55 + i * 1.1) * 0.038;
+        n.mesh.position.y = bobY;
+        n.sprite.position.y = bobY;
+        /* Breathing: gentle scale pulse */
+        const breath = 1.0 + 0.10 * Math.sin(elapsed * 0.95 + i * 0.82);
+        const bs = (n.def.isGate ? 2.0 : 1.6) * breath;
+        n.sprite.scale.set(bs, bs, 1);
+        /* Subtle opacity breathe */
+        n.spriteMat.opacity = 0.48 + 0.14 * Math.sin(elapsed * 0.80 + i * 0.65);
+      });
+
+      /* Slow camera drift */
+      camera.position.x = 0.3 + Math.sin(elapsed * 0.07) * 0.16;
+      camera.position.y = 1.0 + Math.sin(elapsed * 0.11) * 0.09;
+      camera.lookAt(0.3 + Math.sin(elapsed * 0.06) * 0.08, 0.0, 0);
+
+      renderer.render(scene, camera);
+    }
+
+    if (reduceMotion) {
+      /* Static single frame: render once with all nodes visible */
+      renderer.render(scene, camera);
+    } else {
+      animate();
+    }
+
+    /* Resize handler */
+    window.addEventListener('resize', () => {
+      const W2 = heroSection.clientWidth;
+      const H2 = heroSection.clientHeight || window.innerHeight;
+      camera.aspect = W2 / H2;
+      camera.updateProjectionMatrix();
+      renderer.setSize(W2, H2);
+    });
+
+  } catch(err) {
+    webglReady = false;
+    console.warn('Octopus: Three.js init failed:', err.message);
+    if (heroFallback) {
+      heroFallback.style.opacity = '1';
+      heroFallback.classList.remove('hidden');
+    }
+  }
+}
+
+/* ======================================================
+   INIT SEQUENCE
+   ====================================================== */
+function init() {
+  heroEntrance();
+  initThree();
+  setupReveal();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
+
+</script>
+</body>
+</html>

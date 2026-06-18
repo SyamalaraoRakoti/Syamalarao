@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inkwell Rewritten</title>
+    <style>
+        :root {
+            --ink-navy: #14213D;
+            --warm-parchment: #F4ECD8;
+            --inkwell-teal: #2A9D8F;
+            --foil-gold: #C9A227;
+            --near-black: #0B0F1A;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--ink-navy);
+            color: var(--warm-parchment);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        #webgl-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .fallback {
+            display: none;
+            color: var(--near-black);
+            background-color: var(--warm-parchment);
+            padding: 2rem;
+            border-radius: 8px;
+        }
+
+        /* No-WebGL Fallback */
+        .no-webgl #webgl-canvas { display: none; }
+        .no-webgl .fallback { display: block; }
+
+        @media (prefers-reduced-motion: reduce) {
+            /* Reduced motion handling: static layout */
+        }
+
+        /* Form Styling */
+        .library-card-form {
+            background: var(--near-black);
+            padding: 2rem;
+            border: 2px solid var(--foil-gold);
+            color: var(--warm-parchment);
+        }
+
+        label { display: block; margin-bottom: 0.5rem; }
+        input[type="email"] { width: 100%; padding: 0.5rem; margin-bottom: 1rem; }
+        button { background: var(--foil-gold); color: var(--near-black); padding: 0.5rem 1rem; border: none; cursor: pointer; }
+
+        /* Accessibility */
+        :focus { outline: 3px solid var(--inkwell-teal); }
+    </style>
+</head>
+<body>
+    <canvas id="webgl-canvas" aria-hidden="true"></canvas>
+
+    <div class="content">
+        <header>
+            <h1>Inkwell, rewritten.</h1>
+            <p>Rediscover the third place.</p>
+        </header>
+
+        <section id="proof">
+            <h2>Unlock your library card:</h2>
+            <ul>
+                <li>A free book.</li>
+                <li>Members-only author events.</li>
+                <li>A digital card for your phone.</li>
+            </ul>
+        </section>
+
+        <section id="signup" class="library-card-form">
+            <h2>Claim your Library Card</h2>
+            <form id="signup-form" action="#" method="POST">
+                <label for="email">Email address</label>
+                <input type="email" id="email" name="email" required>
+                
+                <label>
+                    <input type="checkbox" name="consent" required>
+                    Yes, email me Inkwell news and events. Unsubscribe anytime.
+                </label>
+                
+                <button type="submit">Claim Card</button>
+            </form>
+        </section>
+    </div>
+
+    <div class="fallback">
+        <h1>Inkwell, rewritten.</h1>
+        <p>Rediscover the third place.</p>
+        <!-- The same form would be here in a real app, simplified for brevity -->
+    </div>
+
+    <!-- Three.js (r160+) via CDN -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+
+        // 1. WebGL Support Detection
+        function isWebGLAvailable() {
+            try {
+                const canvas = document.createElement('canvas');
+                return !!(window.WebGLRenderingContext && (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
+            } catch (e) { return false; }
+        }
+
+        if (!isWebGLAvailable()) {
+            document.body.classList.add('no-webgl');
+        } else {
+            // 2. Simple Three.js scene setup
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('webgl-canvas'), antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+
+            // Add some basic content (e.g., a simple cube to represent books)
+            const geometry = new THREE.BoxGeometry();
+            const material = new THREE.MeshBasicMaterial({ color: 0xC9A227 }); // Foil Gold
+            const cube = new THREE.Mesh(geometry, material);
+            scene.add(cube);
+
+            camera.position.z = 5;
+
+            function animate() {
+                requestAnimationFrame(animate);
+                cube.rotation.x += 0.01;
+                cube.rotation.y += 0.01;
+                renderer.render(scene, camera);
+            }
+            animate();
+        }
+    </script>
+</body>
+</html>

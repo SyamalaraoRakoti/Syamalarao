@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NovaStar Enterprise Architecture</title>
+    <style>
+        :root { --nav: #1a252f; --accent: #2980b9; --bg: #f4f7f6; --text: #333; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; height: 100vh; background: var(--bg); }
+        nav { width: 250px; background: var(--nav); color: white; padding: 20px; }
+        nav h2 { font-size: 1.2rem; color: #ecf0f1; }
+        nav ul { list-style: none; padding: 0; }
+        nav li { padding: 10px; cursor: pointer; border-bottom: 1px solid #34495e; }
+        nav li:hover { background: var(--accent); }
+        main { flex: 1; padding: 40px; overflow-y: auto; }
+        .card { background: white; padding: 25px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        pre { background: #2d3436; color: #fab1a0; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; background: #dfe6e9; margin-right: 5px; }
+    </style>
+</head>
+<body>
+    <nav>
+        <h2>Enterprise Design</h2>
+        <ul onclick="switchTab(event)">
+            <li data-target="Overview">System Overview</li>
+            <li data-target="Contracts">Data Contracts</li>
+            <li data-target="Compliance">Compliance & Risk</li>
+            <li data-target="Analytics">Analytics Framework</li>
+        </ul>
+    </nav>
+    <main id="content">
+        <div id="Overview" class="tab">
+            <h1>NovaStar Pipeline Architecture v2.0</h1>
+            <p><strong>Status:</strong> System Design Review</p>
+            <div class="card">
+                <h3>Pipeline Design Principle</h3>
+                <p>The NovaStar pipeline utilizes a strict handoff protocol. Each agent operates as an independent service in a containerized pipeline, managed by the Program Manager's 'Quality Gate' protocol.</p>
+            </div>
+        </div>
+        <div id="Contracts" class="tab" style="display:none;">
+            <h1>Technical Data Contracts</h1>
+            <div class="card">
+                <h3>Researcher to Designer Contract</h3>
+                <pre>
+{
+  "finding_id": "UUID",
+  "churn_driver": "STRING",
+  "confidence_score": "FLOAT",
+  "latency_budget_ms": "INT"
+}
+                </pre>
+            </div>
+        </div>
+        <div id="Compliance" class="tab" style="display:none;">
+            <h1>Governance & GDPR</h1>
+            <div class="card">
+                <h3>Data Privacy Protocol</h3>
+                <p>All PII (Personally Identifiable Information) must be anonymized (SHA-256) at the point of ingestion. No raw guest logs are persisted in agent-level application logs.</p>
+                <span class="tag">GDPR Compliant</span><span class="tag">CCPA Compliant</span>
+            </div>
+        </div>
+        <div id="Analytics" class="tab" style="display:none;">
+            <h1>Analytics Framework</h1>
+            <div class="card">
+                <h3>KPI Tracking</h3>
+                <p><strong>Leading:</strong> Deployment Frequency, Pipeline Velocity.</p>
+                <p><strong>Lagging:</strong> Customer Lifetime Value (CLV), Repeat Booking Rate (RBR).</p>
+            </div>
+        </div>
+    </main>
+    <script>
+        function switchTab(e) {
+            document.querySelectorAll('.tab').forEach(t => t.style.display = 'none');
+            document.getElementById(e.target.dataset.target).style.display = 'block';
+        }
+    </script>
+</body>
+</html>
