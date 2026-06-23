@@ -1,0 +1,2122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CA1 — Drift Coffee Co. | AI Pipeline Submission</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:#0a0a0f; color:#d4d4d4; min-height:100vh; }
+.header { background:linear-gradient(135deg,#1a1a2e,#16213e 50%,#0f3460); text-align:center; padding:1.5rem; border-bottom:3px solid #e94560; }
+.header h1 { color:#e94560; font-size:1.5rem; }
+.header p { color:#a0a0b8; font-size:0.85rem; margin-top:0.3rem; }
+.tabs { display:flex; flex-wrap:wrap; background:#111; border-bottom:2px solid #1a1a2e; position:sticky; top:0; z-index:10; }
+.tab { background:none; border:none; color:#6c6c8a; padding:0.8rem 1rem; cursor:pointer; font-size:0.78rem; font-weight:600; border-bottom:2px solid transparent; transition:all 0.2s; white-space:nowrap; }
+.tab:hover { color:#e0e0e0; }
+.tab.active { color:#e94560; border-bottom-color:#e94560; }
+.container { max-width:960px; margin:0 auto; padding:1.5rem; }
+.tab-content { line-height:1.7; }
+.tab-content h2 { color:#e94560; border-bottom:2px solid #e94560; padding-bottom:0.4rem; margin:1rem 0 0.8rem; font-size:1.2rem; }
+.tab-content h3 { color:#ffb74d; margin:1rem 0 0.5rem; font-size:1rem; }
+.tab-content h4 { color:#81c784; margin:0.8rem 0 0.4rem; font-size:0.9rem; }
+.tab-content p { margin:0.3rem 0; font-size:0.88rem; }
+.tab-content li { margin-left:1.5rem; font-size:0.88rem; }
+.tab-content pre { background:#111; border:1px solid #2a2a4a; border-radius:6px; padding:1rem; overflow-x:auto; font-size:0.82rem; margin:0.5rem 0; }
+.tab-content code { font-family:'SF Mono',Monaco,monospace; color:#81c784; }
+.tab-content hr { border:none; border-top:1px solid #2a2a4a; margin:1rem 0; }
+.tab-content strong { color:#e0e0e0; }
+.tab-content .tbl { font-family:'SF Mono',Monaco,monospace; font-size:0.78rem; color:#9090a8; }
+.footer { text-align:center; padding:2rem; color:#6c6c8a; font-size:0.75rem; border-top:1px solid #1a1a2e; margin-top:2rem; }
+@media(max-width:768px){ .tab { font-size:0.7rem; padding:0.6rem 0.5rem; } }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>CA1: Continuous Assessment — CEM Module</h1>
+  <p>Drift Coffee Co. | Intelligence &amp; Personalisation Lens | Student ID ...71</p>
+</div>
+<div class="tabs"><button class="tab active" onclick="showTab(0)">Task 1: Strategic Diagnosis</button>
+<button class="tab " onclick="showTab(1)">Task 2: Pipeline (Live)</button>
+<button class="tab " onclick="showTab(2)">Task 3: Decision Log</button>
+<button class="tab " onclick="showTab(3)">Task 4: Failure Dossier</button>
+<button class="tab " onclick="showTab(4)">Task 5: Regulatory & Trust Check</button>
+<button class="tab " onclick="showTab(5)">Appendix A: Agent System Prompts</button>
+<button class="tab " onclick="showTab(6)">Appendix B: Pipeline Outputs</button>
+</div>
+<div class="container"><div id="tab0" class="tab-content" style="display:block">
+<p>================================================================================</p>
+<p>TASK 1: STRATEGIC DIAGNOSIS</p>
+<p>Drift Coffee Co. through the Intelligence & Personalisation Lens</p>
+<p>================================================================================</p>
+<br>
+<p>STUDENT ID: ........71</p>
+<p>SCENARIO CODE: 1 (Drift Coffee Co.)</p>
+<p>LENS CODE: 2 (Intelligence & Personalisation)</p>
+<br>
+<br>
+<p>1. BUSINESS CONTEXT</p>
+<br>
+<p>Drift Coffee Co. operates 28 specialty coffee locations with a loyalty app</p>
+<p>counting 45,000 registered users. The business faces a dual crisis: average</p>
+<p>monthly customer visits have fallen from 3.2 to 1.8 (a 44% decline), and 70%</p>
+<p>of loyalty app members — 31,500 customers — are inactive.</p>
+<br>
+<p>Through the Intelligence and Personalisation lens, the root cause is clear:</p>
+<p>Drift Coffee collects data but does not use it to create tailored, relevant</p>
+<p>experiences at scale. Every customer receives the same offers, the same menu,</p>
+<p>and the same journey regardless of their behaviour, preferences, or lifecycle</p>
+<p>stage. The following three challenges are the most critical to address.</p>
+<br>
+<br>
+<p>2. THREE CRITICAL CHALLENGES</p>
+<br>
+<br>
+<p>CHALLENGE 1: Dormant Loyalty Data — The Silent 31,500</p>
+<br>
+<p>Why it matters</p>
+<p>Drift Coffee's loyalty app holds 45,000 profiles with purchase histories,</p>
+<p>location data, and behavioural signals — but 31,500 of these profiles are</p>
+<p>inactive. Through the Intelligence lens, this is not a marketing failure; it</p>
+<p>is a data activation failure. The business sits on enough behavioural data to</p>
+<p>power individual-level re-engagement but runs no personalisation engine to</p>
+<p>mine it. Reactivating just 10% of the dormant base (3,150 customers) at the</p>
+<p>previous visit rate of 3.2/month would contribute 10,080 incremental visits</p>
+<p>per month across the chain. The loyalty programme is currently a cost centre</p>
+<p>rather than a growth engine.</p>
+<br>
+<p>Key metrics connected</p>
+<p>  - Loyalty app DAU/MAU ratio</p>
+<p>  - Time since last visit (in days)</p>
+<p>  - Push notification opt-in rate</p>
+<p>  - Offer redemption rate</p>
+<p>  - App session frequency</p>
+<br>
+<p>Signals for root-cause diagnosis</p>
+<p>  - Individual SKU-level purchase histories — to identify favourite products</p>
+<p>    for personalised offers</p>
+<p>  - Geolocation at visit time — to determine which store each dormant user</p>
+<p>    last visited</p>
+<p>  - Time-of-day and day-of-week visit patterns — to time re-engagement</p>
+<p>    messages for maximum relevance</p>
+<p>  - Average spend per historical visit — to calibrate offer value without</p>
+<p>    eroding margin</p>
+<p>  - Offer redemption history — to distinguish price-sensitive dormant users</p>
+<p>    from experience-driven dormant users</p>
+<p>  - Last app login date and session duration — to gauge disengagement severity</p>
+<p>  - Notification permission status — to select reachable vs. unreachable</p>
+<p>    segments</p>
+<br>
+<br>
+<p>CHALLENGE 2: The Personalisation Gap — Undifferentiated Experience Driving</p>
+<p>Churn</p>
+<br>
+<p>Why it matters</p>
+<p>Visit frequency has dropped from 3.2 to 1.8 per month. Without intelligence</p>
+<p>on why individual customers visit less, Drift Coffee cannot arrest the</p>
+<p>decline. The gap signals an undifferentiated experience: every customer sees</p>
+<p>the same menu, receives the same generic push notifications, and encounters</p>
+<p>the same in-store journey regardless of their preferences, visit patterns, or</p>
+<p>lifecycle stage. A student grabbing an espresso at 8am on a weekday and a</p>
+<p>freelancer working for three hours ordering multiple oat-milk lattes are</p>
+<p>treated identically. If the remaining 13,500 active loyalty members follow</p>
+<p>the same trajectory as the 31,500 already dormant, Drift Coffee loses</p>
+<p>approximately 18,900 visits per month.</p>
+<br>
+<p>Key metrics connected</p>
+<p>  - Average inter-visit interval (trend over time)</p>
+<p>  - Cohort retention curves (by join month)</p>
+<p>  - Basket size evolution per customer</p>
+<p>  - Product affinity clusters</p>
+<p>  - Time-of-day attendance patterns by store</p>
+<br>
+<p>Signals for root-cause diagnosis</p>
+<p>  - Customer visit cadence — days between consecutive visits, segmented by</p>
+<p>    customer archetype</p>
+<p>  - Product purchase sequences — does a flat-white buyer ever switch to cold</p>
+<p>    brew? Are they stuck in a routine or bored?</p>
+<p>  - Customisation patterns — milk alternatives, syrup additions, extra shots,</p>
+<p>    signalling sophistication and willingness to pay</p>
+<p>  - Store-by-store traffic heatmaps — identifying cannibalisation,</p>
+<p>    underserved catchment zones, and location-specific preferences</p>
+<p>  - Dwell time — from app check-in to payment, indicating whether customers</p>
+<p>    treat Drift as grab-and-go or a third place</p>
+<p>  - Seasonal visit patterns — detecting weather-driven or academic-calendar-</p>
+<p>    driven churn vs. permanent disengagement</p>
+<p>  - Competitive density within 500m of each store — is churn higher where</p>
+<p>    three rival cafes opened?</p>
+<br>
+<br>
+<p>CHALLENGE 3: Blind Onboarding — No AI-Driven First-Visit-to-Loyalty Funnel</p>
+<br>
+<p>Why it matters</p>
+<p>Drift Coffee signs up new loyalty app users but has no intelligent mechanism</p>
+<p>to convert a first-time visitor into a regular. The first 72 hours after app</p>
+<p>registration represent the highest-intent window in the customer lifecycle —</p>
+<p>yet the onboarding journey is identical for every user. Through the</p>
+<p>Intelligence & Personalisation lens, this is a segmentation and prediction</p>
+<p>failure: the business lacks a model that classifies each new sign-up by</p>
+<p>likely value, preferred product category, and optimal communication cadence,</p>
+<p>and then routes them into a personalised nurture sequence.</p>
+<br>
+<p>If even 20% of the 31,500 dormant users had been properly onboarded from day</p>
+<p>one, many might never have gone dormant. The current "leaky bucket" makes</p>
+<p>acquisition spend inefficient — new users are added only to drift away within</p>
+<p>weeks because there is no intelligent hook.</p>
+<br>
+<p>Key metrics connected</p>
+<p>  - First-visit-to-second-visit conversion rate</p>
+<p>  - Average days between 1st and 2nd visit</p>
+<p>  - 7-day new-user retention</p>
+<p>  - 30-day new-user retention</p>
+<p>  - Welcome offer redemption rate</p>
+<p>  - Profile completion percentage</p>
+<br>
+<p>Signals for root-cause diagnosis</p>
+<p>  - Sign-up source — in-store QR code vs. app store search vs. referral link</p>
+<p>    (each implies different intent levels)</p>
+<p>  - First purchase item and time — a 7am espresso signals a commuter; a 2pm</p>
+<p>    pastry signals a different need state entirely</p>
+<p>  - Profile completion percentage — users who set preferences and save</p>
+<p>    payment are more likely to return</p>
+<p>  - Notification permission grant rate — a proxy for willingness to be</p>
+<p>    engaged; decline signals low intent</p>
+<p>  - Payment method saved — users who add a card have roughly 3x higher</p>
+<p>    second-visit probability (industry benchmark)</p>
+<p>  - Demographic signals — age bracket and neighbourhood from postcode enable</p>
+<p>    hyperlocal offer targeting</p>
+<p>  - First-store location — proximity to home vs. workplace drives different</p>
+<p>    visit cadences and needs different nurture logic</p>
+<br>
+<br>
+<p>3. VISUAL: CHALLENGE INTERRELATIONSHIP MATRIX</p>
+<br>
+<p>The three challenges are not independent. Dormant loyalty data (C1) is the</p>
+<p>consequence of undifferentiated experience (C2) and failed onboarding (C3).</p>
+<p>The personalisation gap (C2) makes onboarding impossible to optimise (C3).</p>
+<p>Addressing them requires a sequenced, data-driven approach — fixing</p>
+<p>onboarding first, then personalisation, then re-activation.</p>
+<br>
+<br>
+<p>CAUSAL CHAIN DIAGRAM:</p>
+<br>
+<p>   [C3: Blind        fails to convert     [C2: Personalisation    creates dormant    [C1: Dormant</p>
+<p>    Onboarding]  ──────────────────────&gt;   Gap]               ──────────────────&gt;   Loyalty Data]</p>
+<br>
+<p>        |</p>
+<p>        └──→ DOWNSTREAM BUSINESS IMPACT:</p>
+<p>              - 44% visit-frequency decline</p>
+<p>              - 70% loyalty programme inactivity</p>
+<p>              - Shrinking active customer base</p>
+<br>
+<p>RELATIONSHIP TABLE:</p>
+<br>
+<p>  C1 is the OUTCOME of C2 — inactive users are created by generic experiences [STRONG]</p>
+<p>  C1 contains 31,500 users who passed through C3 and were lost [STRONG]</p>
+<p>  C2 cannot re-engage dormant users because it has no active signal [STRONG]</p>
+<p>  C2 makes C3 worse — a generic first experience fails to hook new users [MODERATE]</p>
+<p>  Fixing C3 prevents future C1 — proactive beats reactive [MODERATE]</p>
+<p>  C3 needs C2's personalisation engine to route new users [MODERATE]</p>
+<br>
+<p>The three challenges form a single interconnected problem. You cannot fix C1</p>
+<p>(re-activation) without first addressing C2 (personalisation), and you cannot</p>
+<p>fix C2 without first fixing C3 (onboarding). Each is a gatekeeper of the next.</p>
+<br>
+<br>
+<p>4. SEQUENCING AND STRATEGIC IMPLICATION</p>
+<br>
+<p>The Intelligence & Personalisation lens demands a sequenced solution:</p>
+<br>
+<p>    C3 (Onboarding)  →  C2 (Personalisation)  →  C1 (Re-activation)</p>
+<br>
+<p>Fixing onboarding first (C3) stops the leak at the top of the funnel — new</p>
+<p>sign-ups become active users rather than adding to the dormant pool.</p>
+<p>Personalisation (C2) then keeps them engaged by tailoring every interaction.</p>
+<p>Finally, the historical dormant data (C1) is mined using the same</p>
+<p>personalisation engine to win back lapsed customers.</p>
+<br>
+<p>Attempting the reverse — re-activating dormant users with generic offers</p>
+<p>while onboarding and personalisation remain broken — would win users back</p>
+<p>only to lose them again within weeks.</p>
+<br>
+<p>Recommended execution sequence:</p>
+<p>  Step 1: C3 — Build intelligent onboarding funnel</p>
+<p>  Step 2: C2 — Deploy personalisation engine across all touchpoints</p>
+<p>  Step 3: C1 — Mine dormant data and run re-activation campaigns</p>
+<br>
+<p>================================================================================</p>
+<p>END OF TASK 1</p>
+<p>================================================================================</p>
+<br></div>
+<div id="tab1" class="tab-content" style="display:none">
+<div style="text-align:center;padding:2rem">
+            <h2>Three-Agent Pipeline: Researcher → Designer → Communicator</h2>
+            <p style="font-size:1.1rem;margin:1rem 0">The full pipeline with visible handoffs is deployed at:</p>
+            <a href="pipeline_final_output.html" style="color:#e94560;font-size:1.3rem;font-weight:700">View Live Pipeline →</a>
+            <p style="margin-top:1.5rem;color:#9090a8">Or scroll below for the embedded version</p>
+            <iframe src="pipeline_final_output.html" style="width:100%;height:600px;border:1px solid #2a2a4a;border-radius:8px;margin-top:1rem"></iframe>
+        </div></div>
+<div id="tab2" class="tab-content" style="display:none">
+<p>================================================================================</p>
+<p>TASK 3: DECISION LOG</p>
+<p>Drift Coffee Co. | Intelligence & Personalisation Lens | Student ID ...71</p>
+<p>================================================================================</p>
+<br>
+<p>Every consequential decision made in designing and orchestrating the three-agent</p>
+<p>pipeline. Each entry states the choice made, the credible alternative rejected,</p>
+<p>and the specific reason for the choice.</p>
+<br>
+<br>
+<p>================================================================================</p>
+<p>DECISION 1: Archetype Selection — Researcher, Designer, Communicator</p>
+<p>================================================================================</p>
+<br>
+<p>Choice made:</p>
+<p>  Selected Researcher, Designer, and Communicator from the five available</p>
+<p>  archetypes (Researcher, Designer, Maker, Communicator, Manager).</p>
+<br>
+<p>Alternative rejected:</p>
+<p>  A Maker-Communicator-Manager pipeline, where the Maker would build a working</p>
+<p>  dashboard or prototype, the Communicator would present it, and the Manager</p>
+<p>  would orchestrate and quality-check.</p>
+<br>
+<p>Reason:</p>
+<p>  The brief asked for something "the business could act on" — a strategy,</p>
+<p>  campaign, or operational plan. Drift Coffee Co. does not need a software</p>
+<p>  prototype; it needs to understand WHO its dormant customers are (Researcher),</p>
+<p>  WHAT to do about them (Designer), and HOW to say it to them (Communicator).</p>
+<p>  A Maker would have produced a dashboard or app feature, which sounds</p>
+<p>  impressive but is not what a 28-location coffee chain needs to deploy</p>
+<p>  immediately. The Researcher-Designer-Communicator chain produces a complete</p>
+<p>  marketing-operations handoff: data → strategy → execution-ready copy. This is</p>
+<p>  directly deployable by a marketing team without engineering dependency.</p>
+<br>
+<p>Trade-off created:</p>
+<p>  By excluding Maker, we produced no interactive prototype or dashboard that</p>
+<p>  could demonstrate the personalisation rules in real-time. The pipeline's</p>
+<p>  output must be manually implemented by a marketing team rather than automated</p>
+<p>  through a system. This is acceptable for a strategy-phase engagement but</p>
+<p>  would need a Maker step before production deployment.</p>
+<br>
+<br>
+<p>================================================================================</p>
+<p>DECISION 2: Pipeline Sequence — Researcher First</p>
+<p>================================================================================</p>
+<br>
+<p>Choice made:</p>
+<p>  Researcher → Designer → Communicator. The Researcher produces a segmentation</p>
+<p>  report first, which the Designer then uses to build journeys, which the</p>
+<p>  Communicator then translates into copy.</p>
+<br>
+<p>Alternative rejected:</p>
+<p>  Designer → Researcher → Communicator — starting with a strategy, then</p>
+<p>  validating it against data, then writing copy. Or Communicator-first — writing</p>
+<p>  copy first and then checking if the data supports it.</p>
+<br>
+<p>Reason:</p>
+<p>  Through the Intelligence & Personalisation lens, data must precede strategy.</p>
+<p>  If the Designer creates journeys before seeing the Researcher's segmentation,</p>
+<p>  those journeys would be built on assumptions rather than evidence. The</p>
+<p>  Researcher identified, for example, that Afternoon Treaters had only 33% push</p>
+<p>  notification opt-in — a fact that fundamentally changed the Designer's</p>
+<p>  channel strategy to email-only. That decision could not have been made without</p>
+<p>  the Researcher's data. Sequencing data before design ensures every downstream</p>
+<p>  choice is evidence-grounded, which is the core demand of the Intelligence lens.</p>
+<br>
+<p>Trade-off created:</p>
+<p>  Data-first means the Researcher needs rich input to produce useful output.</p>
+<p>  If the Researcher's segmentation were weak or generic, the entire pipeline</p>
+<p>  would fail at the first step. A Designer-first approach would have been more</p>
+<p>  resilient to poor data — but also more likely to produce data-ungrounded</p>
+<p>  recommendations, which contradicts the lens.</p>
+<br>
+<br>
+<p>================================================================================</p>
+<p>DECISION 3: Five Segments, Not Three or Seven</p>
+<p>================================================================================</p>
+<br>
+<p>Choice made:</p>
+<p>  The Researcher produced exactly five customer segments: Commuters, Weekend</p>
+<p>  Explorers, Afternoon Treaters, Once-Only Signups, and Former Regulars.</p>
+<br>
+<p>Alternative rejected:</p>
+<p>  Three broader segments (High-value, Mid-value, Low-value dormant) — simpler</p>
+<p>  but less actionable — or seven narrower segments that split Commuters into</p>
+<p>  bus commuters, train commuters, and car commuters.</p>
+<br>
+<p>Reason:</p>
+<p>  Five segments is the minimum number that captures meaningfully different</p>
+<p>  re-engagement strategies. Three segments would have collapsed Commuters and</p>
+<p>  Former Regulars into "high-value," losing the critical distinction that</p>
+<p>  Former Regulars defected due to local competition while Commuters drifted due</p>
+<p>  to routine change — two problems requiring two completely different offers.</p>
+<p>  Seven segments would have added granularity without adding strategic value:</p>
+<p>  the difference between a bus commuter and a train commuter does not change</p>
+<p>  the re-engagement message. Five is the point where each segment demands a</p>
+<p>  different journey without creating segments too small to target profitably.</p>
+<br>
+<p>Trade-off created:</p>
+<p>  Five segments means the Communicator had to write for five audiences, which</p>
+<p>  is more work than three. But it also means the output is genuinely</p>
+<p>  personalised rather than generically segmented, which is the entire point</p>
+<p>  of the Intelligence & Personalisation lens.</p>
+<br>
+<br>
+<p>================================================================================</p>
+<p>DECISION 4: Excluding Once-Only Signups from Re-engagement</p>
+<p>================================================================================</p>
+<br>
+<p>Choice made:</p>
+<p>  The Designer explicitly excluded the Once-Only Signups segment (12% of</p>
+<p>  dormant users) from all re-engagement activity, redirecting budget to</p>
+<p>  onboarding improvement instead.</p>
+<br>
+<p>Alternative rejected:</p>
+<p>  Including Once-Only Signups in a "light-touch" re-engagement campaign — a</p>
+<p>  single generic push notification or email offering a small discount.</p>
+<br>
+<p>Reason:</p>
+<p>  The Researcher's data showed 12% push opt-in, 18% payment method saved, 22%</p>
+<p>  profile completion, and average spend of EUR 3.90 on a single visit 144 days</p>
+<p>  ago. These users were never real customers — they signed up at the till for</p>
+<p>  a one-time discount and had no brand relationship. Sending even one push</p>
+<p>  notification to 3,800 people who mostly have push disabled (88%) would reach</p>
+<p>  only ~456 users. At an industry-average re-engagement conversion rate of 2-3%,</p>
+<p>  that is roughly 10-14 redemptions at EUR 3.90 — approximately EUR 40-55 in</p>
+<p>  recovered revenue. The operational cost of creating, testing, and sending</p>
+<p>  the campaign exceeds that return. More importantly, sending unwanted</p>
+<p>  notifications to 3,800 near-strangers risks app deletions and spam complaints</p>
+<p>  that would reduce deliverability for all other segments.</p>
+<br>
+<p>Trade-off created:</p>
+<p>  The business permanently writes off 12% of its dormant base. If Drift Coffee</p>
+<p>  later developed a very low-cost reactivation channel (e.g., a passive in-app</p>
+<p>  offer that requires no push or email), this segment could be reconsidered.</p>
+<p>  For now, the resources are better spent on the 88% of dormant users who have</p>
+<p>  demonstrated genuine prior engagement.</p>
+<br>
+<br>
+<p>================================================================================</p>
+<p>DECISION 5: Email-Only Route for Afternoon Treaters</p>
+<p>================================================================================</p>
+<br>
+<p>Choice made:</p>
+<p>  The Designer routed all Afternoon Treater communications through email only,</p>
+<p>  with an explicit instruction that no push notifications should be sent.</p>
+<br>
+<p>Alternative rejected:</p>
+<p>  A mixed-channel approach — push notification first, email as fallback — which</p>
+<p>  is the same strategy used for Commuters and Weekend Explorers.</p>
+<br>
+<p>Reason:</p>
+<p>  Only 33% of Afternoon Treaters had push notifications enabled — the lowest</p>
+<p>  of all recurring segments. Sending push to a segment with 67% opt-out would</p>
+<p>  mean two-thirds of messages bounce or are silently blocked, creating</p>
+<p>  unreliable delivery metrics. Worse, if the system sends repeated push</p>
+<p>  attempts to users who have explicitly disabled push, it risks violating</p>
+<p>  platform policies (both iOS and Android penalise apps that send notifications</p>
+<p>  to users who opted out). Email is universal — it reaches 100% of the</p>
+<p>  segment's registered addresses. While email open rates are lower (~20%</p>
+<p>  vs. push's ~40%), the effective reach (100% × 20% = 20%) is still higher</p>
+<p>  than push (33% × 40% = 13.2%) for this segment.</p>
+<br>
+<p>Trade-off created:</p>
+<p>  Email is slower than push. A push notification can drive a visit within</p>
+<p>  minutes; an email might sit unread for hours. For the Afternoon Treaters'</p>
+<p>  2pm-4pm visit window, the email must be sent at 1:30pm to allow discovery</p>
+<p>  time. If it arrives at 3pm, the window is mostly gone. This timing</p>
+<p>  sensitivity is a real risk that push would have mitigated — but the opt-in</p>
+<p>  numbers make email the only responsible choice.</p>
+<br>
+<br>
+<p>================================================================================</p>
+<p>DECISION 6: Free Drink for Former Regulars (Not a Discount)</p>
+<p>================================================================================</p>
+<br>
+<p>Choice made:</p>
+<p>  The Designer offered Former Regulars a completely free drink — "any drink,</p>
+<p>  any size" — as the re-engagement incentive. This is the most aggressive</p>
+<p>  offer in the entire campaign.</p>
+<br>
+<p>Alternative rejected:</p>
+<p>  A 50% discount or a "buy one get one free" offer — still aggressive but</p>
+<p>  requiring the customer to spend money on the first visit back.</p>
+<br>
+<p>Reason:</p>
+<p>  Former Regulars were the highest-value segment: EUR 5.80/visit, 5+ visits</p>
+<p>  per month, sustained for over 6 months — a customer worth approximately EUR</p>
+<p>  29/month in revenue. They did not drift away gradually; 71% defected to a</p>
+<p>  specific competitor that opened within 400 metres. A discount says "we are</p>
+<p>  cheaper than the new place." A free drink says "we value your relationship</p>
+<p>  enough to make the first step back completely frictionless." The psychology</p>
+<p>  is different: the competitor is novel and exciting; a discount framed as</p>
+<p>  "cheaper" might actually reinforce the perception that Drift Coffee is the</p>
+<p>  budget option. A free welcome-back drink framed as "we missed you" positions</p>
+<p>  Drift Coffee as the brand that cares, while the competitor is the brand that</p>
+<p>  is simply new. The cost of one free drink (approximately EUR 1.20 in</p>
+<p>  ingredients) against a EUR 29/month revenue opportunity is a 24x ROI at</p>
+<p>  breakeven.</p>
+<br>
+<p>Trade-off created:</p>
+<p>  A free offer can attract deal-seekers who redeem and leave again. The</p>
+<p>  Designer mitigated this by making the free drink a Step 2 offer followed by</p>
+<p>  a Step 3 loyalty bonus for 4 subsequent visits — the free drink is the hook,</p>
+<p>  not the entire value proposition. The risk remains that some users will</p>
+<p>  redeem the free drink and defect again, but the data (85% payment method</p>
+<p>  saved, 78% push enabled, long prior relationship) suggests these users are</p>
+<p>  not serial deal-seekers. They are former loyal customers who need one reason</p>
+<p>  to come back.</p>
+<br>
+<br>
+<p>================================================================================</p>
+<p>DECISION 7: Synthetic Data Embedded in the Researcher Prompt</p>
+<p>================================================================================</p>
+<br>
+<p>Choice made:</p>
+<p>  The Researcher's system prompt included a complete synthetic dataset</p>
+<p>  describing five segments with visit patterns, product preferences, spend</p>
+<p>  data, opt-in rates, and store-level statistics. The Researcher analysed this</p>
+<p>  data rather than generating or retrieving external data.</p>
+<br>
+<p>Alternative rejected:</p>
+<p>  Prompting the Researcher with "generate realistic synthetic data for a</p>
+<p>  28-location coffee chain and then analyse it." This would have the</p>
+<p>  Researcher creating its own evidence base and then drawing conclusions from</p>
+<p>  evidence it invented.</p>
+<br>
+<p>Reason:</p>
+<p>  This is a critical methodological choice. If the Researcher generates its</p>
+<p>  own data and then analyses it, there is a circular validation problem: the</p>
+<p>  agent could produce data that perfectly supports whatever conclusions it</p>
+<p>  wants to draw. In a real production system, the Researcher would query a</p>
+<p>  live database. For this build session, the closest approximation is</p>
+<p>  providing a fixed dataset that the Researcher cannot modify, ensuring</p>
+<p>  analytical integrity. The dataset was designed to contain realistic tensions</p>
+<p>  (e.g., Weekend Explorers have high push opt-in but low payment save rate —</p>
+<p>  a real-world contradiction that forces genuine analytical reasoning rather</p>
+<p>  than pattern-matching). This decision is central to the Intelligence lens:</p>
+<p>  the data must constrain the strategy, not the other way around.</p>
+<br>
+<p>Trade-off created:</p>
+<p>  The Researcher cannot challenge the data. If the synthetic data contained an</p>
+<p>  error or unrealistic pattern, the Researcher would analyse it as truth and</p>
+<p>  the entire pipeline would produce a flawed output. In a production system,</p>
+<p>  a data validation step would precede analysis. For this build, the single</p>
+<p>  source of data was a deliberate constraint to simulate a fixed database</p>
+<p>  environment.</p>
+<br>
+<br>
+<p>================================================================================</p>
+<p>DECISION 8: 100-Character Push Notification Limit</p>
+<p>================================================================================</p>
+<br>
+<p>Choice made:</p>
+<p>  The Communicator was constrained to produce push notifications between 40</p>
+<p>  and 100 characters, and the actual outputs were 53, 72, and 73 characters.</p>
+<br>
+<p>Alternative rejected:</p>
+<p>  No character limit — allowing push notifications of any length, which many</p>
+<p>  push platforms technically support (iOS allows ~178 characters on the lock</p>
+<p>  screen, Android allows more).</p>
+<br>
+<p>Reason:</p>
+<p>  While platforms allow longer push notifications, truncation behaviour varies</p>
+<p>  by device, OS version, and font size settings. A push notification that reads</p>
+<p>  perfectly on one phone may cut off mid-sentence on another. The 100-character</p>
+<p>  cap is a safe harbour: it ensures the message renders in full on virtually</p>
+<p>  every device. It also enforces copy discipline — the Communicator must</p>
+<p>  deliver a complete message (offer + call-to-action) in roughly the length of</p>
+<p>  a single sentence. This constraint was lifted from real-world push</p>
+<p>  notification best practices at companies like Duolingo and Headspace, which</p>
+<p>  routinely keep notifications under 80 characters to maximise tap-through</p>
+<p>  rates. The Designer did not specify this constraint; it was an architectural</p>
+<p>  decision at the Communicator level to prevent the most common push</p>
+<p>  notification failure mode: truncation.</p>
+<br>
+<p>Trade-off created:</p>
+<p>  Conciseness comes at the cost of warmth. A longer notification could include</p>
+<p>  a pleasantry, a personal detail, or a stronger emotional appeal. The</p>
+<p>  Communicator compensated by moving warmth into the email body, where</p>
+<p>  character limits do not apply, and keeping push notifications as efficient</p>
+<p>  triggers designed to drive the user to the app where richer content awaits.</p>
+<br>
+<br>
+<p>================================================================================</p>
+<p>DECISION 9: No In-App Messages Across Any Segment</p>
+<p>================================================================================</p>
+<br>
+<p>Choice made:</p>
+<p>  The Communicator produced zero in-app messages. Every segment was served by</p>
+<p>  push notification and email. In-app was marked "N/A" for all five segments.</p>
+<br>
+<p>Alternative rejected:</p>
+<p>  A three-channel approach — push + email + in-app — or at minimum in-app</p>
+<p>  messages for the highest-engagement segments (Weekend Explorers, Former</p>
+<p>  Regulars).</p>
+<br>
+<p>Reason:</p>
+<p>  In-app messages only reach users who open the app. The target audience is</p>
+<p>  dormant users — by definition, they are not opening the app. Sending an</p>
+<p>  in-app message to a dormant user is like leaving a note inside a house</p>
+<p>  whose owner has moved out. In-app messaging is a retention tool for active</p>
+<p>  users, not a re-activation tool for dormant ones. The Designer correctly</p>
+<p>  identified this in the channel strategy and did not specify in-app for any</p>
+<p>  segment, and the Communicator respected that constraint. Including in-app</p>
+<p>  messages "for completeness" would have been dishonest about their likely</p>
+<p>  effectiveness and would have inflated the channel count without adding real</p>
+<p>  reach.</p>
+<br>
+<p>Trade-off created:</p>
+<p>  If a dormant user spontaneously returns to the app (e.g., to check store</p>
+<p>  locations or reload their payment card), there is no in-app welcome-back</p>
+<p>  message waiting. This is a minor missed opportunity, but the likelihood of</p>
+<p>  a truly dormant user opening the app without being prompted by a push or</p>
+<p>  email is negligible enough that it does not justify the design and</p>
+<p>  engineering effort of an in-app re-engagement module.</p>
+<br>
+<br>
+<p>================================================================================</p>
+<p>DECISION 10: A/B Test on Commuter Store-Finder vs. Product Offer</p>
+<p>================================================================================</p>
+<br>
+<p>Choice made:</p>
+<p>  The Designer designed one A/B test — testing whether Commuters respond</p>
+<p>  better to a product-offer message ("Your usual latte, EUR 2 off") or a</p>
+<p>  store-finder message ("New commute? Find your nearest Drift Coffee"). Sample</p>
+<p>  size 1,200 (600 per variant), success metric = redemption rate.</p>
+<br>
+<p>Alternative rejected:</p>
+<p>  A/B testing the offer amount instead (EUR 1 vs. EUR 2 vs. EUR 3 discount) or</p>
+<p>  testing across all five segments simultaneously.</p>
+<br>
+<p>Reason:</p>
+<p>  The Researcher speculated — marked [SPECULATIVE] — that Commuters went</p>
+<p>  dormant because of changed commute patterns, not dissatisfaction. This is a</p>
+<p>  testable hypothesis with a single A/B test. If the store-finder variant wins,</p>
+<p>  the entire Commuter journey strategy changes from "discount their usual</p>
+<p>  product" to "help them find their new nearest store" — a fundamentally</p>
+<p>  different approach. If the product-offer variant wins, the commute-change</p>
+<p>  hypothesis is disproven and the standard discount approach stands. Testing</p>
+<p>  offer amounts would have been optimisation, not hypothesis validation. The</p>
+<p>  brief demands that the pipeline catch and correct its own assumptions — this</p>
+<p>  A/B test is the mechanism for doing exactly that with the Researcher's</p>
+<p>  [SPECULATIVE] claim about commute pattern change.</p>
+<br>
+<p>Trade-off created:</p>
+<p>  Only one A/B test was designed when there are multiple testable hypotheses</p>
+<p>  in the pipeline (e.g., is the free drink for Former Regulars too generous?</p>
+<p>  Does email timing matter for Afternoon Treaters?). The Designer prioritised</p>
+<p>  the test that would produce the most strategically consequential insight —</p>
+<p>  the one that could fundamentally reshape a segment's entire journey. The</p>
+<p>  other testable hypotheses remain untested and would need follow-up</p>
+<p>  experimentation cycles.</p>
+<br>
+<br>
+<p>================================================================================</p>
+<p>DECISION 11: Measurement Framework — 3 KPIs, Not a Dashboard</p>
+<p>================================================================================</p>
+<br>
+<p>Choice made:</p>
+<p>  The Designer specified exactly three KPIs for the first 30 days: re-engagement</p>
+<p>  offer redemption rate (target 12%), dormant-to-active conversion rate (target</p>
+<p>  8%), and push notification opt-in uplift for Commuters (target +5pp).</p>
+<br>
+<p>Alternative rejected:</p>
+<p>  A full dashboard of 10-15 metrics covering every segment, every channel</p>
+<p>  (open rates, click rates, conversion rates, revenue per segment, cost per</p>
+<p>  reactivation, etc.), and weekly reporting.</p>
+<br>
+<p>Reason:</p>
+<p>  The brief asked for something "the business could act on" — not "the business</p>
+<p>  could drown in." A 28-location coffee chain does not have a data science team</p>
+<p>  to monitor a 15-metric dashboard. Three KPIs chosen for the first 30 days</p>
+<p>  provide a clear success/failure signal:</p>
+<p>    1. Did anyone redeem the offers? (Redemption rate — direct action)</p>
+<p>    2. Did redemptions convert into visits? (Dormant-to-active — behaviour</p>
+<p>       change)</p>
+<p>    3. Did we improve our ability to reach customers? (Push opt-in — channel</p>
+<p>       health)</p>
+<p>  These three KPIs together answer the question "did the campaign work?" A</p>
+<p>  15-metric dashboard would generate 15 answers, some of which would</p>
+<p>  contradict each other, requiring analyst interpretation that the business</p>
+<p>  does not have. The constraint was driven by the real organisational context</p>
+<p>  of the assigned business, not by what would look impressive in a submission.</p>
+<br>
+<p>Trade-off created:</p>
+<p>  If the campaign fails on redemption rate but succeeds on push opt-in uplift,</p>
+<p>  the three-KPI framework cannot tell us why — it can only tell us that the</p>
+<p>  result is mixed. A richer measurement framework would enable failure</p>
+<p>  diagnosis. However, the pipeline's output includes a recommendation to run</p>
+<p>  the A/B test on Commuters specifically, which provides a built-in diagnostic</p>
+<p>  for at least one segment's performance.</p>
+<br>
+<br>
+<p>================================================================================</p>
+<p>DECISION 12: Fallback Generic Variant for Incomplete Data</p>
+<p>================================================================================</p>
+<br>
+<p>Choice made:</p>
+<p>  The Communicator produced a generic push notification and email as a</p>
+<p>  fallback for users whose data is incomplete — no favourite product, no</p>
+<p>  primary store, no segment assignment. However, the Designer noted that this</p>
+<p>  fallback should have zero recipients in practice if the Researcher's</p>
+<p>  segmentation covers all users.</p>
+<br>
+<p>Alternative rejected:</p>
+<p>  No fallback at all — if a user cannot be segmented, they receive nothing.</p>
+<p>  Or alternatively, forcing every user into a segment even with incomplete</p>
+<p>  data.</p>
+<br>
+<p>Reason:</p>
+<p>  Production systems encounter edge cases: corrupted profiles, partially</p>
+<p>  migrated data, users who signed up but made zero purchases and have no</p>
+<p>  behavioural history. A pipeline without a fallback would throw an error or,</p>
+<p>  worse, send a message with blank personalisation fields ("Hi [FIRST NAME],</p>
+<p>  your favourite [PRODUCT] is waiting at [STORE]"). The fallback exists as a</p>
+<p>  graceful degradation mechanism — a generic but functional message that</p>
+<p>  maintains brand presence without exposing technical failures to the</p>
+<p>  customer. This is a defensive design decision borrowed from production</p>
+<p>  engineering practice: "fail gracefully, not silently."</p>
+<br>
+<p>Trade-off created:</p>
+<p>  A generic message barely qualifies as "personalisation." For any user who</p>
+<p>  receives it, the pipeline has failed to deliver its core value proposition.</p>
+<p>  The fallback is an admission that the pipeline is not perfect — but it is</p>
+<p>  better than sending a broken message or sending nothing at all, both of</p>
+<p>  which would actively harm customer trust.</p>
+<br>
+<br>
+<p>================================================================================</p>
+<p>DECISION 13: HTML Pipeline Output for GitHub Pages</p>
+<p>================================================================================</p>
+<br>
+<p>Choice made:</p>
+<p>  The final pipeline output was formatted as a single styled HTML page hosted</p>
+<p>  on GitHub Pages, with all three agents' outputs displayed sequentially with</p>
+<p>  visible handoff markers between them.</p>
+<br>
+<p>Alternative rejected:</p>
+<p>  A multi-file format — three separate documents linked together — or a plain</p>
+<p>  text concatenation of the three outputs.</p>
+<br>
+<p>Reason:</p>
+<p>  A single HTML page satisfies three requirements simultaneously: (1) it</p>
+<p>  serves as the live GitHub Pages deployment the brief requests, (2) it</p>
+<p>  provides the visible-handoff evidence the rubric demands (handoff bars</p>
+<p>  between each agent), and (3) it is accessible from any browser without</p>
+<p>  requiring the marker to download or install anything. The handoff markers are</p>
+<p>  visually distinct (dashed red bars with arrow symbols), making the pipeline</p>
+<p>  flow immediately scannable. A multi-file approach would require the marker to</p>
+<p>  cross-reference between documents to verify handoffs, adding friction to</p>
+<p>  assessment. The HTML format also allows tables, colour-coding, and</p>
+<p>  responsive layout that plain text cannot provide.</p>
+<br>
+<p>Trade-off created:</p>
+<p>  HTML is harder to print or annotate than a PDF or Word document. If the</p>
+<p>  marker prefers to print submissions for grading, the HTML page may not print</p>
+<p>  as cleanly as a document format. This was accepted because the brief</p>
+<p>  explicitly asks for a "screen-recording link" or "live deployment" — the</p>
+<p>  HTML page serves that purpose directly.</p>
+<br>
+<br>
+<p>================================================================================</p>
+<p>END OF DECISION LOG</p>
+<p>================================================================================</p>
+<br></div>
+<div id="tab3" class="tab-content" style="display:none">
+<p>================================================================================</p>
+<p>TASK 4: FAILURE DOSSIER</p>
+<p>Drift Coffee Co. | Intelligence & Personalisation Lens | Student ID ...71</p>
+<p>================================================================================</p>
+<br>
+<p>Three distinct failures the pipeline produced, identified and corrected.</p>
+<br>
+<br>
+<p>================================================================================</p>
+<p>FAILURE 1: Fabricated Uplift Percentages in the Rules Engine</p>
+<p>================================================================================</p>
+<br>
+<p>Agent that produced it: Designer (Agent 2)</p>
+<br>
+<p>Exact offending output:</p>
+<p>  From the "Personalisation Rules Engine Design" table, Expected Uplift column:</p>
+<br>
+<p>  Rule 1: "+12% visit recovery"</p>
+<p>  Rule 2: "+18% weekend return rate"</p>
+<p>  Rule 3: "+9% winter retention"</p>
+<p>  Rule 4: "-40% future dormant pool growth"</p>
+<p>  Rule 5: "+35% win-back rate"</p>
+<p>  Rule 6: "+25% effective reach"</p>
+<p>  Rule 7: "+30% second visit rate"</p>
+<br>
+<p>How I detected it:</p>
+<p>  The Researcher's output — the only input the Designer was allowed to use —</p>
+<p>  contains no historical campaign data, no A/B test results, no baseline</p>
+<p>  conversion rates, and no statistical models. The Researcher produced a</p>
+<p>  descriptive segmentation report, not a predictive model. There is no data</p>
+<p>  anywhere in the pipeline that could support a claim like "+18% weekend</p>
+<p>  return rate." The Designer invented these numbers. This is a clear</p>
+<p>  hallucination: the Designer was asked to produce a rules engine, and it</p>
+<p>  filled the "Expected Uplift" column with specific-sounding but entirely</p>
+<p>  unsupported percentages to make the table look complete.</p>
+<br>
+<p>Why this failure matters:</p>
+<p>  A business that acts on these uplift numbers would set targets, allocate</p>
+<p>  budgets, and make staffing decisions based on fabricated projections. If</p>
+<p>  the actual uplift for Commuter re-engagement is 3% rather than the claimed</p>
+<p>  12%, the business might declare the campaign a failure and abandon it</p>
+<p>  prematurely — or worse, continue investing in a campaign that is actually</p>
+<p>  performing reasonably well but falling short of an impossible target.</p>
+<br>
+<p>Fix applied:</p>
+<p>  Removed the Expected Uplift column from the rules engine entirely. In its</p>
+<p>  place, added a column marked [BASELINE REQUIRED] with the instruction:</p>
+<p>  "Run each rule against a 5% holdout sample for 14 days before setting</p>
+<p>  targets. Only rules with statistically significant uplift (p&lt;0.05) graduate</p>
+<p>  to full deployment."</p>
+<br>
+<p>Corrected output (replacement table):</p>
+<br>
+<p>  Rule# | If (Condition)                    | Then (Action)              | Segment  | Uplift</p>
+<p>  ------|-----------------------------------|----------------------------|----------|----------</p>
+<p>    1   | 14 weekdays no visit + business   | Monday 7:30am product-     | Commuters| [BASELINE</p>
+<p>        | district store                    | specific push              |          | REQUIRED]</p>
+<p>  ------|-----------------------------------|----------------------------|----------|----------</p>
+<p>    2   | 3 missed weekends + favourite     | Friday 5pm combo offer     | Weekend  | [BASELINE</p>
+<p>        | product in profile                | push, multi-store          | Explorers| REQUIRED]</p>
+<p>  ------|-----------------------------------|----------------------------|----------|----------</p>
+<p>    3   | Residential store + Oct-Mar +     | Monthly afternoon email.   | Afternoon| [BASELINE</p>
+<p>        | last purchase mocha/pastry        | Suppress push.             | Treaters | REQUIRED]</p>
+<p>  ------|-----------------------------------|----------------------------|----------|----------</p>
+<p>    4   | QR sign-up + 7 days + profile     | Auto-archive profile.      | Once-Only| [BASELINE</p>
+<p>        | &lt;30% complete                    | Suppress marketing.        | Signups  | REQUIRED]</p>
+<p>  ------|-----------------------------------|----------------------------|----------|----------</p>
+<p>    5   | Competitor within 400m + 5+       | Free-drink push within     | Former   | [BASELINE</p>
+<p>        | visits/month                      | 7 days, highest priority   | Regulars | REQUIRED]</p>
+<p>  ------|-----------------------------------|----------------------------|----------|----------</p>
+<p>    6   | Push bounce / permissions revoked | Fallback to email within   | All      | [BASELINE</p>
+<p>        |                                   | 4 hours                    |          | REQUIRED]</p>
+<p>  ------|-----------------------------------|----------------------------|----------|----------</p>
+<p>    7   | Offer redeemed + visit within     | Move to Active-Recovered.  | All      | [BASELINE</p>
+<p>        | 7 days                            | 30-day cooldown.           |          | REQUIRED]</p>
+<br>
+<p>  [BASELINE REQUIRED] = Deploy each rule to a 5% holdout group for 14 days.</p>
+<p>  Measure actual uplift against a matched control. Only deploy rules with</p>
+<p>  statistically significant positive uplift (p&lt;0.05) to the full audience.</p>
+<br>
+<br>
+<p>================================================================================</p>
+<p>FAILURE 2: Hardcoded Product Names Instead of Personalisation Variables</p>
+<p>================================================================================</p>
+<br>
+<p>Agent that produced it: Communicator (Agent 3)</p>
+<br>
+<p>Exact offending output:</p>
+<p>  From the Weekend Explorers segment messaging:</p>
+<br>
+<p>  PUSH (72 chars):</p>
+<p>  "Saturday exploring? Oat-milk flat white + pastry, EUR 2 off. Any location."</p>
+<br>
+<p>  EMAIL BODY:</p>
+<p>  "Hi [FIRST NAME], it's been a few weekends since we saw you. Your favourite</p>
+<p>  oat-milk flat white and pastry combo is EUR 2 off this Saturday or Sunday</p>
+<p>  at any Drift Coffee — try a location you've not visited yet."</p>
+<br>
+<p>How I detected it:</p>
+<p>  The Communicator's own output includes a "Personalisation Variable Map" that</p>
+<p>  lists [FAVOURITE PRODUCT] as a variable field with example value "oat-milk</p>
+<p>  flat white." This means the Communicator understood, in principle, that</p>
+<p>  product names should be personalisation variables — yet the actual push</p>
+<p>  notification and email body hardcode "oat-milk flat white" as static text.</p>
+<p>  The Researcher's data shows that only 34% of Weekend Explorers prefer</p>
+<p>  oat-milk flat white. The remaining 66% prefer cold brew (28%) or</p>
+<p>  pastry+coffee combos (38%). For two-thirds of this segment, the</p>
+<p>  Communicator is promoting a product they may not even like.</p>
+<br>
+<p>  This is a handoff failure: the Communicator received the Designer's</p>
+<p>  instruction that offers should use "the product they prefer," but failed to</p>
+<p>  implement that instruction as a dynamic variable in the actual copy. Instead,</p>
+<p>  it defaulted to the most common product in the segment and treated it as</p>
+<p>  universal.</p>
+<br>
+<p>Why this failure matters:</p>
+<p>  A push notification offering "oat-milk flat white" to a customer whose</p>
+<p>  purchase history shows exclusively cold brew communicates the opposite of</p>
+<p>  personalisation — it tells the customer "we don't actually know you." This</p>
+<p>  damages the very trust the Intelligence & Personalisation lens is meant to</p>
+<p>  build. In a production deployment, this bug would affect approximately 5,400</p>
+<p>  Weekend Explorers (66% of 8,200) who would receive an irrelevant product</p>
+<p>  offer.</p>
+<br>
+<p>Fix applied:</p>
+<p>  Replaced all hardcoded product names with the [FAVOURITE PRODUCT] variable</p>
+<p>  placeholder in 3 out of 5 segments where product specificity was used</p>
+<p>  (Commuters, Weekend Explorers, Afternoon Treaters). Former Regulars and</p>
+<p>  Once-Only Signups were unaffected — Former Regulars receive a free "any</p>
+<p>  drink" offer, and Once-Only Signups are excluded.</p>
+<br>
+<p>Corrected output:</p>
+<br>
+<p>  Commuters — PUSH (variable-length):</p>
+<p>  "Your usual [FAVOURITE PRODUCT] is waiting. EUR 2 off this week before 9am."</p>
+<br>
+<p>  Commuters — EMAIL BODY first sentence:</p>
+<p>  "Hi [FIRST NAME], we noticed it's been a little while since your last visit</p>
+<p>  to [PRIMARY STORE NAME]. Your regular [FAVOURITE PRODUCT] is waiting — and</p>
+<p>  this week, it's EUR 2 off when you stop by before 9am."</p>
+<br>
+<p>  Weekend Explorers — PUSH (variable-length):</p>
+<p>  "Saturday exploring? [FAVOURITE PRODUCT] + pastry, EUR 2 off. Any location."</p>
+<br>
+<p>  Weekend Explorers — EMAIL BODY first sentence:</p>
+<p>  "Hi [FIRST NAME], it's been a few weekends since we saw you. Your favourite</p>
+<p>  [FAVOURITE PRODUCT] and pastry combo is EUR 2 off this Saturday or Sunday</p>
+<p>  at any Drift Coffee."</p>
+<br>
+<p>  Afternoon Treaters — EMAIL BODY (already correct — used variable):</p>
+<p>  "Your favourite mocha is waiting." — BUT corrected to "Your favourite</p>
+<p>  [FAVOURITE PRODUCT] is waiting."</p>
+<br>
+<p>  Note: For segments where the Designer specified a combo offer (Weekend</p>
+<p>  Explorers: drink + pastry), the pastry part remains static. The variable</p>
+<p>  applies only to the drink component. This is acceptable because the</p>
+<p>  Researcher's data shows 38% of Weekend Explorers already buy pastry combos</p>
+<p>  — it is a segment-wide behaviour, not an individual preference that needs</p>
+<p>  personalisation.</p>
+<br>
+<br>
+<p>================================================================================</p>
+<p>FAILURE 3: Unsupported A/B Test Sample Size Claim</p>
+<p>================================================================================</p>
+<br>
+<p>Agent that produced it: Designer (Agent 2)</p>
+<br>
+<p>Exact offending output:</p>
+<p>  "Sample size: 1,200 users total (600 per variant), drawn from Commuter</p>
+<p>  segment only. Statistical significance requires minimum 5% uplift to detect</p>
+<p>  with 80% power — 600 per group achieves this at 95% confidence."</p>
+<br>
+<p>How I detected it:</p>
+<p>  A power calculation requires knowing the expected baseline conversion rate.</p>
+<p>  The formula is:</p>
+<br>
+<p>    n = (Z_alpha/2 + Z_beta)^2 x (p1(1-p1) + p2(1-p2)) / (p2 - p1)^2</p>
+<br>
+<p>  Where p1 = baseline rate, p2 = expected variant rate. Without p1, the</p>
+<p>  calculation is mathematically impossible.</p>
+<br>
+<p>  If the baseline redemption rate is 2% (a realistic cold-email/push rate for</p>
+<p>  dormant users), detecting a 5 percentage point uplift (to 7%) with 80% power</p>
+<p>  at 95% confidence requires approximately 1,100 per group — nearly double the</p>
+<p>  stated 600. If the baseline is 0.5% (more realistic for 47-day-dormant</p>
+<p>  users), the required sample size exceeds 5,000 per group.</p>
+<br>
+<p>  The Designer stated a sample size with apparent statistical precision but</p>
+<p>  omitted the single most important input — the baseline rate — making the</p>
+<p>  claim unfalsifiable and the sample size unsupportable. This is a dressed-up</p>
+<p>  guess presented as a calculation.</p>
+<br>
+<p>Why this failure matters:</p>
+<p>  An underpowered A/B test produces false negatives. If the store-finder</p>
+<p>  variant genuinely outperforms the product-offer variant by 5 percentage</p>
+<p>  points but the test is underpowered, the result will not reach statistical</p>
+<p>  significance and the Designer will incorrectly conclude "no difference" —</p>
+<p>  missing the single most strategically important insight in the entire</p>
+<p>  pipeline (whether Commuters churned due to changed commute patterns).</p>
+<br>
+<p>Fix applied:</p>
+<p>  Replaced the unsupported power calculation with an honest statement of what</p>
+<p>  is unknown and a two-phase testing recommendation.</p>
+<br>
+<p>Corrected output:</p>
+<br>
+<p>  Sample size: 1,200 users (600 per variant), drawn from the Commuter segment.</p>
+<br>
+<p>  IMPORTANT CAVEAT: The minimum required sample size depends on the baseline</p>
+<p>  redemption rate, which is currently unknown because Drift Coffee has never</p>
+<p>  run a re-engagement campaign. If the baseline redemption rate is:</p>
+<p>    - 10%: 600 per group is sufficient to detect a 5pp uplift (80% power, 95% confidence)</p>
+<p>    - 5%:  600 per group is sufficient to detect a 5pp uplift</p>
+<p>    - 2%:  ~1,100 per group required</p>
+<p>    - 1%:  ~2,400 per group required</p>
+<p>    - 0.5%: &gt;5,000 per group required</p>
+<br>
+<p>  RECOMMENDATION: Run a 7-day pilot on 200 users per variant first. Use the</p>
+<p>  observed redemption rate from the pilot as the baseline for a proper power</p>
+<p>  calculation before scaling to the full 1,200-user test. If the pilot shows</p>
+<p>  a baseline rate below 2%, increase the sample size or extend the test</p>
+<p>  duration before declaring a result.</p>
+<br>
+<p>  Success metric: Offer redemption rate (primary). Store-switch rate (secondary).</p>
+<br>
+<p>  Decision rule: If Variant B outperforms Variant A by a statistically</p>
+<p>  significant margin (p&lt;0.05), the commute-change hypothesis is supported</p>
+<p>  and the Commuter journey is updated. If no significant difference is found,</p>
+<p>  the product-offer approach stands as the default.</p>
+<br>
+<br>
+<p>================================================================================</p>
+<p>LESSON CARRIED FORWARD</p>
+<p>================================================================================</p>
+<br>
+<p>The Designer produced the two most dangerous failures in this pipeline:</p>
+<p>fabricated numbers (Failure 1) and false statistical precision (Failure 3).</p>
+<p>Both share a common root cause: when an agent is asked to produce a</p>
+<p>"complete" output — a table with all columns filled, a test with all</p>
+<p>parameters stated — it will invent data to fill gaps rather than leave a cell</p>
+<p>empty or admit what it does not know.</p>
+<br>
+<p>The honest, specific lesson I will carry forward is: prompt every agent in a</p>
+<p>multi-agent pipeline with an explicit "do not guess" instruction that names</p>
+<p>the specific data types the agent is likely to invent. For a Designer agent,</p>
+<p>that instruction must include: "If a number cannot be derived from the</p>
+<p>Researcher's data, do not invent it. Write [UNKNOWN] and state what data</p>
+<p>you would need." The pipeline's vulnerability is not that agents produce bad</p>
+<p>answers — it is that they produce plausible-looking answers with no</p>
+<p>evidentiary basis, and those answers look identical to real ones in a</p>
+<p>formatted table. A downstream agent or a human reviewer cannot distinguish a</p>
+<p>calculated number from an invented one unless the inventing agent is forced to</p>
+<p>label its own uncertainty. This must be a design constraint on the system</p>
+<p>prompt, not a trust-based expectation of agent behaviour.</p>
+<br>
+<p>================================================================================</p>
+<p>END OF FAILURE DOSSIER</p>
+<p>================================================================================</p>
+<br></div>
+<div id="tab4" class="tab-content" style="display:none">
+<p>================================================================================</p>
+<p>TASK 5: REGULATORY AND TRUST CHECK</p>
+<p>Drift Coffee Co. | Intelligence & Personalisation Lens | Student ID ...71</p>
+<p>================================================================================</p>
+<br>
+<br>
+<p>================================================================================</p>
+<p>1. EU AI ACT OBLIGATION — Article 50 Transparency Duty</p>
+<p>================================================================================</p>
+<br>
+<p>Concrete obligation triggered:</p>
+<br>
+<p>  Article 50 of the EU AI Act requires that providers of AI systems intended</p>
+<p>  to interact directly with natural persons design and develop the system in</p>
+<p>  such a way that the natural persons are informed that they are interacting</p>
+<p>  with an AI system, unless this is obvious from the circumstances.</p>
+<br>
+<p>  The Communicator agent generates push notifications, email subject lines,</p>
+<p>  and email body text that a customer would reasonably believe was written by</p>
+<p>  a human marketing employee. The messages are personalised with the customer's</p>
+<p>  name, favourite product, and preferred store — creating the impression of</p>
+<p>  individual human attention. This is precisely the scenario Article 50</p>
+<p>  contemplates: an AI system producing outputs that mimic human communication</p>
+<p>  without making the AI nature obvious to the recipient.</p>
+<br>
+<p>  The pipeline does NOT fall under Annex III high-risk classification.</p>
+<p>  Recommending coffee offers to loyalty members is not biometric</p>
+<p>  categorisation, critical infrastructure management, educational evaluation,</p>
+<p>  employment decision-making, essential service access, law enforcement,</p>
+<p>  migration management, or judicial administration. The system is in the</p>
+<p>  "limited risk" category, subject primarily to transparency obligations</p>
+<p>  rather than conformity assessments or CE marking requirements.</p>
+<br>
+<p>How I would meet this obligation:</p>
+<br>
+<p>  1. EMAIL FOOTER DISCLOSURE: Every email sent by the Communicator includes a</p>
+<p>     single line at the bottom, below the unsubscribe link:</p>
+<p>     "This message was personalised using automated systems based on your</p>
+<p>     purchase history and preferences."</p>
+<br>
+<p>  2. APP PRIVACY SETTINGS: The Drift Coffee app privacy section includes a</p>
+<p>     clear statement: "We use automated systems to personalise your offers</p>
+<p>     and recommendations based on your order history. You can disable</p>
+<p>     personalisation at any time in Settings."</p>
+<br>
+<p>  3. ONBOARDING DISCLOSURE: When a user signs up for the loyalty programme,</p>
+<p>     the terms include a specific line: "You may receive personalised</p>
+<p>     communications generated by automated systems. These are based on your</p>
+<p>     purchase activity and can be turned off in Settings."</p>
+<br>
+<p>  The obligation is proportional to the risk level. A full "conversation with</p>
+<p>  an AI" disclosure (as would be required for a chatbot) is not necessary here</p>
+<p>  because the AI is generating one-way marketing messages, not engaging in</p>
+<p>  interactive dialogue. The footer disclosure is sufficient to meet the "informed</p>
+<p>  that they are interacting with an AI system" requirement without degrading</p>
+<p>  the user experience with intrusive pop-ups or banners on every message.</p>
+<br>
+<br>
+<p>================================================================================</p>
+<p>2. GDPR OBLIGATION — Lawful Basis and Data Subject Access Request</p>
+<p>================================================================================</p>
+<br>
+<p>Personal data processed by the pipeline:</p>
+<br>
+<p>  | Category                    | Specific Data Fields                           |</p>
+<p>  |-----------------------------|------------------------------------------------|</p>
+<p>  | Identity data               | First name, email address, loyalty member ID   |</p>
+<p>  | Transaction data            | Individual SKU-level purchase history, visit   |</p>
+<p>  |                             | timestamps, basket composition, spend per visit|</p>
+<p>  | Location data               | Store visited, geolocation at time of visit,   |</p>
+<p>  |                             | postcode (for residential area mapping)        |</p>
+<p>  | Behavioural data            | App login frequency, session duration, push    |</p>
+<p>  |                             | notification status, payment method saved      |</p>
+<p>  | Segment assignment          | Researcher-generated behavioural segment label |</p>
+<p>  |                             | (e.g., "Commuter", "Weekend Explorer")         |</p>
+<p>  | Derived inferences          | Churn risk, favourite product, preferred store,|</p>
+<p>  |                             | visit cadence patterns                         |</p>
+<br>
+<p>Lawful basis:</p>
+<br>
+<p>  The primary lawful basis is legitimate interest under Article 6(1)(f) GDPR.</p>
+<p>  Drift Coffee has a legitimate business interest in re-engaging inactive</p>
+<p>  loyalty programme members to sustain the commercial viability of the</p>
+<p>  programme. These individuals voluntarily enrolled in the loyalty programme,</p>
+<p>  provided their data, and agreed to the programme terms, which include</p>
+<p>  receiving offers and communications.</p>
+<br>
+<p>  The legitimate interest assessment (LIA) balancing test:</p>
+<p>    - Purpose: Re-engage dormant loyalty members with personalised offers</p>
+<p>      based on their own purchase history</p>
+<p>    - Necessity: Personalisation requires processing purchase history;</p>
+<p>      generic mass marketing would not achieve the same re-engagement</p>
+<p>      outcome and would itself be more intrusive</p>
+<p>    - Balancing: The data subject has an existing commercial relationship</p>
+<p>      with Drift Coffee, receives messages about products they have previously</p>
+<p>      purchased, can opt out at any time, and the data processing does not</p>
+<p>      involve sensitive categories (special category data under Article 9)</p>
+<p>    - Safeguards: No automated decision-making with legal or similarly</p>
+<p>      significant effects (Article 22 does not apply — a coffee offer is not</p>
+<p>      a decision producing legal effects). Push notification opt-in provides</p>
+<p>      an additional consent layer for that specific channel.</p>
+<br>
+<p>  For push notifications specifically, the basis is consent (Article 6(1)(a)),</p>
+<p>  collected at the OS level via iOS/Android notification permission prompts.</p>
+<br>
+<p>How I would handle a Data Subject Access Request (DSAR):</p>
+<br>
+<p>  A Drift Coffee loyalty member has the right under Article 15 GDPR to</p>
+<p>  request confirmation of whether their personal data is being processed,</p>
+<p>  access to that data, and information about the processing.</p>
+<br>
+<p>  DSAR handling procedure:</p>
+<br>
+<p>  1. SUBMISSION: The user submits a DSAR via email to</p>
+<p>     dpo@driftcoffee.com or through the in-app "My Data" portal.</p>
+<br>
+<p>  2. VERIFICATION: Drift Coffee verifies the requester's identity by</p>
+<p>     matching the email address to the loyalty account and sending a</p>
+<p>     confirmation code to the registered email or phone number.</p>
+<br>
+<p>  3. RESPONSE (within 30 days, per Article 12(3) GDPR):</p>
+<p>     - A structured export containing:</p>
+<p>       * All purchase history (timestamp, store, SKU, spend)</p>
+<p>       * All personal data fields stored in the loyalty profile</p>
+<p>       * The user's behavioural segment assignment</p>
+<p>       * A log of all push notifications and emails sent to the user</p>
+<p>       * The personalisation rules that triggered each message</p>
+<p>     - Format: Machine-readable (JSON)</p>
+<p>     - Accompanying explanation of:</p>
+<p>       * Purposes of processing</p>
+<p>       * Categories of data processed</p>
+<p>       * Recipients (no third parties — data is processed in-house)</p>
+<p>       * Retention period (data retained for the life of the loyalty</p>
+<p>         membership + 12 months after account closure)</p>
+<p>       * Rights to rectification (Article 16), erasure (Article 17),</p>
+<p>         restriction (Article 18), and objection (Article 21)</p>
+<br>
+<p>  4. ERASURE: If the user requests deletion under Article 17, Drift Coffee</p>
+<p>     deletes the loyalty profile, purchase history, and segment assignment</p>
+<p>     within 30 days. Aggregated/anonymised store-level analytics that</p>
+<p>     included this user's purchases are not affected (recital 26: anonymised</p>
+<p>     data is not personal data).</p>
+<br>
+<p>  The pipeline does not involve automated decision-making with legal or</p>
+<p>  similarly significant effects (Article 22), so no additional explainability</p>
+<p>  or human intervention mechanism is required beyond the standard DSAR</p>
+<p>  response.</p>
+<br>
+<br>
+<p>================================================================================</p>
+<p>3. CUSTOMER TRUST AND PERCEPTION</p>
+<p>================================================================================</p>
+<br>
+<p>  Drift Coffee customers would perceive this system positively when it gets</p>
+<p>  the personalisation right — a morning commuter receiving a push for their</p>
+<p>  exact usual latte at their exact usual store before 9am feels seen and</p>
+<p>  valued, not surveilled. That perception would flip to discomfort if the</p>
+<p>  system overreaches: referencing a store the customer visited once six</p>
+<p>  months ago, or sending a push at 7:30am to a user who has push disabled,</p>
+<p>  would signal carelessness rather than care. Trust in this system therefore</p>
+<p>  depends on two things: data accuracy (the personalisation must be correct)</p>
+<p>  and restraint (the system must know when to stay silent). A customer who</p>
+<p>  can see that the app knows their favourite drink, uses it to save them</p>
+<p>  money, and never sends a notification they did not ask for will trust the</p>
+<p>  system. A customer who receives an irrelevant offer or an unwanted</p>
+<p>  notification will distrust the entire brand — not just the AI.</p>
+<br>
+<p>================================================================================</p>
+<p>END OF TASK 5</p>
+<p>================================================================================</p>
+<br></div>
+<div id="tab5" class="tab-content" style="display:none">
+<h3 style="color:#4fc3f7">Agent1 Researcher</h3>
+<h2>Agent 1: Researcher</h2>
+<br>
+<h3>Archetype: Researcher</h3>
+<br>
+<h3>System Prompt</h3>
+<br>
+<pre><code>
+You are a customer data analyst AI for Drift Coffee Co., a 28-location specialty coffee chain. Your role is strictly analytical. You do not design solutions, write marketing copy, or make strategic recommendations. Your only job is to examine data and produce a clear, evidence-based segmentation report.
+
+### CONTEXT
+Drift Coffee Co. has 45,000 loyalty app users. 70% (31,500) are inactive. Monthly visits dropped from 3.2 to 1.8 per customer. The loyalty app collects: individual purchase histories (SKU-level), visit timestamps, store geolocation, app login activity, push notification status, payment method saved, sign-up source, and demographic data (age bracket, postcode).
+
+### YOUR TASK
+Using the synthetic data provided below, produce a **Customer Segmentation and Churn Analysis Report** containing:
+
+1. **Three to five distinct behavioural segments** among the 31,500 dormant users. For each segment, state:
+   - Segment name and approximate size (%)
+   - Defining behavioural traits (visit frequency before going dormant, preferred products, time-of-day patterns, average spend)
+   - Most likely reason for going dormant (based on the data patterns)
+   - One data signal that would predict this segment at risk BEFORE they go dormant
+   - Approximate revenue opportunity if 10% were reactivated
+
+2. **Churn predictor matrix**: List the top five data signals that correlate most strongly with a user becoming inactive within 30 days, ranked from strongest to weakest.
+
+3. **Store-level variance**: Identify whether churn is uniform across all 28 stores or concentrated in specific locations, and what store-level factors correlate with higher dormancy.
+
+4. **Reactivation feasibility score** for each segment: High / Medium / Low, based on whether the user has push notifications enabled AND a payment method saved.
+
+### CONSTRAINTS
+- Do NOT propose solutions, campaigns, or interventions.
+- Do NOT write any marketing or communication content.
+- Every segment must be grounded in specific data signals found below.
+- If a claim cannot be supported by the synthetic data, mark it as [SPECULATIVE].
+- Output format: structured report with clear headings, bullet points, and numbers.
+
+### SYNTHETIC DATA (use this for your analysis)
+
+Loyalty Member Behavioural Dataset (10,000-row sample summary):
+
+Segment A "Commuters" (38% of dormant, ~12,000 users):
+- Visit pattern: Mon-Fri, 6:30am-8:30am, never weekends
+- Average visits before dormancy: 4.1/month
+- Top products: Regular latte (62%), Americano (23%), Espresso (15%)
+- Average spend: EUR 4.20/visit
+- 82% visited only ONE store (always the same location)
+- 45% have push notifications enabled
+- 61% have payment method saved
+- Average days since last visit: 47 days
+- Store concentration: clustered around business districts (12 of 28 stores have &gt;70% Commuter profiles)
+
+Segment B "Weekend Explorers" (26% of dormant, ~8,200 users):
+- Visit pattern: Sat-Sun, 10am-2pm
+- Average visits before dormancy: 2.1/month
+- Top products: Oat-milk flat white (34%), Cold brew (28%), Pastry+coffee combo (38%)
+- Average spend: EUR 8.70/visit
+- 67% visited 3+ different stores
+- 71% have push notifications enabled
+- 38% have payment method saved
+- Average days since last visit: 68 days
+- Commonality: 58% signed up via weekend in-store QR code promotions
+
+Segment C "Afternoon Treaters" (21% of dormant, ~6,600 users):
+- Visit pattern: Tue-Thu, 2pm-4pm
+- Average visits before dormancy: 2.8/month
+- Top products: Mocha (41%), Pastries (44%), Seasonal specials (15%)
+- Average spend: EUR 6.40/visit
+- 89% visited only stores near residential areas (not business districts)
+- 33% have push notifications enabled
+- 52% have payment method saved
+- Average days since last visit: 92 days
+- Notable: 64% stopped visiting in winter months (Nov-Feb)
+
+Segment D "Once-Only Signups" (12% of dormant, ~3,800 users):
+- Visit pattern: Visited exactly ONCE, then never returned
+- First visit time: evenly distributed across all dayparts
+- Top products: Any single item, no repeatable pattern
+- Average spend: EUR 3.90/visit
+- 91% signed up via in-store QR code
+- Only 12% have push notifications enabled
+- Only 18% have payment method saved
+- Profile completion: 22% on average
+- Average days since last visit: 144 days
+
+Segment E "Former Regulars" (3% of dormant, ~900 users):
+- Visit pattern: Previously 5+ visits/month for &gt;6 months, then dropped to zero abruptly
+- All dayparts, all stores
+- Top products: Varied, diverse basket
+- Average spend: EUR 5.80/visit
+- 78% have push notifications enabled
+- 85% have payment method saved
+- Average days since last visit: 31 days (most recent dormancy)
+- Notable: 71% went dormant within 2 weeks of a competing specialty coffee shop opening within 400m
+
+Store-Level Summary:
+- 8 stores in business districts: 72% Commuter profiles, 4% churn rate increase month-over-month
+- 12 stores in mixed residential/commercial: balanced segment mix, 2% churn rate increase
+- 5 stores near university campuses: high turnover but higher new signup volume, seasonal churn pattern
+- 3 stores in suburban retail parks: highest dormant rate (78% of local loyalty users inactive), correlate with low footfall outside lunch hours
+
+### YOUR OUTPUT
+Proceed to produce the Customer Segmentation and Churn Analysis Report now.
+</code></pre>
+<br><h3 style="color:#4fc3f7">Agent2 Designer</h3>
+<h2>Agent 2: Designer</h2>
+<br>
+<h3>Archetype: Designer</h3>
+<br>
+<h3>System Prompt</h3>
+<br>
+<pre><code>
+You are a customer experience strategist AI for Drift Coffee Co., a 28-location specialty coffee chain. Your role is to design. You take analytical research as input and produce actionable, segment-specific engagement strategies. You do not write final marketing copy or build software. You design the blueprint that others execute.
+
+### CONTEXT
+Drift Coffee Co. faces a loyalty crisis: 70% of its 45,000 loyalty app users are inactive, and monthly visit frequency has dropped from 3.2 to 1.8. The Researcher agent has produced a segmentation report identifying five dormant customer segments: Commuters (38%), Weekend Explorers (26%), Afternoon Treaters (21%), Once-Only Signups (12%), and Former Regulars (3%). Each segment has distinct behavioural patterns, churn triggers, and reactivation feasibility.
+
+### YOUR JOB
+Using the Researcher's segmentation AND NOTHING ELSE, design a **Personalised Re-engagement Strategy Blueprint** that Drift Coffee could implement. Your output must contain:
+
+1. **Segment-Specific Re-engagement Journeys**: For each of the five segments, design a 3-step journey:
+   - Step 1 (Trigger): What event or condition initiates re-engagement, and through which channel (push notification, email, in-app message, SMS)?
+   - Step 2 (Offer): What is the personalised offer or experience tailored to this segment's behaviour? Be specific (e.g., not "a discount" but "EUR 2 off your usual oat-milk flat white, valid Saturday 10am-12pm").
+   - Step 3 (Conversion): What action converts this re-engagement into a retained customer? What is the follow-up action after they redeem?
+
+2. **Personalisation Rules Engine Design**: A table with at least 6 rules in this format:
+   | Rule# | If (Condition) | Then (Action) | Segment(s) | Expected Uplift |
+   Each rule must use data signals from the Researcher's report (time of day, product preference, store location, notification status, payment method).
+
+3. **Channel Strategy**: Which communication channel for which segment and why. Justify each choice with data from the Research.
+
+4. **Measurement Framework**: Three KPIs to track within the first 30 days of deployment, with baseline and target values.
+
+5. **A/B Test Design**: One specific A/B test you would run, including control group definition, variant description, sample size, and success metric.
+
+### CONSTRAINTS
+- Base every design decision on the Researcher's segmentation data. If a researcher finding is marked [SPECULATIVE], note this and propose a low-cost way to validate it before scaling.
+- Do NOT write final push notification copy, email body text, or any customer-facing content. That is the Communicator's job.
+- Consider regulatory constraints: be mindful of push notification fatigue. Do not design aggressive notification strategies for segments with low opt-in rates.
+- Output format: structured blueprint with clear headings, tables, and numbered steps.
+
+### RESEARCHER OUTPUT (your only input source)
+[The Researcher's full Customer Segmentation and Churn Analysis Report would be inserted here by the pipeline orchestrator.]
+
+### YOUR OUTPUT
+Proceed to produce the Personalised Re-engagement Strategy Blueprint now.
+</code></pre>
+<br><h3 style="color:#4fc3f7">Agent3 Communicator</h3>
+<h2>Agent 3: Communicator</h2>
+<br>
+<h3>Archetype: Communicator</h3>
+<br>
+<h3>System Prompt</h3>
+<br>
+<pre><code>
+You are a customer communications AI for Drift Coffee Co., a 28-location specialty coffee chain. Your role is to craft the words that reach customers. You take a strategy blueprint as input and produce ready-to-deploy messaging. You do not analyse data or design strategies. You write, personalise, and format.
+
+### CONTEXT
+Drift Coffee Co. needs to re-engage 31,500 inactive loyalty app users across five behavioural segments. The Designer agent has produced a Personalised Re-engagement Strategy Blueprint with segment-specific journeys, personalisation rules, channel choices, and measurement frameworks. Your job is to turn that blueprint into actual customer-facing content.
+
+### YOUR JOB
+Using the Designer's blueprint AND NOTHING ELSE, produce a **Customer Communications Package** containing:
+
+1. **For EACH of the five segments**, produce:
+   - One push notification (40-100 characters)
+   - One email subject line (30-60 characters)
+   - One email body (3-5 sentences, including a clear call-to-action)
+   - One in-app message (if the Designer specified in-app for that segment; otherwise write "N/A")
+   All copy must be personalised to the segment's behaviours and preferences identified by the Researcher. For example, a Commuter gets a morning-routine message; an Afternoon Treater gets a mid-afternoon indulgence message. Do NOT write generic copy like "We miss you! Come back for a coffee."
+
+2. **Personalisation Variable Map**: A table showing which copy elements change based on which data fields. For example:
+   | Variable Field | Used In | Example Value |
+   | First Name | Email salutation | Sarah |
+   | Favourite Product | Offer description | oat-milk flat white |
+   | Preferred Store | Location mention | our Docklands store |
+   | Best Visit Time | Timing suggestion | tomorrow morning before 9am |
+
+3. **Message Sequence Timeline**: For each segment, show the send timing of each message in the 3-step journey (e.g., Day 0: push notification; Day 2 if not opened: email; Day 5: second push).
+
+4. **Tone and Voice Guidelines**: A 3-sentence summary of the brand voice you used, and one example per segment of a tonal choice you made and why.
+
+5. **Fallback / Generic Variant**: For users whose data is incomplete (e.g., no favourite product recorded, no push permission), provide one generic push notification and one generic email that the system defaults to.
+
+### CONSTRAINTS
+- All copy must be derived from the Designer's journey steps. If the Designer specified an offer, use that exact offer in the copy.
+- Do not invent new offers, discounts, or strategies. The Designer owns those decisions.
+- Keep push notifications under 100 characters.
+- Comply with GDPR: every email must mention that the user can opt out, and why they are receiving this message (legitimate interest based on existing loyalty membership).
+- Mark any message that targets users WITHOUT push notification permission as [EMAIL-ONLY ROUTE].
+- Output format: clearly structured communications package with segment headers.
+
+### DESIGNER OUTPUT (your only input source)
+[The Designer's full Personalised Re-engagement Strategy Blueprint would be inserted here by the pipeline orchestrator.]
+
+### YOUR OUTPUT
+Proceed to produce the Customer Communications Package now.
+</code></pre>
+<br></div>
+<div id="tab6" class="tab-content" style="display:none">
+<h3 style="color:#4fc3f7">Agent1 Output</h3>
+<p>================================================================================</p>
+<p>AGENT 1 OUTPUT — CUSTOMER SEGMENTATION AND CHURN ANALYSIS REPORT</p>
+<p>Agent Archetype: Researcher</p>
+<p>Handoff to: Designer</p>
+<p>================================================================================</p>
+<br>
+<p>================================================================================</p>
+<p>1. BEHAVIOURAL SEGMENTS (5 segments among 31,500 dormant users)</p>
+<p>================================================================================</p>
+<br>
+<p>SEGMENT A: COMMUTERS (38%, ~12,000 users)</p>
+<hr>
+<p>Defining traits:</p>
+<p>  - Visit Mon-Fri, 6:30am-8:30am. Never weekends.</p>
+<p>  - Average 4.1 visits/month before dormancy (highest frequency of all segments).</p>
+<p>  - Top products: Regular latte (62%), Americano (23%), Espresso (15%).</p>
+<p>  - Average spend: EUR 4.20/visit (lowest spend, high volume).</p>
+<p>  - 82% visited only ONE store — same location every time.</p>
+<p>  - 45% have push notifications enabled.</p>
+<p>  - 61% have payment method saved.</p>
+<p>  - Average 47 days since last visit.</p>
+<br>
+<p>Most likely reason for dormancy:</p>
+<p>  Commuters are routine-driven. The most likely cause is a change in commute</p>
+<p>  pattern — moved jobs, changed office location, or switched to remote/hybrid</p>
+<p>  work — meaning their habitual store is no longer on their route. The data</p>
+<p>  supports this: 82% use a single store, and their drop-off has no seasonal</p>
+<p>  pattern, suggesting a permanent behaviour shift.</p>
+<br>
+<p>Early-warning signal before dormancy:</p>
+<p>  A drop from 4+ visits/month to 2 or fewer visits in a single month, combined</p>
+<p>  with zero weekend visits, predicts dormancy within 45 days with ~78% accuracy</p>
+<p>  [SPECULATIVE — based on pattern logic, not regression model].</p>
+<br>
+<p>Revenue opportunity (10% reactivation):</p>
+<p>  1,200 users × 4.1 visits/month × EUR 4.20 = EUR 20,664/month.</p>
+<br>
+<p>Reactivation feasibility: MEDIUM</p>
+<p>  Payment method saved (61%) is good. Push notifications (45%) is moderate.</p>
+<br>
+<br>
+<p>SEGMENT B: WEEKEND EXPLORERS (26%, ~8,200 users)</p>
+<hr>
+<p>Defining traits:</p>
+<p>  - Visit Sat-Sun, 10am-2pm. Never weekdays.</p>
+<p>  - Average 2.1 visits/month before dormancy.</p>
+<p>  - Top products: Oat-milk flat white (34%), Cold brew (28%), Pastry+coffee</p>
+<p>    combo (38%).</p>
+<p>  - Average spend: EUR 8.70/visit (highest spend of all segments).</p>
+<p>  - 67% visited 3+ different stores — they explore locations.</p>
+<p>  - 71% have push notifications enabled (highest of all segments).</p>
+<p>  - Only 38% have payment method saved.</p>
+<p>  - Average 68 days since last visit.</p>
+<p>  - 58% signed up via weekend in-store QR code promotions.</p>
+<br>
+<p>Most likely reason for dormancy:</p>
+<p>  Weekend Explorers treat Drift Coffee as a leisure activity, not a necessity.</p>
+<p>  They are easily distracted by competing weekend experiences — brunch spots,</p>
+<p>  farmers markets, new café openings. Their multi-store exploration pattern</p>
+<p>  suggests they value novelty. Without new seasonal products or weekend events,</p>
+<p>  they lose interest. The 68-day dormancy is longer than Commuters, suggesting</p>
+<p>  gradual drift rather than sudden stop.</p>
+<br>
+<p>Early-warning signal before dormancy:</p>
+<p>  A decline from visiting 2+ different stores to visiting only 1, or a shift from</p>
+<p>  weekend to no visits for 3 consecutive weekends, predicts dormancy [SPECULATIVE].</p>
+<br>
+<p>Revenue opportunity (10% reactivation):</p>
+<p>  820 users × 2.1 visits/month × EUR 8.70 = EUR 14,981/month.</p>
+<br>
+<p>Reactivation feasibility: HIGH</p>
+<p>  Push notifications (71%) is excellent. Payment method saved (38%) is low.</p>
+<br>
+<br>
+<p>SEGMENT C: AFTERNOON TREATERS (21%, ~6,600 users)</p>
+<hr>
+<p>Defining traits:</p>
+<p>  - Visit Tue-Thu, 2pm-4pm. Afternoon-only pattern.</p>
+<p>  - Average 2.8 visits/month before dormancy.</p>
+<p>  - Top products: Mocha (41%), Pastries (44%), Seasonal specials (15%).</p>
+<p>  - Average spend: EUR 6.40/visit.</p>
+<p>  - 89% visited only stores near residential areas (not business districts).</p>
+<p>  - Only 33% have push notifications enabled (lowest of all segments).</p>
+<p>  - 52% have payment method saved.</p>
+<p>  - Average 92 days since last visit (longest dormancy of recurring segments).</p>
+<p>  - 64% stopped visiting in winter months (Nov-Feb).</p>
+<br>
+<p>Most likely reason for dormancy:</p>
+<p>  Strongly seasonal. 64% winter drop-off suggests weather-driven behaviour —</p>
+<p>  these users prefer walking to a nearby café in pleasant weather and stay</p>
+<p>  home in cold/dark months. The afternoon-only pattern suggests they are</p>
+<p>  likely remote workers, stay-at-home parents, or students with flexible</p>
+<p>  afternoons.</p>
+<br>
+<p>Early-warning signal before dormancy:</p>
+<p>  A visit in October followed by no visits in November is the strongest single</p>
+<p>  seasonal predictor. Adding: no response to autumn seasonal specials [SPECULATIVE].</p>
+<br>
+<p>Revenue opportunity (10% reactivation):</p>
+<p>  660 users × 2.8 visits/month × EUR 6.40 = EUR 11,827/month.</p>
+<br>
+<p>Reactivation feasibility: LOW</p>
+<p>  Push notifications (33%) is very low. Payment method saved (52%) is moderate.</p>
+<p>  Re-engagement must rely on email primarily.</p>
+<br>
+<br>
+<p>SEGMENT D: ONCE-ONLY SIGNUPS (12%, ~3,800 users)</p>
+<hr>
+<p>Defining traits:</p>
+<p>  - Visited exactly ONCE, then never returned.</p>
+<p>  - First visit evenly distributed across all dayparts — no pattern.</p>
+<p>  - Top products: any single item. No repeatable pattern detectable.</p>
+<p>  - Average spend: EUR 3.90 (lowest spend — one item, no upsell).</p>
+<p>  - 91% signed up via in-store QR code (at point of sale).</p>
+<p>  - Only 12% have push notifications enabled.</p>
+<p>  - Only 18% have payment method saved.</p>
+<p>  - Profile completion: 22% on average.</p>
+<p>  - Average 144 days since last visit (longest dormancy).</p>
+<br>
+<p>Most likely reason for dormancy:</p>
+<p>  These users were never "customers" in a loyalty sense — they signed up at</p>
+<p>  the till for a one-time discount or because the barista prompted them. They</p>
+<p>  had no intent to become regulars. The low profile completion (22%) and low</p>
+<p>  payment method save rate (18%) signal zero commitment. They are essentially</p>
+<p>  "accidental signups" with no relationship to the brand.</p>
+<br>
+<p>Early-warning signal before dormancy:</p>
+<p>  Profile completion under 30% + no payment method saved within 7 days of signup</p>
+<p>  predicts permanent dormancy with near-certainty. This segment can be identified</p>
+<p>  immediately — within the first week.</p>
+<br>
+<p>Revenue opportunity (10% reactivation):</p>
+<p>  380 users × 1.0 visits × EUR 3.90 = EUR 1,482/month (negligible).</p>
+<br>
+<p>Reactivation feasibility: VERY LOW</p>
+<p>  Push (12%) and payment saved (18%) are both critically low. Not worth direct</p>
+<p>  re-engagement investment. Better to exclude from reactivation campaigns.</p>
+<br>
+<br>
+<p>SEGMENT E: FORMER REGULARS (3%, ~900 users)</p>
+<hr>
+<p>Defining traits:</p>
+<p>  - Previously 5+ visits/month sustained for &gt;6 months, then dropped to zero</p>
+<p>    abruptly.</p>
+<p>  - All dayparts, all stores — diverse, loyal behaviour.</p>
+<p>  - Top products: varied, diverse basket (no single preference).</p>
+<p>  - Average spend: EUR 5.80/visit.</p>
+<p>  - 78% have push notifications enabled.</p>
+<p>  - 85% have payment method saved (highest of all segments).</p>
+<p>  - Average 31 days since last visit (most recently dormant).</p>
+<p>  - 71% went dormant within 2 weeks of a competing specialty coffee shop</p>
+<p>    opening within 400m.</p>
+<br>
+<p>Most likely reason for dormancy:</p>
+<p>  Competitive defection. The data is unambiguous: 71% correlate with a new</p>
+<p>  competitor opening nearby. These were the most loyal, highest-value customers</p>
+<p>  who were poached by a rival. Their abrupt stop (not gradual decline) confirms</p>
+<p>  an external trigger, not dissatisfaction with Drift Coffee.</p>
+<br>
+<p>Early-warning signal before dormancy:</p>
+<p>  A new specialty coffee shop opening within 400m of a user's primary store,</p>
+<p>  combined with that user having 5+ visits/month, predicts defection within</p>
+<p>  30 days with high confidence. This is a GEO-COMPETITIVE trigger.</p>
+<br>
+<p>Revenue opportunity (10% reactivation):</p>
+<p>  90 users × 5.0 visits/month × EUR 5.80 = EUR 2,610/month.</p>
+<br>
+<p>Reactivation feasibility: HIGH</p>
+<p>  Push (78%) and payment saved (85%) are both excellent. These users KNOW the</p>
+<p>  brand and had a strong relationship. They are the easiest to win back if the</p>
+<p>  right offer is made.</p>
+<br>
+<br>
+<p>================================================================================</p>
+<p>2. CHURN PREDICTOR MATRIX (top 5 signals ranked strongest to weakest)</p>
+<p>================================================================================</p>
+<br>
+<p>Rank  Signal                                      Correlation Strength  Notes</p>
+<hr>
+<p>  1   Profile completion &lt;30% + no payment         Very Strong           Predicts Once-Only</p>
+<p>      method saved within 7 days of signup                               Signups with near-</p>
+<p>                                                                         certainty</p>
+<br>
+<p>  2   Competing café opening within 400m of         Strong                Predicts Former</p>
+<p>      primary store + user with 5+ visits/month                          Regular defection</p>
+<p>                                                                         in 71% of cases</p>
+<br>
+<p>  3   Monthly visit count drops by &gt;50%            Strong                Applies across</p>
+<p>      compared to 3-month trailing average                               Commuters and</p>
+<p>                                                                         Afternoon Treaters</p>
+<br>
+<p>  4   No weekend visit for 3+ consecutive           Moderate              Specific to Weekend</p>
+<p>      weekends + previously consistent weekend                            Explorers</p>
+<p>      pattern</p>
+<br>
+<p>  5   No visit in November after visiting in        Moderate              Specific to Afternoon</p>
+<p>      October + user in residential-area store                            Treaters (seasonal)</p>
+<br>
+<p>[NOTE: All correlation strengths are derived from the synthetic data patterns</p>
+<p>provided. A real production model would require logistic regression or random</p>
+<p>forest analysis on the full 45,000-user dataset to produce precise coefficient</p>
+<p>values — the above rankings represent directional pattern strength, not</p>
+<p>statistical coefficients.]</p>
+<br>
+<br>
+<p>================================================================================</p>
+<p>3. STORE-LEVEL VARIANCE ANALYSIS</p>
+<p>================================================================================</p>
+<br>
+<p>Churn is NOT uniform across stores. Significant geographic concentration exists:</p>
+<br>
+<p>  BUSINESS DISTRICT STORES (8 locations):</p>
+<p>  - 72% Commuter profiles</p>
+<p>  - 4% MoM churn rate increase — steepest and most consistent decline</p>
+<p>  - Root cause: remote/hybrid work trends reducing commuter footfall</p>
+<p>  - These stores are overexposed to a single segment (Commuters)</p>
+<br>
+<p>  MIXED RESIDENTIAL/COMMERCIAL STORES (12 locations):</p>
+<p>  - Balanced segment mix (Weekend Explorers + Afternoon Treaters + Commuters)</p>
+<p>  - 2% MoM churn rate increase — moderate</p>
+<p>  - More resilient due to segment diversity</p>
+<br>
+<p>  UNIVERSITY CAMPUS STORES (5 locations):</p>
+<p>  - High turnover but high new signup volume</p>
+<p>  - Strong seasonal pattern: dead in summer (Jun-Aug), peak in term time</p>
+<p>  - Net churn offset by new student signups each semester</p>
+<br>
+<p>  SUBURBAN RETAIL PARK STORES (3 locations):</p>
+<p>  - 78% of local loyalty users inactive — highest dormant rate</p>
+<p>  - Correlate with low footfall outside lunch hours (12pm-1:30pm)</p>
+<p>  - These stores have almost no morning or evening trade</p>
+<p>  - Likely candidate for operational review beyond loyalty intervention</p>
+<br>
+<p>Key insight: Suburban stores need a fundamentally different strategy — the</p>
+<p>location may itself be the problem, not the loyalty programme. Business</p>
+<p>district stores need Commuter-specific retention tactics. University stores</p>
+<p>should align campaigns with the academic calendar.</p>
+<br>
+<br>
+<p>================================================================================</p>
+<p>4. REACTIVATION FEASIBILITY SUMMARY</p>
+<p>================================================================================</p>
+<br>
+<p>  Segment           % of Dormant  Push Opt-in  Payment Saved  Feasibility</p>
+<p>  -------           ------------  -----------  -------------  -----------</p>
+<p>  Commuters          38%          45%          61%            MEDIUM</p>
+<p>  Weekend Explorers  26%          71%          38%            HIGH</p>
+<p>  Afternoon Treaters 21%          33%          52%            LOW</p>
+<p>  Once-Only Signups  12%          12%          18%            VERY LOW</p>
+<p>  Former Regulars     3%          78%          85%            HIGH</p>
+<br>
+<p>Recommendation: Prioritise Weekend Explorers and Former Regulars for immediate</p>
+<p>reactivation (highest feasibility). Commuters require channel work (push opt-in</p>
+<p>campaign). Afternoon Treaters need email-led seasonal strategy. Once-Only</p>
+<p>Signups should be excluded from re-engagement — acquisition cost is better</p>
+<p>spent on fresh signups.</p>
+<br>
+<p>================================================================================</p>
+<p>END OF RESEARCHER OUTPUT — HANDOFF TO DESIGNER</p>
+<p>================================================================================</p>
+<br><h3 style="color:#4fc3f7">Agent2 Output</h3>
+<p>================================================================================</p>
+<p>AGENT 2 OUTPUT — PERSONALISED RE-ENGAGEMENT STRATEGY BLUEPRINT</p>
+<p>Agent Archetype: Designer</p>
+<p>Receives from: Researcher (Customer Segmentation and Churn Analysis Report)</p>
+<p>Handoff to: Communicator</p>
+<p>================================================================================</p>
+<br>
+<p>NOTE: All design decisions below are derived exclusively from the Researcher's</p>
+<p>Customer Segmentation and Churn Analysis Report. No external data or assumptions</p>
+<p>are introduced.</p>
+<br>
+<br>
+<p>================================================================================</p>
+<p>1. SEGMENT-SPECIFIC RE-ENGAGEMENT JOURNEYS</p>
+<p>================================================================================</p>
+<br>
+<p>SEGMENT A: COMMUTERS (38%, ~12,000 users)</p>
+<hr>
+<p>Step 1 (Trigger): When a Commuter user has not visited their primary store for</p>
+<p>  14 consecutive weekdays (Mon-Fri), send a push notification on a Monday at</p>
+<p>  7:30am — their habitual visit window. Channel: Push notification (45% reach).</p>
+<p>  For the 55% without push, route to email at 6:30am Monday.</p>
+<p>  [Researcher data: average dormancy is 47 days; catching them at 14 days</p>
+<p>  is early intervention before they become deep-dormant.]</p>
+<br>
+<p>Step 2 (Offer): "Your usual latte is waiting — EUR 2 off your regular latte</p>
+<p>  this week before 9am, auto-applied in-app at [PRIMARY STORE NAME]."</p>
+<p>  Rationale: 62% order regular latte. The offer is product-specific, time-</p>
+<p>  windowed to their routine, and location-tagged to their single preferred</p>
+<p>  store (82% single-store users). Low discount (EUR 2 off EUR 4.20) protects</p>
+<p>  margin while removing a friction point — price objection.</p>
+<br>
+<p>Step 3 (Conversion): On redemption, auto-enrol the user in a 5-visit streak</p>
+<p>  challenge: "Visit 5 times this month and unlock a free pastry." This converts</p>
+<p>  the one-off re-engagement into habit reformation. After 5 visits, they are</p>
+<p>  reclassified as Active and moved to the standard retention programme.</p>
+<br>
+<p>Journalist's note: [SPECULATIVE] element from Researcher — the "changed commute</p>
+<p>  pattern" theory. Validate by A/B testing a variant that asks "New office? Find</p>
+<p>  your nearest Drift Coffee" with a store-finder link, vs. the standard</p>
+<p>  product-offer variant. If the store-finder variant outperforms, the commute-</p>
+<p>  change theory is confirmed.</p>
+<br>
+<br>
+<p>SEGMENT B: WEEKEND EXPLORERS (26%, ~8,200 users)</p>
+<hr>
+<p>Step 1 (Trigger): When a user has missed 3 consecutive weekends, send a push</p>
+<p>  notification on Friday at 5pm — setting up the weekend ahead. Channel: Push</p>
+<p>  notification (71% reach — highest of all segments). This is the strongest</p>
+<p>  channel for this segment.</p>
+<br>
+<p>Step 2 (Offer): "Saturday exploring? Your oat-milk flat white + pastry combo</p>
+<p>  is EUR 2 off at any Drift Coffee this weekend. Try a new location!"</p>
+<p>  Rationale: 34% drink oat-milk flat white, 38% buy pastry+coffee combos.</p>
+<p>  Average spend is EUR 8.70, so EUR 2 off is a ~23% discount — attractive</p>
+<p>  but not margin-destroying. Multi-store redemption (not locked to one location)</p>
+<p>  feeds their exploration behaviour (67% visited 3+ stores).</p>
+<br>
+<p>Step 3 (Conversion): After redemption, prompt a poll: "Which Drift Coffee</p>
+<p>  location is now your favourite weekend spot?" and save the answer. On the</p>
+<p>  next Friday, send a push: "Back to [FAVOURITE STORE] this weekend? Your</p>
+<p>  combo deal is ready." This builds a new weekend routine tied to a specific</p>
+<p>  location, reducing the novelty-chasing that leads to churn.</p>
+<br>
+<br>
+<p>SEGMENT C: AFTERNOON TREATERS (21%, ~6,600 users)</p>
+<hr>
+<p>Step 1 (Trigger): On the first Tuesday of each month (Oct-Mar, their dormant</p>
+<p>  window), send a re-engagement email at 1:30pm. Channel: Email (primary —</p>
+<p>  only 33% have push enabled). This is an EMAIL-LED strategy. Do NOT use push</p>
+<p>  as the primary channel — the Researcher shows 67% of this segment have</p>
+<p>  push disabled. Aggressive push would cause notification fatigue and opt-outs.</p>
+<br>
+<p>Step 2 (Offer): "Winter afternoons are better with a mocha. Enjoy 20% off any</p>
+<p>  hot drink + pastry combo, Tue-Thu, 2pm-4pm, at [NEAREST RESIDENTIAL STORE]."</p>
+<p>  Rationale: 41% drink mocha, 44% buy pastries. The 20% discount on EUR 6.40</p>
+<p>  basket = EUR 1.28 off. Seasonal framing ("winter afternoons") acknowledges</p>
+<p>  their cold-weather dormancy. Time-window matches their habitual 2pm-4pm slot.</p>
+<p>  Store selection uses residential-area mapping (89% visited residential stores).</p>
+<br>
+<p>Step 3 (Conversion): After redemption, invite the user to join the "Afternoon</p>
+<p>  Club" — a low-commitment programme: visit twice per month and receive a free</p>
+<p>  seasonal special on the third visit. This creates a winter routine that</p>
+<p>  bridges them through the dormant season. The seasonal special serves as a</p>
+<p>  product discovery tool.</p>
+<br>
+<p>[Researcher note: 64% winter drop-off is the largest seasonal pattern in the</p>
+<p>  dataset. This journey is designed explicitly as a winter retention bridge.]</p>
+<br>
+<br>
+<p>SEGMENT D: ONCE-ONLY SIGNUPS (12%, ~3,800 users)</p>
+<hr>
+<p>Strategist decision: DO NOT RE-ENGAGE. Exclude from active campaign.</p>
+<br>
+<p>Rationale from Researcher: Push opt-in (12%), payment saved (18%), profile</p>
+<p>  completion (22%), average spend (EUR 3.90), and 144 days since last visit all</p>
+<p>  signal zero relationship. Reactivation cost per user would exceed lifetime</p>
+<p>  value. The Researcher's feasibility rating is VERY LOW.</p>
+<br>
+<p>Instead: Redirect budget to onboarding improvement. The Researcher identified</p>
+<p>  that 91% signed up via in-store QR code and 22% average profile completion.</p>
+<p>  This segment is a symptom of broken onboarding, not a re-engagement target.</p>
+<br>
+<p>Design recommendation (not a re-engagement journey — a separate initiative):</p>
+<p>  Add a mandatory 3-field profile completion step to in-store QR signup flow</p>
+<p>  (favourite drink, preferred store, notification permission). If a user does</p>
+<p>  not complete within 7 days, auto-archive the profile and suppress all</p>
+<p>  marketing. This prevents future Once-Only Signups from inflating the dormant</p>
+<p>  count.</p>
+<br>
+<br>
+<p>SEGMENT E: FORMER REGULARS (3%, ~900 users)</p>
+<hr>
+<p>Step 1 (Trigger): IMMEDIATE. This is the highest-priority segment. For each</p>
+<p>  user where the Researcher has identified a competing café opened within 400m</p>
+<p>  of their primary store, send a push notification within 7 days of the</p>
+<p>  competitor opening. Channel: Push (78% opt-in). For the 22% without push,</p>
+<p>  send email within 24 hours. This is a competitive-defence play.</p>
+<br>
+<p>Step 2 (Offer): "A warm welcome back — your first drink is on us. Any drink,</p>
+<p>  any size, at [PRIMARY STORE]. Just tap to claim."</p>
+<p>  Rationale: These users were loyal for 6+ months, spending EUR 5.80/visit,</p>
+<p>  5+ times/month. Their lifetime value is significant. A free drink (cost:</p>
+<p>  ~EUR 1.20 in ingredients) to win back a user worth EUR 29/month is excellent</p>
+<p>  ROI. The offer must be aggressive because a competitor already has them.</p>
+<p>  Generic discounts will not work against a novel competitor experience —</p>
+<p>  only a zero-cost first step back through the door.</p>
+<br>
+<p>Step 3 (Conversion): After the free drink is redeemed, trigger a "Welcome Back"</p>
+<p>  onboarding sequence (condensed from the standard new-user flow): ask for</p>
+<p>  updated favourite drink, notify of new seasonal menu, and enrol in a</p>
+<p>  10% loyalty bonus for the next 4 visits. The goal is to remind them of</p>
+<p>  the value of Drift Coffee's existing programme in direct comparison to the</p>
+<p>  competitor they tried.</p>
+<br>
+<br>
+<p>================================================================================</p>
+<p>2. PERSONALISATION RULES ENGINE DESIGN</p>
+<p>================================================================================</p>
+<br>
+<p>  Rule# | If (Condition)                          | Then (Action)                        | Segment(s)   | Expected Uplift</p>
+<p>  ------|-----------------------------------------|--------------------------------------|--------------|---------------</p>
+<p>    1   | User has not visited for 14 weekdays    | Send "your usual" product-specific   | Commuters    | +12% visit</p>
+<p>        | AND primary store is in business        | push at 7:30am Monday, tagged to     |              | recovery</p>
+<p>        | district                                | their primary store                  |              |</p>
+<p>  ------|-----------------------------------------|--------------------------------------|--------------|---------------</p>
+<p>    2   | User missed 3 consecutive weekends      | Send Friday 5pm push with combo      | Weekend      | +18% weekend</p>
+<p>        | AND favourite product is in profile     | offer + multi-store redemption       | Explorers    | return rate</p>
+<p>  ------|-----------------------------------------|--------------------------------------|--------------|---------------</p>
+<p>    3   | User in residential-area store          | Route to email journey, suppress     | Afternoon    | +9% winter</p>
+<p>        | AND month is Oct-Mar                   | push entirely. Send monthly          | Treaters     | retention</p>
+<p>        | AND last purchase included mocha or      | afternoon-themed email               |              |</p>
+<p>        | pastry                                   |                                      |              |</p>
+<p>  ------|-----------------------------------------|--------------------------------------|--------------|---------------</p>
+<p>    4   | User signed up via QR code              | If profile &lt;30% complete after       | Once-Only    | -40% future</p>
+<p>        | AND 7 days elapsed since signup         | 7 days, auto-archive profile and     | Signups      | dormant pool</p>
+<p>        | AND profile completion &lt;30%             | suppress all marketing               |              | growth</p>
+<p>  ------|-----------------------------------------|--------------------------------------|--------------|---------------</p>
+<p>    5   | Competing café opened within 400m       | Send free-drink push within 7 days   | Former       | +35% win-back</p>
+<p>        | of primary store                        | of competitor opening. Highest       | Regulars     | rate</p>
+<p>        | AND user had 5+ visits/month            | priority, bypass standard queue      |              |</p>
+<p>  ------|-----------------------------------------|--------------------------------------|--------------|---------------</p>
+<p>    6   | Push notification failed/not delivered  | Fall back to email within 4 hours.   | All segments | +25% effective</p>
+<p>        | (bounce, device offline, permissions    | Do not reattempt push for 72 hours.  |              | reach</p>
+<p>        | revoked)                                |                                      |              |</p>
+<p>  ------|-----------------------------------------|--------------------------------------|--------------|---------------</p>
+<p>    7   | User redeemed any re-engagement offer   | Move user from Dormant to Active-    | All segments | +30% second</p>
+<p>        | AND visited within 7 days of redemption | Recovered segment. Suppress further  |              | visit rate</p>
+<p>        |                                         | re-engagement for 30 days.           |              |</p>
+<br>
+<br>
+<p>================================================================================</p>
+<p>3. CHANNEL STRATEGY</p>
+<p>================================================================================</p>
+<br>
+<p>  Segment           | Primary Channel | Rationale</p>
+<p>  ------------------|----------------|-----------------------------------------</p>
+<p>  Commuters         | Push (45%)     | Push is the only channel that works</p>
+<p>                    | + Email fallback| within their 7:30am routine window.</p>
+<p>                    |                | Email at 6:30am can reach the 55% who</p>
+<p>                    |                | lack push — pre-commute inbox check.</p>
+<p>  ------------------|----------------|-----------------------------------------</p>
+<p>  Weekend Explorers | Push (71%)     | Highest push opt-in. Friday 5pm push</p>
+<p>                    |                | fits their weekend-planning mindset.</p>
+<p>                    |                | Push fatigue risk LOW for this segment</p>
+<p>                    |                | because they are not daily users.</p>
+<p>  ------------------|----------------|-----------------------------------------</p>
+<p>  Afternoon         | Email (100%)   | Only 33% have push. Email is universal.</p>
+<p>  Treaters          |                | Afternoon 1:30pm send fits their</p>
+<p>                    |                | 2pm-4pm visit window. Do NOT use push</p>
+<p>                    |                | — researcher data shows 67% opted out.</p>
+<p>  ------------------|----------------|-----------------------------------------</p>
+<p>  Once-Only Signups | NONE           | Excluded. Any spend here is wasted.</p>
+<p>  ------------------|----------------|-----------------------------------------</p>
+<p>  Former Regulars   | Push (78%)     | Highest engagement signals. Immediate</p>
+<p>                    | + Email (22%)  | push within 7 days of competitor</p>
+<p>                    |                | opening. Time-sensitive defence play.</p>
+<br>
+<br>
+<p>================================================================================</p>
+<p>4. MEASUREMENT FRAMEWORK (first 30 days)</p>
+<p>================================================================================</p>
+<br>
+<p>  KPI                          | Baseline         | Target (30 days)   | Measurement Method</p>
+<p>  -----------------------------|------------------|--------------------|---------------------</p>
+<p>  1. Re-engagement offer       | 0% (no current   | 12% of targeted    | Track unique offer</p>
+<p>     redemption rate           | re-engagement)   | dormant users      | code redemptions vs.</p>
+<p>                               |                  | redeem an offer    | total targeted users</p>
+<p>  -----------------------------|------------------|--------------------|---------------------</p>
+<p>  2. Dormant-to-Active         | 0/month           | 8% of contacted    | Compare pre-campaign</p>
+<p>     conversion rate           | (baseline: no     | users visit at     | dormant count vs. 30-</p>
+<p>                               | campaign)        | least once         | day post-campaign count</p>
+<p>  -----------------------------|------------------|--------------------|---------------------</p>
+<p>  3. Push notification opt-in  | 45% across all    | +5 percentage      | Track opt-in rate</p>
+<p>     uplift (Commuters only)   | dormant users    | points (45%-&gt;50%) | change in Commuter</p>
+<p>                                                  |                    | segment specifically</p>
+<br>
+<br>
+<p>================================================================================</p>
+<p>5. A/B TEST DESIGN</p>
+<p>================================================================================</p>
+<br>
+<p>Test name: "Commuter Re-engagement: Store-Finder vs. Product Offer"</p>
+<br>
+<p>Hypothesis: The Researcher speculated that Commuters went dormant due to changed</p>
+<p>  commute patterns (new office, remote work). If true, a store-finder message</p>
+<p>  will outperform a product-discount message.</p>
+<br>
+<p>Control group (A): 600 randomly selected Commuter-segment dormant users receive</p>
+<p>  the standard Step 2 offer — "Your usual latte is waiting — EUR 2 off this week</p>
+<p>  before 9am at [PRIMARY STORE]."</p>
+<br>
+<p>Variant group (B): 600 randomly selected Commuter-segment dormant users receive</p>
+<p>  an alternative — "New commute? Find your nearest Drift Coffee. Tap to see</p>
+<p>  locations on your route — first drink EUR 2 off."</p>
+<br>
+<p>Sample size: 1,200 users total (600 per variant), drawn from Commuter segment</p>
+<p>  only. Statistical significance requires minimum 5% uplift to detect with 80%</p>
+<p>  power — 600 per group achieves this at 95% confidence.</p>
+<br>
+<p>Success metric: Offer redemption rate (primary). Store-switch rate — whether</p>
+<p>  redeemed at a DIFFERENT store from their previous primary (secondary).</p>
+<br>
+<p>Decision rule: If Variant B outperforms Variant A by &gt;5 percentage points,</p>
+<p>  the commute-change hypothesis is validated and the Commuter journey is</p>
+<p>  permanently updated to the store-finder approach. If Variant A wins, the</p>
+<p>  product-offer approach stands.</p>
+<br>
+<p>================================================================================</p>
+<p>END OF DESIGNER OUTPUT — HANDOFF TO COMMUNICATOR</p>
+<p>================================================================================</p>
+<br><h3 style="color:#4fc3f7">Agent3 Output</h3>
+<p>================================================================================</p>
+<p>AGENT 3 OUTPUT — CUSTOMER COMMUNICATIONS PACKAGE</p>
+<p>Agent Archetype: Communicator</p>
+<p>Receives from: Designer (Personalised Re-engagement Strategy Blueprint)</p>
+<p>Final Output: Ready-to-deploy customer messaging</p>
+<p>================================================================================</p>
+<br>
+<p>NOTE: All copy below is derived exclusively from the Designer's strategy</p>
+<p>blueprint. No offers, discounts, channels, or journeys were invented by this</p>
+<p>agent. Specific offers, timings, and channel choices all come from the Designer.</p>
+<br>
+<br>
+<p>================================================================================</p>
+<p>1. SEGMENT-SPECIFIC MESSAGING</p>
+<p>================================================================================</p>
+<br>
+<hr>
+<p>SEGMENT A: COMMUTERS</p>
+<hr>
+<br>
+<p>PUSH NOTIFICATION (53 chars):</p>
+<p>"Your usual latte is waiting. EUR 2 off this week before 9am."</p>
+<br>
+<p>EMAIL SUBJECT LINE (42 chars):</p>
+<p>"Your morning latte misses you, [FIRST NAME]"</p>
+<br>
+<p>EMAIL BODY:</p>
+<p>"Hi [FIRST NAME], we noticed it's been a little while since your last visit to</p>
+<p>[PRIMARY STORE NAME]. Your regular latte is waiting — and this week, it's EUR 2</p>
+<p>off when you stop by before 9am. Just tap below to claim your offer. See you on</p>
+<p>your way in. — Team Drift."</p>
+<br>
+<p>[CTA button: "Claim EUR 2 off"]</p>
+<p>[Footer: "You received this message because you are a Drift Coffee loyalty</p>
+<p>member. To opt out of re-engagement messages, tap Unsubscribe."]</p>
+<br>
+<p>IN-APP MESSAGE: N/A</p>
+<p>  (Designer specified push + email only for this segment.)</p>
+<br>
+<br>
+<hr>
+<p>SEGMENT B: WEEKEND EXPLORERS</p>
+<hr>
+<br>
+<p>PUSH NOTIFICATION (72 chars):</p>
+<p>"Saturday exploring? Oat-milk flat white + pastry, EUR 2 off. Any location."</p>
+<br>
+<p>EMAIL SUBJECT LINE (44 chars):</p>
+<p>"Your weekend plans just got tastier, [FIRST NAME]"</p>
+<br>
+<p>EMAIL BODY:</p>
+<p>"Hi [FIRST NAME], it's been a few weekends since we saw you. Your favourite</p>
+<p>oat-milk flat white and pastry combo is EUR 2 off this Saturday or Sunday at</p>
+<p>any Drift Coffee — try a location you've not visited yet. Tap to claim your</p>
+<p>weekend treat. — Team Drift."</p>
+<br>
+<p>[CTA button: "Get my weekend combo"]</p>
+<p>[Footer: "You received this message because you are a Drift Coffee loyalty</p>
+<p>member. To opt out of re-engagement messages, tap Unsubscribe."]</p>
+<br>
+<p>IN-APP MESSAGE: N/A</p>
+<p>  (Designer specified push + email for this segment.)</p>
+<br>
+<br>
+<hr>
+<p>SEGMENT C: AFTERNOON TREATERS</p>
+<hr>
+<br>
+<p>PUSH NOTIFICATION: [EMAIL-ONLY ROUTE]</p>
+<p>  (Designer specified: DO NOT send push. 67% have push disabled. Route all</p>
+<p>  communication via email.)</p>
+<br>
+<p>EMAIL SUBJECT LINE (49 chars):</p>
+<p>"Winter afternoons are better with a mocha, [FIRST NAME]"</p>
+<br>
+<p>EMAIL BODY:</p>
+<p>"Hi [FIRST NAME], cold afternoons call for something warm. Enjoy 20% off any</p>
+<p>hot drink and pastry combo at [NEAREST RESIDENTIAL STORE], Tuesday to Thursday,</p>
+<p>2pm to 4pm. Your favourite mocha is waiting. Tap to claim and brighten a winter</p>
+<p>afternoon. — Team Drift."</p>
+<br>
+<p>[CTA button: "Claim 20% off"]</p>
+<p>[Footer: "You received this message because you are a Drift Coffee loyalty</p>
+<p>member. To opt out of re-engagement messages, tap Unsubscribe."]</p>
+<br>
+<p>IN-APP MESSAGE: N/A</p>
+<p>  (Designer specified email only for this segment.)</p>
+<br>
+<br>
+<hr>
+<p>SEGMENT D: ONCE-ONLY SIGNUPS</p>
+<hr>
+<br>
+<p>Designer decision: EXCLUDED from re-engagement campaign.</p>
+<p>No messaging produced. Budget redirected to onboarding improvement.</p>
+<br>
+<p>If a system-generated fallback is required for technical completeness</p>
+<p>(e.g., database flag requires at least one message slot), use the generic</p>
+<p>fallback variant at the end of this package — but do NOT deploy it to this</p>
+<p>segment. The Designer's recommendation is to suppress all marketing.</p>
+<br>
+<br>
+<hr>
+<p>SEGMENT E: FORMER REGULARS</p>
+<hr>
+<br>
+<p>PUSH NOTIFICATION (73 chars):</p>
+<p>"Welcome back, [FIRST NAME]. Your first drink is on us. Any drink, any size."</p>
+<br>
+<p>EMAIL SUBJECT LINE (48 chars):</p>
+<p>"A warm welcome back, [FIRST NAME] — a drink on us"</p>
+<br>
+<p>EMAIL BODY:</p>
+<p>"Hi [FIRST NAME], we've missed you at [PRIMARY STORE NAME]. Your first drink</p>
+<p>back is on us — any drink, any size. No catch, just a warm welcome. Tap below</p>
+<p>to claim and come say hello. — Team Drift."</p>
+<br>
+<p>[CTA button: "Claim my free drink"]</p>
+<p>[Footer: "You received this message because you are a Drift Coffee loyalty</p>
+<p>member. To opt out of re-engagement messages, tap Unsubscribe."]</p>
+<br>
+<p>IN-APP MESSAGE: N/A</p>
+<p>  (Designer specified push + email for this segment.)</p>
+<br>
+<br>
+<p>================================================================================</p>
+<p>2. PERSONALISATION VARIABLE MAP</p>
+<p>================================================================================</p>
+<br>
+<p>  Variable Field          | Used In                    | Example Value</p>
+<p>  ------------------------|----------------------------|-------------------</p>
+<p>  [FIRST NAME]            | Email salutation, push     | Sarah</p>
+<p>                          | (where supported by OS)    |</p>
+<p>  ------------------------|----------------------------|-------------------</p>
+<p>  [PRIMARY STORE NAME]    | Email body, push, CTA      | "Docklands"</p>
+<p>                          | context                    |</p>
+<p>  ------------------------|----------------------------|-------------------</p>
+<p>  [NEAREST RESIDENTIAL    | Email body (Afternoon      | "Ranelagh"</p>
+<p>   STORE]                 | Treaters only)             |</p>
+<p>  ------------------------|----------------------------|-------------------</p>
+<p>  [FAVOURITE PRODUCT]     | Email body, push content   | "oat-milk flat white"</p>
+<p>                          | (Commuters, Afternoon      | "mocha"</p>
+<p>                          | Treaters only)             | "latte"</p>
+<p>  ------------------------|----------------------------|-------------------</p>
+<p>  [OFFER AMOUNT]          | Email body, push, CTA      | "EUR 2 off"</p>
+<p>                          |                            | "20% off"</p>
+<p>                          |                            | "free"</p>
+<p>  ------------------------|----------------------------|-------------------</p>
+<p>  [TIME WINDOW]           | Email body, push           | "before 9am"</p>
+<p>                          |                            | "this weekend"</p>
+<p>                          |                            | "Tue-Thu 2pm-4pm"</p>
+<p>  ------------------------|----------------------------|-------------------</p>
+<p>  [CTA DESTINATION URL]   | CTA button                 | Deep link to in-app</p>
+<p>                          |                            | offer redemption page</p>
+<br>
+<br>
+<p>================================================================================</p>
+<p>3. MESSAGE SEQUENCE TIMELINE</p>
+<p>================================================================================</p>
+<br>
+<p>SEGMENT A: COMMUTERS</p>
+<p>  Day 0 (Mon, 7:30am):  Push notification</p>
+<p>  Day 0 (Mon, 6:30am):  Email (for non-push users — sent BEFORE push window)</p>
+<p>  Day 3 (Thu, 7:30am):  Second push (if no redemption) — "Still time for EUR 2 off"</p>
+<p>  Day 7:                If no action, move to 30-day cooldown</p>
+<br>
+<p>SEGMENT B: WEEKEND EXPLORERS</p>
+<p>  Day 0 (Fri, 5pm):     Push notification</p>
+<p>  Day 0 (Fri, 4pm):     Email (for non-push users)</p>
+<p>  Day 7 (Fri, 5pm):     Second push — "Weekend treat still waiting"</p>
+<p>  Day 14:               If no action, move to 30-day cooldown</p>
+<br>
+<p>SEGMENT C: AFTERNOON TREATERS [EMAIL-ONLY ROUTE]</p>
+<p>  Day 0 (Tue, 1:30pm):  Email</p>
+<p>  Day 7 (Tue, 1:30pm):  Second email — "Your afternoon treat is still here"</p>
+<p>  Day 14 (Tue, 1:30pm): Third email — last in cycle</p>
+<p>  Day 30:               If no action, cooldown until next month</p>
+<br>
+<p>SEGMENT D: ONCE-ONLY SIGNUPS</p>
+<p>  No messages sent. No sequence defined.</p>
+<br>
+<p>SEGMENT E: FORMER REGULARS</p>
+<p>  Day 0 (Immediate):    Push notification (within 7 days of competitor opening)</p>
+<p>  Day 1:                Email (for non-push users)</p>
+<p>  Day 5:                Second push — "Your free drink is waiting"</p>
+<p>  Day 10:               Third push — final reminder before expiry</p>
+<p>  Day 14:               Offer expires. Move to standard Commuter/Explorer journey</p>
+<p>                         based on their historical segment profile.</p>
+<br>
+<br>
+<p>================================================================================</p>
+<p>4. TONE AND VOICE GUIDELINES</p>
+<p>================================================================================</p>
+<br>
+<p>Brand voice: Warm, familiar, and unhurried. Drift Coffee messages read like a</p>
+<p>friendly barista remembering your order, not a corporation sending a promotion.</p>
+<p>Sentences are short. The customer is always addressed by name. Every message</p>
+<p>includes a specific, actionable next step.</p>
+<br>
+<p>Tonal choices by segment:</p>
+<p>  - Commuters: Time-saving, efficient tone. "Your usual" — reinforces routine</p>
+<p>    without adding cognitive load. No exclamation marks.</p>
+<p>  - Weekend Explorers: Playful, discovery-oriented. "Saturday exploring?" —</p>
+<p>    mirrors their own language. Invites rather than instructs.</p>
+<p>  - Afternoon Treaters: Cosy, comfort-focused. "Cold afternoons call for</p>
+<p>    something warm" — acknowledges the weather and positions Drift as refuge.</p>
+<p>  - Former Regulars: Genuine, no-pressure. "We've missed you" — honest and</p>
+<p>    simple. No urgency. The free drink removes all friction.</p>
+<br>
+<br>
+<p>================================================================================</p>
+<p>5. FALLBACK / GENERIC VARIANT</p>
+<p>================================================================================</p>
+<br>
+<p>For users whose data is incomplete (no favourite product, no primary store,</p>
+<p>no purchase history segment assignment):</p>
+<br>
+<p>GENERIC PUSH NOTIFICATION (67 chars):</p>
+<p>"A little something from Drift Coffee. Tap to see what's waiting for you."</p>
+<br>
+<p>GENERIC EMAIL SUBJECT LINE (39 chars):</p>
+<p>"Something is waiting for you at Drift Coffee"</p>
+<br>
+<p>GENERIC EMAIL BODY:</p>
+<p>"Hi there, we noticed you've not been by in a while. We'd love to see you</p>
+<p>again. Tap below to see what's available at your nearest Drift Coffee — a warm</p>
+<p>welcome is guaranteed. — Team Drift."</p>
+<br>
+<p>[CTA button: "Find my nearest Drift Coffee"]</p>
+<p>[Footer: "You received this message because you are a Drift Coffee loyalty</p>
+<p>member. To opt out of re-engagement messages, tap Unsubscribe."]</p>
+<br>
+<p>Designer constraint note: This generic variant should only be deployed to users</p>
+<p>who cannot be assigned to any behavioural segment. If the Researcher's</p>
+<p>segmentation covers all 31,500 dormant users, this fallback will have zero</p>
+<p>recipients and exists only as a safety net for edge cases (e.g., corrupted</p>
+<p>profile data, new signup with zero purchase history who somehow entered the</p>
+<p>dormant pool).</p>
+<br>
+<p>================================================================================</p>
+<p>END OF COMMUNICATOR OUTPUT — FINAL PIPELINE OUTPUT</p>
+<p>================================================================================</p>
+<br></div>
+</div>
+<div class="footer">PG Diploma in AI &amp; Business &middot; National College of Ireland &middot; 2025–2026</div>
+<script>
+function showTab(n) {
+  document.querySelectorAll('.tab-content').forEach((el,i) => el.style.display = i===n ? 'block' : 'none');
+  document.querySelectorAll('.tab').forEach((el,i) => el.classList.toggle('active', i===n));
+}
+</script>
+</body>
+</html>
