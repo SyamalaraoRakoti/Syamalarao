@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CA1 — Three-Agent Pipeline for Drift Coffee Co.</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0d0d0d; color: #d4d4d4; line-height: 1.7; }
+  .pipeline-header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); text-align: center; padding: 2.5rem 1.5rem; border-bottom: 3px solid #e94560; }
+  .pipeline-header h1 { color: #e94560; font-size: 1.8rem; margin-bottom: 0.4rem; }
+  .pipeline-header p { color: #a0a0b8; font-size: 0.95rem; }
+  .pipeline-flow { display: flex; justify-content: center; align-items: center; gap: 0.8rem; padding: 1.5rem; background: #111; flex-wrap: wrap; }
+  .agent-pill { background: #16162a; border: 2px solid #2a2a4a; border-radius: 25px; padding: 0.5rem 1.2rem; font-weight: 600; font-size: 0.9rem; }
+  .agent-pill.r { border-color: #4fc3f7; color: #4fc3f7; }
+  .agent-pill.d { border-color: #ffb74d; color: #ffb74d; }
+  .agent-pill.c { border-color: #81c784; color: #81c784; }
+  .arrow { color: #6c6c8a; font-size: 1.2rem; }
+  .container { max-width: 1000px; margin: 0 auto; padding: 1.5rem; }
+  .handoff-bar { background: #1a1a2e; border: 2px dashed #e94560; border-radius: 8px; padding: 0.6rem 1.2rem; margin: 1.5rem 0; text-align: center; color: #e94560; font-weight: 700; font-size: 0.85rem; }
+  .agent-section { margin-bottom: 2rem; }
+  .agent-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 0.3rem; padding-bottom: 0.4rem; border-bottom: 2px solid; }
+  .agent-title.r { color: #4fc3f7; border-color: #4fc3f7; }
+  .agent-title.d { color: #ffb74d; border-color: #ffb74d; }
+  .agent-title.c { color: #81c784; border-color: #81c784; }
+  .agent-subtitle { color: #6c6c8a; font-size: 0.85rem; margin-bottom: 1rem; }
+  .output-block { background: #16162a; border: 1px solid #2a2a4a; border-radius: 8px; padding: 1.5rem; margin-bottom: 1.2rem; }
+  .output-block h3 { color: #e0e0e0; font-size: 1.05rem; margin-bottom: 0.6rem; }
+  .output-block h4 { color: #9090a8; font-size: 0.9rem; margin: 0.8rem 0 0.4rem; }
+  .output-block ul, .output-block ol { padding-left: 1.5rem; margin: 0.4rem 0; }
+  .output-block li { margin-bottom: 0.2rem; font-size: 0.9rem; }
+  .output-block p { font-size: 0.9rem; margin-bottom: 0.5rem; }
+  .metric-badge { display: inline-block; background: #0f3460; color: #81c784; padding: 0.15rem 0.5rem; border-radius: 3px; font-size: 0.78rem; margin: 0.15rem 0.2rem; }
+  .segment-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin: 0.6rem 0; }
+  .segment-table th { background: #0f3460; color: #e0e0e0; padding: 0.5rem; text-align: left; }
+  .segment-table td { padding: 0.4rem 0.5rem; border-bottom: 1px solid #2a2a4a; }
+  .segment-table tr:hover td { background: #1a1a2e; }
+  .rules-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; margin: 0.6rem 0; }
+  .rules-table th { background: #16213e; color: #ffb74d; padding: 0.4rem; text-align: left; }
+  .rules-table td { padding: 0.35rem 0.4rem; border-bottom: 1px solid #2a2a4a; vertical-align: top; }
+  .msg-box { background: #0a0a0f; border: 1px solid #2a2a4a; border-radius: 6px; padding: 0.8rem 1rem; margin: 0.4rem 0; }
+  .msg-box .label { color: #6c6c8a; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; }
+  .msg-box .content { color: #e0e0e0; font-size: 0.9rem; margin-top: 0.2rem; }
+  .email-only { display: inline-block; background: #e9456022; color: #e94560; padding: 0.1rem 0.4rem; border-radius: 3px; font-size: 0.7rem; font-weight: 700; }
+  .final-output-badge { background: #81c784; color: #0d0d0d; padding: 0.3rem 0.8rem; border-radius: 4px; font-weight: 700; font-size: 0.85rem; display: inline-block; margin: 1rem 0 0.5rem; }
+  .footer { text-align: center; padding: 2rem; color: #6c6c8a; font-size: 0.8rem; border-top: 1px solid #1a1a2e; margin-top: 2rem; }
+</style>
+</head>
+<body>
+
+<div class="pipeline-header">
+  <h1>CA1: Three-Agent AI Pipeline</h1>
+  <p>Drift Coffee Co. &middot; Intelligence & Personalisation Lens &middot; Student ID ...71</p>
+</div>
+
+<div class="pipeline-flow">
+  <span class="agent-pill r">Researcher</span>
+  <span class="arrow">&rarr;</span>
+  <span class="agent-pill d">Designer</span>
+  <span class="arrow">&rarr;</span>
+  <span class="agent-pill c">Communicator</span>
+</div>
+
+<div class="container">
+
+<!-- ============ AGENT 1: RESEARCHER ============ -->
+<div class="agent-section">
+  <div class="agent-title r">Agent 1: Researcher</div>
+  <div class="agent-subtitle">Customer Segmentation and Churn Analysis Report</div>
+
+  <div class="output-block">
+    <h3>1. Behavioural Segments (5 segments, 31,500 dormant users)</h3>
+    <table class="segment-table">
+      <tr><th>Segment</th><th>Size</th><th>Key Traits</th><th>Visit Freq</th><th>Avg Spend</th><th>Push</th><th>Payment</th><th>Feasibility</th></tr>
+      <tr><td><strong>Commuters</strong></td><td>38% (12K)</td><td>Mon-Fri 6:30-8:30am, single store, latte (62%)</td><td>4.1/mo</td><td>EUR 4.20</td><td>45%</td><td>61%</td><td><span class="metric-badge">MEDIUM</span></td></tr>
+      <tr><td><strong>Weekend Explorers</strong></td><td>26% (8.2K)</td><td>Sat-Sun 10am-2pm, 3+ stores, oat flat white (34%)</td><td>2.1/mo</td><td>EUR 8.70</td><td>71%</td><td>38%</td><td><span class="metric-badge">HIGH</span></td></tr>
+      <tr><td><strong>Afternoon Treaters</strong></td><td>21% (6.6K)</td><td>Tue-Thu 2-4pm, residential stores, mocha (41%)</td><td>2.8/mo</td><td>EUR 6.40</td><td>33%</td><td>52%</td><td><span class="metric-badge">LOW</span></td></tr>
+      <tr><td><strong>Once-Only Signups</strong></td><td>12% (3.8K)</td><td>1 visit only, no pattern, QR sign-up (91%)</td><td>1.0 total</td><td>EUR 3.90</td><td>12%</td><td>18%</td><td><span class="metric-badge">VERY LOW</span></td></tr>
+      <tr><td><strong>Former Regulars</strong></td><td>3% (900)</td><td>5+/mo for 6+ months, abrupt stop, competitor defection (71%)</td><td>5.0/mo</td><td>EUR 5.80</td><td>78%</td><td>85%</td><td><span class="metric-badge">HIGH</span></td></tr>
+    </table>
+  </div>
+
+  <div class="output-block">
+    <h3>2. Top 5 Churn Predictors</h3>
+    <ol>
+      <li>Profile completion &lt;30% + no payment saved within 7 days of signup (Very Strong)</li>
+      <li>Competing cafe within 400m + 5+ visits/month (Strong — 71% correlation)</li>
+      <li>Monthly visits drop >50% vs 3-month average (Strong)</li>
+      <li>No weekend visit for 3+ consecutive weekends (Moderate — Weekend Explorers)</li>
+      <li>No visit in November after visiting in October (Moderate — Afternoon Treaters, seasonal)</li>
+    </ol>
+  </div>
+
+  <div class="output-block">
+    <h3>3. Store-Level Variance</h3>
+    <p>Churn is NOT uniform. Business district stores (8) show 4% MoM decline (72% Commuter concentration). Suburban retail parks (3) have 78% dormant rate. University stores (5) have seasonal churn offset by new signups. Mixed residential/commercial stores (12) are most resilient with 2% churn.</p>
+  </div>
+</div>
+
+<!-- HANDOFF 1 -> 2 -->
+<div class="handoff-bar">&#8595; HANDOFF: Researcher output &rarr; Designer input &#8595;</div>
+
+<!-- ============ AGENT 2: DESIGNER ============ -->
+<div class="agent-section">
+  <div class="agent-title d">Agent 2: Designer</div>
+  <div class="agent-subtitle">Personalised Re-engagement Strategy Blueprint</div>
+
+  <div class="output-block">
+    <h3>1. Segment-Specific Re-engagement Journeys</h3>
+
+    <h4>Commuters</h4>
+    <p><strong>Step 1:</strong> 14 weekdays without visit &rarr; Monday 7:30am push<br>
+    <strong>Step 2:</strong> "EUR 2 off your regular latte before 9am at [PRIMARY STORE]"<br>
+    <strong>Step 3:</strong> 5-visit streak challenge &rarr; free pastry on completion</p>
+
+    <h4>Weekend Explorers</h4>
+    <p><strong>Step 1:</strong> 3 missed weekends &rarr; Friday 5pm push<br>
+    <strong>Step 2:</strong> "EUR 2 off oat-milk flat white + pastry, any location this weekend"<br>
+    <strong>Step 3:</strong> Post-redemption poll &rarr; favourite location &rarr; recurring Friday push</p>
+
+    <h4>Afternoon Treaters</h4>
+    <p><strong>Step 1:</strong> First Tuesday monthly (Oct-Mar) &rarr; 1:30pm email [EMAIL-ONLY]<br>
+    <strong>Step 2:</strong> "20% off hot drink + pastry combo, Tue-Thu 2-4pm at [RESIDENTIAL STORE]"<br>
+    <strong>Step 3:</strong> "Afternoon Club" — visit 2x/month, get 3rd seasonal special free</p>
+
+    <h4>Once-Only Signups</h4>
+    <p><strong>Designer decision: DO NOT RE-ENGAGE.</strong> Budget redirected to onboarding fix — mandatory 3-field profile completion at sign-up. Profiles incomplete after 7 days are auto-archived.</p>
+
+    <h4>Former Regulars</h4>
+    <p><strong>Step 1:</strong> Within 7 days of competitor opening &rarr; immediate push<br>
+    <strong>Step 2:</strong> "Your first drink is on us — any drink, any size"<br>
+    <strong>Step 3:</strong> Welcome-back sequence: updated preferences + 10% loyalty bonus for 4 visits</p>
+  </div>
+
+  <div class="output-block">
+    <h3>2. Personalisation Rules Engine</h3>
+    <table class="rules-table">
+      <tr><th>#</th><th>If (Condition)</th><th>Then (Action)</th><th>Segment</th></tr>
+      <tr><td>1</td><td>14 weekdays no visit + business district store</td><td>Monday 7:30am product-specific push</td><td>Commuters</td></tr>
+      <tr><td>2</td><td>3 missed weekends + favourite product in profile</td><td>Friday 5pm combo offer push, multi-store</td><td>Weekend Explorers</td></tr>
+      <tr><td>3</td><td>Residential store + Oct-Mar + last purchase mocha/pastry</td><td>Monthly afternoon email. Suppress push.</td><td>Afternoon Treaters</td></tr>
+      <tr><td>4</td><td>QR sign-up + 7 days + profile &lt;30%</td><td>Auto-archive profile. Suppress marketing.</td><td>Once-Only</td></tr>
+      <tr><td>5</td><td>Competitor within 400m + 5+ visits/month</td><td>Free-drink push within 7 days, highest priority</td><td>Former Regulars</td></tr>
+      <tr><td>6</td><td>Push bounce / permissions revoked</td><td>Fallback to email within 4 hours</td><td>All</td></tr>
+      <tr><td>7</td><td>Offer redeemed + visit within 7 days</td><td>Move to Active-Recovered. 30-day cooldown.</td><td>All</td></tr>
+    </table>
+  </div>
+
+  <div class="output-block">
+    <h3>3. Channel Strategy</h3>
+    <p>Commuters: Push (45%) + Email fallback | Weekend Explorers: Push (71%) | Afternoon Treaters: Email only (67% push-disabled) | Once-Only: None | Former Regulars: Push (78%) + Email (22%)</p>
+  </div>
+
+  <div class="output-block">
+    <h3>4. KPIs (30-day targets)</h3>
+    <p><span class="metric-badge">Redemption rate: 12%</span> <span class="metric-badge">Dormant-to-Active: 8%</span> <span class="metric-badge">Push opt-in uplift (Commuters): +5pp</span></p>
+  </div>
+
+  <div class="output-block">
+    <h3>5. A/B Test</h3>
+    <p><strong>Commuter Re-engagement:</strong> Control (n=600): product offer ("your usual latte") vs. Variant (n=600): store-finder ("new commute? find nearest Drift"). Success metric: redemption rate. Validates commute-change hypothesis.</p>
+  </div>
+</div>
+
+<!-- HANDOFF 2 -> 3 -->
+<div class="handoff-bar">&#8595; HANDOFF: Designer output &rarr; Communicator input &#8595;</div>
+
+<!-- ============ AGENT 3: COMMUNICATOR ============ -->
+<div class="agent-section">
+  <div class="agent-title c">Agent 3: Communicator</div>
+  <div class="agent-subtitle">Customer Communications Package — Ready to Deploy</div>
+
+  <div class="output-block">
+    <h3>Segment A: Commuters</h3>
+    <div class="msg-box">
+      <div class="label">PUSH (53 chars)</div>
+      <div class="content">"Your usual latte is waiting. EUR 2 off this week before 9am."</div>
+    </div>
+    <div class="msg-box">
+      <div class="label">EMAIL SUBJECT (42 chars)</div>
+      <div class="content">"Your morning latte misses you, [FIRST NAME]"</div>
+    </div>
+    <div class="msg-box">
+      <div class="label">EMAIL BODY</div>
+      <div class="content">"Hi [FIRST NAME], we noticed it's been a little while since your last visit to [PRIMARY STORE NAME]. Your regular latte is waiting — and this week, it's EUR 2 off when you stop by before 9am. Just tap below to claim your offer. See you on your way in. — Team Drift."</div>
+    </div>
+  </div>
+
+  <div class="output-block">
+    <h3>Segment B: Weekend Explorers</h3>
+    <div class="msg-box">
+      <div class="label">PUSH (72 chars)</div>
+      <div class="content">"Saturday exploring? Oat-milk flat white + pastry, EUR 2 off. Any location."</div>
+    </div>
+    <div class="msg-box">
+      <div class="label">EMAIL SUBJECT (44 chars)</div>
+      <div class="content">"Your weekend plans just got tastier, [FIRST NAME]"</div>
+    </div>
+    <div class="msg-box">
+      <div class="label">EMAIL BODY</div>
+      <div class="content">"Hi [FIRST NAME], it's been a few weekends since we saw you. Your favourite oat-milk flat white and pastry combo is EUR 2 off this Saturday or Sunday at any Drift Coffee — try a location you've not visited yet. Tap to claim your weekend treat. — Team Drift."</div>
+    </div>
+  </div>
+
+  <div class="output-block">
+    <h3>Segment C: Afternoon Treaters <span class="email-only">EMAIL-ONLY ROUTE</span></h3>
+    <div class="msg-box">
+      <div class="label">PUSH</div>
+      <div class="content" style="color:#e94560;">NOT SENT — Designer specified email-only route. 67% have push disabled.</div>
+    </div>
+    <div class="msg-box">
+      <div class="label">EMAIL SUBJECT (49 chars)</div>
+      <div class="content">"Winter afternoons are better with a mocha, [FIRST NAME]"</div>
+    </div>
+    <div class="msg-box">
+      <div class="label">EMAIL BODY</div>
+      <div class="content">"Hi [FIRST NAME], cold afternoons call for something warm. Enjoy 20% off any hot drink and pastry combo at [NEAREST RESIDENTIAL STORE], Tuesday to Thursday, 2pm to 4pm. Your favourite mocha is waiting. Tap to claim and brighten a winter afternoon. — Team Drift."</div>
+    </div>
+  </div>
+
+  <div class="output-block">
+    <h3>Segment D: Once-Only Signups</h3>
+    <p style="color:#e94560;">EXCLUDED from campaign per Designer decision. Budget redirected to onboarding improvement.</p>
+  </div>
+
+  <div class="output-block">
+    <h3>Segment E: Former Regulars</h3>
+    <div class="msg-box">
+      <div class="label">PUSH (73 chars)</div>
+      <div class="content">"Welcome back, [FIRST NAME]. Your first drink is on us. Any drink, any size."</div>
+    </div>
+    <div class="msg-box">
+      <div class="label">EMAIL SUBJECT (48 chars)</div>
+      <div class="content">"A warm welcome back, [FIRST NAME] — a drink on us"</div>
+    </div>
+    <div class="msg-box">
+      <div class="label">EMAIL BODY</div>
+      <div class="content">"Hi [FIRST NAME], we've missed you at [PRIMARY STORE NAME]. Your first drink back is on us — any drink, any size. No catch, just a warm welcome. Tap below to claim and come say hello. — Team Drift."</div>
+    </div>
+  </div>
+
+  <div class="output-block">
+    <h3>Message Sequence Timeline</h3>
+    <p><strong>Commuters:</strong> Day 0 push (Mon 7:30am) &rarr; Day 3 push &rarr; Day 7 cooldown<br>
+    <strong>Weekend Explorers:</strong> Day 0 push (Fri 5pm) &rarr; Day 7 push &rarr; Day 14 cooldown<br>
+    <strong>Afternoon Treaters:</strong> Day 0 email &rarr; Day 7 email &rarr; Day 14 email &rarr; Day 30 cooldown<br>
+    <strong>Former Regulars:</strong> Day 0 push (immediate) &rarr; Day 5 push &rarr; Day 10 push &rarr; Day 14 expire</p>
+  </div>
+
+  <div class="output-block">
+    <h3>Fallback / Generic Variant (incomplete data)</h3>
+    <div class="msg-box">
+      <div class="label">GENERIC PUSH (67 chars)</div>
+      <div class="content">"A little something from Drift Coffee. Tap to see what's waiting for you."</div>
+    </div>
+    <div class="msg-box">
+      <div class="label">GENERIC EMAIL</div>
+      <div class="content">"Hi there, we noticed you've not been by in a while. We'd love to see you again. Tap below to see what's available at your nearest Drift Coffee — a warm welcome is guaranteed. — Team Drift."</div>
+    </div>
+  </div>
+
+  <div class="final-output-badge">FINAL OUTPUT: Ready-to-Deploy Customer Communications Package</div>
+</div>
+
+</div>
+
+<div class="footer">
+  CA1 Three-Agent Pipeline &middot; Drift Coffee Co. &middot; Student ID ...71 &middot; 2025-2026
+</div>
+
+</body>
+</html>
