@@ -3,62 +3,337 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Temporal Care Restorations — Concierge</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<title>Temporal Care Restorations — Vintage Watch Atelier</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
     --gold: #d4a85c;
     --gold-light: #f0d78c;
     --gold-dark: #9a7028;
-    --bg-deep: #060a14;
-    --bg-card: rgba(14, 18, 34, 0.75);
-    --bg-input: rgba(10, 14, 26, 0.8);
+    --bg: #060a14;
     --text: #e4d9c6;
-    --text-muted: #8a8070;
-    --border: rgba(212, 168, 92, 0.12);
-    --border-glow: rgba(212, 168, 92, 0.35);
-    --user-bg: linear-gradient(135deg, #1a3050, #142840);
-    --assistant-bg: linear-gradient(135deg, rgba(20, 24, 44, 0.9), rgba(16, 20, 36, 0.95));
+    --muted: #8a8070;
+    --border: rgba(212,168,92,0.12);
   }
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
   body {
     font-family: 'Inter', sans-serif;
-    background: var(--bg-deep);
+    background: var(--bg);
     color: var(--text);
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 2rem;
-    overflow: hidden;
+    overflow-x: hidden;
+  }
+
+  /* ── Nav ── */
+  nav {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.2rem 3rem;
+    border-bottom: 1px solid var(--border);
+    background: rgba(6,10,20,0.85);
+    backdrop-filter: blur(20px);
+    position: sticky; top: 0; z-index: 100;
+  }
+  nav .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem; color: var(--gold-light);
+    letter-spacing: 1px;
+  }
+  nav .logo em { font-style: italic; color: var(--gold); }
+  nav .links { display: flex; gap: 2rem; list-style: none; }
+  nav .links a {
+    color: var(--muted); text-decoration: none;
+    font-size: 0.82rem; letter-spacing: 1px; text-transform: uppercase;
+    transition: color 0.3s;
+  }
+  nav .links a:hover { color: var(--gold); }
+
+  /* ── Hero ── */
+  .hero {
+    text-align: center; padding: 6rem 2rem 4rem;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(212,168,92,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse at 20% 100%, rgba(30,58,95,0.08) 0%, transparent 50%);
+  }
+  .hero .tag {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem; color: var(--gold); letter-spacing: 4px;
+    text-transform: uppercase; margin-bottom: 1rem;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 600;
+    color: var(--gold-light); line-height: 1.2;
     position: relative;
   }
+  .hero h1 em { font-style: italic; font-weight: 400; color: var(--gold); }
+  .hero p {
+    max-width: 560px; margin: 1.5rem auto;
+    color: var(--muted); font-size: 1rem; line-height: 1.7;
+  }
+  .hero .hero-btns { margin-top: 2rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+  .hero .btn {
+    padding: 0.8rem 2rem; border-radius: 30px;
+    font-family: 'Inter', sans-serif; font-weight: 500; font-size: 0.85rem;
+    text-decoration: none; letter-spacing: 0.5px;
+    transition: all 0.3s; cursor: pointer; border: none;
+  }
+  .btn-gold {
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    color: #0a0e16; box-shadow: 0 4px 20px rgba(212,168,92,0.2);
+  }
+  .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(212,168,92,0.35); }
+  .btn-outline {
+    background: transparent; border: 1px solid var(--border); color: var(--text);
+  }
+  .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
 
-  /* ── Background Ambience ── */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background:
-      radial-gradient(ellipse at 20% 10%, rgba(212,168,92,0.04) 0%, transparent 55%),
-      radial-gradient(ellipse at 80% 90%, rgba(30,58,95,0.06) 0%, transparent 55%),
-      radial-gradient(ellipse at 50% 50%, rgba(10,14,26,1) 0%, var(--bg-deep) 100%);
-    pointer-events: none;
+  /* ── Stats ── */
+  .stats {
+    display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap;
+    padding: 2rem 2rem 4rem;
+  }
+  .stat { text-align: center; }
+  .stat .num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.4rem; color: var(--gold-light);
+  }
+  .stat .label {
+    font-size: 0.7rem; color: var(--muted);
+    letter-spacing: 2px; text-transform: uppercase; margin-top: 0.2rem;
   }
 
-  /* ── Floating Particles ── */
-  .particles {
-    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  /* ── Sections ── */
+  section { padding: 4rem 2rem; }
+  .container { max-width: 1000px; margin: 0 auto; }
+  .section-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.85rem; color: var(--gold); letter-spacing: 3px;
+    text-transform: uppercase; text-align: center; margin-bottom: 0.5rem;
   }
-  .particle {
-    position: absolute;
-    width: 2px; height: 2px;
-    background: var(--gold);
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem; text-align: center; color: var(--gold-light);
+    margin-bottom: 2.5rem;
+  }
+  .section-title em { font-style: italic; color: var(--gold); }
+
+  /* ── Services Grid ── */
+  .services { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; }
+  .service-card {
+    background: rgba(14,18,34,0.6); border: 1px solid var(--border);
+    border-radius: 14px; padding: 2rem 1.5rem; text-align: center;
+    transition: all 0.3s;
+  }
+  .service-card:hover {
+    border-color: var(--gold); background: rgba(212,168,92,0.04);
+    transform: translateY(-4px);
+  }
+  .service-card .icon { font-size: 2.2rem; margin-bottom: 1rem; }
+  .service-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem; color: var(--gold-light); margin-bottom: 0.5rem;
+  }
+  .service-card p { font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
+
+  /* ── Process ── */
+  .timeline { max-width: 700px; margin: 0 auto; }
+  .step {
+    display: flex; gap: 1.5rem; align-items: flex-start;
+    padding: 1.5rem 0; border-bottom: 1px solid var(--border);
+  }
+  .step-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem; color: var(--gold); min-width: 50px; text-align: center;
+  }
+  .step-content h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem; color: var(--text); margin-bottom: 0.3rem;
+  }
+  .step-content p { font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
+
+  /* ── Footer ── */
+  footer {
+    text-align: center; padding: 3rem 2rem;
+    border-top: 1px solid var(--border);
+    color: var(--muted); font-size: 0.75rem; letter-spacing: 1px;
+  }
+
+  /* ══════════════════════════════════════════
+     CHAT WIDGET
+     ══════════════════════════════════════════ */
+  .chat-fab {
+    position: fixed; bottom: 2rem; right: 2rem;
+    width: 60px; height: 60px;
     border-radius: 50%;
-    animation: floatUp linear infinite;
-    opacity: 0;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    border: none; cursor: pointer;
+    box-shadow: 0 6px 30px rgba(212,168,92,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem;
+    z-index: 999;
+    transition: all 0.3s;
+    animation: fabPulse 2.5s ease-in-out infinite;
+  }
+  @keyframes fabPulse {
+    0%, 100% { box-shadow: 0 6px 30px rgba(212,168,92,0.3); }
+    50%      { box-shadow: 0 6px 40px rgba(212,168,92,0.55); }
+  }
+  .chat-fab:hover {
+    transform: scale(1.08);
+    animation: none;
+    box-shadow: 0 8px 40px rgba(212,168,92,0.5);
+  }
+  .chat-fab .fab-badge {
+    position: absolute; top: -2px; right: -2px;
+    width: 14px; height: 14px;
+    background: #4ade80; border-radius: 50%;
+    border: 2px solid var(--bg);
+    animation: livePulse 1.5s ease-in-out infinite;
+  }
+  @keyframes livePulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: 0.5; transform: scale(1.3); }
+  }
+
+  /* ── Chat Panel ── */
+  .chat-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+    z-index: 1000; display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity 0.35s;
+  }
+  .chat-overlay.open { opacity: 1; pointer-events: all; }
+
+  .chat-panel {
+    width: 100%; max-width: 460px; max-height: 85vh;
+    background: rgba(10,14,28,0.95);
+    backdrop-filter: blur(30px);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    transform: translateY(30px) scale(0.95);
+    transition: transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+  .chat-overlay.open .chat-panel {
+    transform: translateY(0) scale(1);
+  }
+
+  .chat-panel .chat-header {
+    background: linear-gradient(180deg, rgba(20,25,48,0.98), rgba(14,18,34,0.9));
+    padding: 1.2rem 1.4rem; display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .chat-panel .chat-header .title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem; color: var(--gold-light);
+  }
+  .chat-panel .chat-header .close-btn {
+    background: none; border: 1px solid var(--border); color: var(--muted);
+    width: 32px; height: 32px; border-radius: 50%;
+    cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .chat-panel .chat-header .close-btn:hover {
+    border-color: var(--gold); color: var(--gold);
+  }
+
+  .chat-panel .chat-body {
+    height: 380px; overflow-y: auto; padding: 1.2rem;
+    display: flex; flex-direction: column; gap: 0.8rem;
+    background: radial-gradient(circle at 50% 0%, rgba(212,168,92,0.02) 0%, transparent 60%);
+  }
+  .chat-panel .chat-body::-webkit-scrollbar { width: 4px; }
+  .chat-panel .chat-body::-webkit-scrollbar-track { background: transparent; }
+  .chat-panel .chat-body::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--gold-dark), var(--gold)); border-radius: 10px;
+  }
+
+  .msg {
+    max-width: 84%; padding: 0.7rem 1rem;
+    border-radius: 14px; line-height: 1.6; font-size: 0.85rem;
+  }
+  .msg.user {
+    align-self: flex-end;
+    background: linear-gradient(135deg, #1a3050, #142840);
+    color: #d4dce8; border-bottom-right-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.05);
+    animation: slideR 0.3s ease;
+  }
+  .msg.assistant {
+    align-self: flex-start;
+    background: rgba(16,20,38,0.9);
+    color: var(--text); border: 1px solid var(--border);
+    border-bottom-left-radius: 4px;
+    animation: slideL 0.35s ease;
+  }
+  @keyframes slideR { from { opacity:0; transform:translateX(16px); } to { opacity:1; transform:translateX(0); } }
+  @keyframes slideL { from { opacity:0; transform:translateX(-12px); } to { opacity:1; transform:translateX(0); } }
+
+  .msg.assistant .sender {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.6rem; color: var(--gold); letter-spacing: 0.6px;
+    margin-bottom: 0.2rem; text-transform: uppercase;
+  }
+  .msg .time {
+    font-size: 0.55rem; color: var(--muted); margin-top: 0.25rem; text-align: right;
+  }
+
+  .typing-indicator {
+    align-self: flex-start; display: flex; align-items: center; gap: 4px;
+    padding: 0.6rem 1rem; background: rgba(16,20,38,0.9);
+    border: 1px solid var(--border); border-radius: 14px; border-bottom-left-radius: 4px;
+  }
+  .typing-indicator .gear {
+    width: 9px; height: 9px; border: 1.5px solid var(--gold);
+    border-radius: 50%; border-top-color: transparent;
+    animation: gearSpin 0.8s linear infinite;
+  }
+  .typing-indicator .gear:nth-child(2) { animation-delay:0.15s; width:7px;height:7px; }
+  .typing-indicator .gear:nth-child(3) { animation-delay:0.3s; width:5px;height:5px; }
+  @keyframes gearSpin { to { transform: rotate(360deg); } }
+
+  .chat-panel .chat-input-area {
+    display: flex; padding: 0.8rem 1rem 1rem;
+    background: rgba(10,14,28,0.95); border-top: 1px solid var(--border); gap: 0.5rem;
+  }
+  .chat-panel .chat-input-area input {
+    flex: 1; padding: 0.7rem 1rem; border-radius: 12px;
+    border: 1px solid var(--border); background: rgba(6,10,20,0.8);
+    color: var(--text); font-family: 'Inter', sans-serif; font-size: 0.84rem; outline: none;
+    transition: border-color 0.25s;
+  }
+  .chat-panel .chat-input-area input:focus { border-color: var(--gold); }
+  .chat-panel .chat-input-area input::placeholder { color: #5a5548; font-style: italic; }
+  .chat-panel .chat-input-area button {
+    padding: 0.7rem 1.2rem; border-radius: 12px; border: none;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    color: #0a0e16; font-weight: 600; font-size: 0.8rem; cursor: pointer;
+    letter-spacing: 0.5px; transition: all 0.2s;
+  }
+  .chat-panel .chat-input-area button:hover { box-shadow: 0 4px 20px rgba(212,168,92,0.3); }
+  .chat-panel .chat-input-area button:active { transform: scale(0.96); }
+  .chat-panel .chat-input-area button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .chat-panel .status-bar {
+    text-align: center; padding: 0.3rem;
+    font-size: 0.6rem; color: var(--muted);
+    background: rgba(6,10,20,0.8); letter-spacing: 1px;
+    text-transform: uppercase; border-top: 1px solid rgba(255,255,255,0.02);
+  }
+  .status-bar .dot { display: inline-block; width: 5px; height: 5px; border-radius: 50%; margin-right: 0.3rem; vertical-align: middle; }
+  .status-bar .dot.live { background: #4ade80; box-shadow: 0 0 6px #4ade80; animation: livePulse 2s ease-in-out infinite; }
+  .status-bar .dot.demo { background: var(--gold); box-shadow: 0 0 6px var(--gold); }
+
+  /* ── Particles ── */
+  .particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+  .particle {
+    position: absolute; background: var(--gold); border-radius: 50%;
+    animation: floatUp linear infinite; opacity: 0;
   }
   @keyframes floatUp {
     0%   { transform: translateY(100vh) scale(0); opacity: 0; }
@@ -67,535 +342,277 @@
     100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
   }
 
-  /* ── Watch Face Decoration ── */
-  .watch-decor {
-    position: fixed;
-    top: 2.5rem; right: 3rem;
-    width: 90px; height: 90px;
-    border: 2px solid rgba(212,168,92,0.15);
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.5;
-  }
-  .watch-decor::before {
-    content: '';
-    position: absolute;
-    inset: 6px;
-    border: 1px solid rgba(212,168,92,0.08);
-    border-radius: 50%;
-  }
-  .watch-decor .hand {
-    position: absolute;
-    bottom: 50%; left: 50%;
-    transform-origin: bottom center;
-    background: rgba(212,168,92,0.4);
-    border-radius: 1px;
-  }
-  .watch-decor .hand.hour {
-    width: 1.5px; height: 18px;
-    animation: tickHour 60s linear infinite;
-  }
-  .watch-decor .hand.minute {
-    width: 1px; height: 28px;
-    animation: tickMinute 10s linear infinite;
-  }
-  .watch-decor .hand.second {
-    width: 0.5px; height: 32px;
-    background: rgba(212,168,92,0.6);
-    animation: tickSecond 1s steps(60) infinite;
-  }
-  .watch-decor .center-dot {
-    position: absolute;
-    width: 4px; height: 4px;
-    background: var(--gold);
-    border-radius: 50%;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    box-shadow: 0 0 6px rgba(212,168,92,0.5);
-  }
-  @keyframes tickHour   { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-  @keyframes tickMinute { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-  @keyframes tickSecond { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-  /* ── Main Chat Card ── */
-  .chat-wrapper {
-    position: relative;
-    z-index: 1;
-    width: 100%;
-    max-width: 500px;
-    background: var(--bg-card);
-    backdrop-filter: blur(30px);
-    -webkit-backdrop-filter: blur(30px);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    box-shadow:
-      0 8px 40px rgba(0,0,0,0.6),
-      0 0 0 1px var(--border),
-      inset 0 1px 0 rgba(255,255,255,0.02);
-    overflow: hidden;
-    animation: cardReveal 0.8s cubic-bezier(0.22, 0.61, 0.36, 1);
-  }
-  @keyframes cardReveal {
-    from { opacity: 0; transform: translateY(20px) scale(0.98); }
-    to   { opacity: 1; transform: translateY(0) scale(1); }
-  }
-
-  /* ── Header ── */
-  .chat-header {
-    background: linear-gradient(180deg, rgba(20,25,48,0.95), rgba(14,18,34,0.9));
-    padding: 1.8rem 1.6rem 1.4rem;
-    text-align: center;
-    border-bottom: 1px solid var(--border);
-    position: relative;
-    overflow: hidden;
-  }
-  .chat-header::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 20%; right: 20%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--gold-dark), transparent);
-  }
-  .chat-header .brand-icon {
-    font-size: 1.6rem;
-    margin-bottom: 0.3rem;
-    display: inline-block;
-    animation: gentlePulse 3s ease-in-out infinite;
-  }
-  @keyframes gentlePulse {
-    0%, 100% { transform: scale(1); opacity: 0.8; }
-    50%      { transform: scale(1.08); opacity: 1; }
-  }
-  .chat-header .brand {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: var(--gold-light);
-    letter-spacing: 0.8px;
-    text-shadow: 0 0 30px rgba(212,168,92,0.2);
-  }
-  .chat-header .brand em {
-    font-style: italic;
-    font-weight: 400;
-    color: var(--gold);
-  }
-  .chat-header .subtitle {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    letter-spacing: 2.5px;
-    text-transform: uppercase;
-    margin-top: 0.2rem;
-  }
-
-  /* ── Chat Body ── */
-  .chat-body {
-    height: 440px;
-    overflow-y: auto;
-    padding: 1.4rem 1.2rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    background:
-      radial-gradient(circle at 50% 0%, rgba(212,168,92,0.02) 0%, transparent 60%);
-    scroll-behavior: smooth;
-  }
-  .chat-body::-webkit-scrollbar { width: 5px; }
-  .chat-body::-webkit-scrollbar-track { background: transparent; margin: 4px 0; }
-  .chat-body::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, var(--gold-dark), var(--gold));
-    border-radius: 10px;
-  }
-
-  /* ── Messages ── */
-  .msg {
-    max-width: 84%;
-    padding: 0.8rem 1.1rem;
-    border-radius: 16px;
-    line-height: 1.6;
-    font-size: 0.88rem;
-    position: relative;
-  }
-
-  .msg.user {
-    align-self: flex-end;
-    background: var(--user-bg);
-    color: #d4dce8;
-    border-bottom-right-radius: 6px;
-    border: 1px solid rgba(255,255,255,0.06);
-    animation: msgInRight 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
-    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
-  }
-  @keyframes msgInRight {
-    from { opacity: 0; transform: translateX(20px); }
-    to   { opacity: 1; transform: translateX(0); }
-  }
-
-  .msg.assistant {
-    align-self: flex-start;
-    background: var(--assistant-bg);
-    color: var(--text);
-    border: 1px solid var(--border);
-    border-bottom-left-radius: 6px;
-    animation: msgInLeft 0.4s cubic-bezier(0.22, 0.61, 0.36, 1);
-    box-shadow: 0 2px 12px rgba(0,0,0,0.25);
-  }
-  @keyframes msgInLeft {
-    from { opacity: 0; transform: translateX(-16px); }
-    to   { opacity: 1; transform: translateX(0); }
-  }
-
-  .msg.assistant .sender {
-    font-family: 'Playfair Display', serif;
-    font-size: 0.62rem;
-    color: var(--gold);
-    letter-spacing: 0.8px;
-    margin-bottom: 0.25rem;
-    text-transform: uppercase;
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-  }
-  .msg.assistant .sender::before {
-    content: '';
-    display: inline-block;
-    width: 6px; height: 6px;
-    background: var(--gold);
-    border-radius: 50%;
-    box-shadow: 0 0 6px var(--gold);
-  }
-
-  /* ── Typing Indicator ── */
-  .typing-indicator {
-    align-self: flex-start;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    padding: 0.7rem 1.1rem;
-    background: var(--assistant-bg);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    border-bottom-left-radius: 6px;
-    animation: msgInLeft 0.3s ease;
-  }
-  .typing-indicator .gear {
-    width: 10px; height: 10px;
-    border: 1.5px solid var(--gold);
-    border-radius: 50%;
-    border-top-color: transparent;
-    animation: gearSpin 0.8s linear infinite;
-  }
-  .typing-indicator .gear:nth-child(2) { animation-delay: 0.15s; width: 8px; height: 8px; }
-  .typing-indicator .gear:nth-child(3) { animation-delay: 0.3s; width: 6px; height: 6px; }
-  @keyframes gearSpin { to { transform: rotate(360deg); } }
-
-  /* ── Input Area ── */
-  .chat-input-area {
-    display: flex;
-    padding: 1rem 1.2rem 1.2rem;
-    background: rgba(12,16,28,0.9);
-    border-top: 1px solid var(--border);
-    gap: 0.6rem;
-    position: relative;
-  }
-  .chat-input-area::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 20%; right: 20%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(212,168,92,0.2), transparent);
-  }
-  .chat-input-area input {
-    flex: 1;
-    padding: 0.8rem 1.1rem;
-    border-radius: 14px;
-    border: 1px solid var(--border);
-    background: var(--bg-input);
-    color: var(--text);
-    font-family: 'Inter', sans-serif;
-    font-size: 0.88rem;
-    outline: none;
-    transition: all 0.25s ease;
-  }
-  .chat-input-area input:focus {
-    border-color: var(--border-glow);
-    box-shadow: 0 0 20px rgba(212,168,92,0.08), inset 0 0 20px rgba(212,168,92,0.02);
-  }
-  .chat-input-area input::placeholder { color: #5a5548; font-style: italic; }
-
-  /* ── Send Button ── */
-  .chat-input-area button {
-    padding: 0.8rem 1.4rem;
-    border-radius: 14px;
-    border: none;
-    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-    color: #0a0e16;
-    font-family: 'Inter', sans-serif;
-    font-weight: 600;
-    font-size: 0.85rem;
-    letter-spacing: 0.5px;
-    cursor: pointer;
-    transition: all 0.25s ease;
-    position: relative;
-    overflow: hidden;
-  }
-  .chat-input-area button::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, transparent, rgba(255,255,255,0.15), transparent);
-    transform: translateX(-100%);
-    transition: transform 0.5s;
-  }
-  .chat-input-area button:hover::after { transform: translateX(100%); }
-  .chat-input-area button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 24px rgba(212,168,92,0.3);
-  }
-  .chat-input-area button:active { transform: scale(0.96); }
-  .chat-input-area button:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
-  }
-
-  /* ── Status Bar ── */
-  .status-bar {
-    text-align: center;
-    padding: 0.35rem 0.5rem;
-    font-size: 0.65rem;
-    color: var(--text-muted);
-    background: rgba(8,10,20,0.8);
-    letter-spacing: 0.8px;
-    text-transform: uppercase;
-    border-top: 1px solid rgba(255,255,255,0.02);
-  }
-  .status-bar .dot {
-    display: inline-block;
-    width: 5px; height: 5px;
-    border-radius: 50%;
-    margin-right: 0.3rem;
-    vertical-align: middle;
-  }
-  .status-bar .dot.live {
-    background: #4ade80;
-    box-shadow: 0 0 6px #4ade80;
-    animation: livePulse 2s ease-in-out infinite;
-  }
-  .status-bar .dot.demo {
-    background: var(--gold);
-    box-shadow: 0 0 6px var(--gold);
-  }
-  @keyframes livePulse {
-    0%, 100% { opacity: 1; }
-    50%      { opacity: 0.4; }
-  }
-
-  /* ── Suggested Chips ── */
-  .suggestions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-    padding: 0.4rem 1.2rem 0;
-    background: rgba(12,16,28,0.9);
-  }
-  .suggestions .chip {
-    font-size: 0.7rem;
-    padding: 0.35rem 0.8rem;
-    border-radius: 20px;
-    border: 1px solid var(--border);
-    background: rgba(212,168,92,0.04);
-    color: var(--text-muted);
-    cursor: pointer;
-    transition: all 0.2s;
-    white-space: nowrap;
-    font-family: 'Inter', sans-serif;
-  }
-  .suggestions .chip:hover {
-    border-color: var(--border-glow);
-    background: rgba(212,168,92,0.1);
-    color: var(--gold-light);
-  }
-
-  /* ── Timestamp ── */
-  .msg .time {
-    font-size: 0.6rem;
-    color: var(--text-muted);
-    margin-top: 0.3rem;
-    text-align: right;
-    letter-spacing: 0.5px;
-  }
-
-  @media (max-width: 520px) {
-    body { padding: 0.5rem; }
-    .chat-wrapper { border-radius: 12px; max-width: 100%; }
-    .chat-body { height: 380px; }
-    .chat-header { padding: 1.2rem 1rem 1rem; }
-    .chat-header .brand { font-size: 1.2rem; }
-    .watch-decor { display: none; }
+  @media (max-width: 600px) {
+    nav { padding: 1rem 1.2rem; }
+    nav .links { gap: 1rem; }
+    .hero { padding: 3rem 1rem 2rem; }
+    .chat-panel { max-width: 100%; border-radius: 16px 16px 0 0; max-height: 100vh; }
+    .chat-overlay { align-items: flex-end; }
+    .chat-overlay.open .chat-panel { transform: none; }
+    .chat-overlay .chat-panel { transform: translateY(100%); border-radius: 16px 16px 0 0; }
+    @keyframes slideUpMobile { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    .chat-overlay.open .chat-panel { animation: slideUpMobile 0.35s ease forwards; }
   }
 </style>
 </head>
 <body>
 
-<!-- Floating Gold Dust -->
+<!-- Particles -->
 <div class="particles" id="particles"></div>
 
-<!-- Decorative Watch Face -->
-<div class="watch-decor">
-  <div class="hand hour"></div>
-  <div class="hand minute"></div>
-  <div class="hand second"></div>
-  <div class="center-dot"></div>
+<!-- NAV -->
+<nav>
+  <div class="logo"><em>Temporal</em> Care</div>
+  <ul class="links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="tag">Est. 1974 &middot; Geneva</div>
+  <h1>Where <em>Time</em> Finds<br> Its Second Breath</h1>
+  <p>
+    For five decades, Temporal Care Restorations has been the trusted atelier for
+    the world's most discerning collectors. We restore vintage mechanical timepieces
+    with obsessive precision — honouring the past, perfecting the present.
+  </p>
+  <div class="hero-btns">
+    <button class="btn btn-gold" onclick="openChat()">Speak to Concierge</button>
+    <a href="#services" class="btn btn-outline">Our Services</a>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat"><div class="num">12,000+</div><div class="label">Restorations</div></div>
+  <div class="stat"><div class="num">50</div><div class="label">Years</div></div>
+  <div class="stat"><div class="num">47</div><div class="label">Point Inspection</div></div>
+  <div class="stat"><div class="num">14</div><div class="label">Master Horologists</div></div>
 </div>
 
-<!-- Chat Widget -->
-<div class="chat-wrapper">
-  <div class="chat-header">
-    <div class="brand-icon">&#x1F565;</div>
-    <div class="brand"><em>Temporal</em> Care Restorations</div>
-    <div class="subtitle">Haute Horlogerie Concierge</div>
-  </div>
-
-  <div class="suggestions" id="suggestions">
-    <span class="chip" onclick="quickAsk(this)">Repair status?</span>
-    <span class="chip" onclick="quickAsk(this)">Estimated completion?</span>
-    <span class="chip" onclick="quickAsk(this)">Restoration process?</span>
-    <span class="chip" onclick="quickAsk(this)">Shipping options?</span>
-  </div>
-
-  <div class="chat-body" id="chatBody">
-    <div class="msg assistant">
-      <div class="sender">Concierge</div>
-      Good day. I am your personal concierge at Temporal Care Restorations. How may I assist you with your timepiece today?
-      <div class="time" id="initTime"></div>
+<!-- SERVICES -->
+<section id="services">
+  <div class="container">
+    <div class="section-label">What We Offer</div>
+    <h2 class="section-title">Services <em>of Distinction</em></h2>
+    <div class="services">
+      <div class="service-card">
+        <div class="icon">&#x1F570;</div>
+        <h3>Movement Overhaul</h3>
+        <p>Complete disassembly, ultrasonic cleaning, and hand-oiling of every jewel and pivot.</p>
+      </div>
+      <div class="service-card">
+        <div class="icon">&#x2728;</div>
+        <h3>Case &amp; Dial Restoration</h3>
+        <p>Period-correct refinishing, hand-polishing, and dial preservation using archival techniques.</p>
+      </div>
+      <div class="service-card">
+        <div class="icon">&#x1F48E;</div>
+        <h3>Jewel &amp; Crystal Fitting</h3>
+        <p>Sourcing rare vintage crystals and jewels from our network of Swiss suppliers.</p>
+      </div>
+      <div class="service-card">
+        <div class="icon">&#x1F4DC;</div>
+        <h3>Authentication &amp; Appraisal</h3>
+        <p>Forensic provenance research and certified valuation for insurance and estate planning.</p>
+      </div>
     </div>
   </div>
+</section>
 
-  <div class="chat-input-area">
-    <input type="text" id="userInput" placeholder="Ask about your timepiece..." onkeydown="if(event.key==='Enter')sendMessage()" autofocus>
-    <button id="sendBtn" onclick="sendMessage()">Send</button>
+<!-- PROCESS -->
+<section id="process">
+  <div class="container">
+    <div class="section-label">The Journey</div>
+    <h2 class="section-title">Our <em>Restoration</em> Process</h2>
+    <div class="timeline">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-content">
+          <h4>Consultation &amp; Assessment</h4>
+          <p>Share your timepiece's story. Our specialists perform a thorough 47-point diagnostic to map the restoration path.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-content">
+          <h4>Disassembly &amp; Cataloguing</h4>
+          <p>Every component is photographed, documented, and catalogued before careful disassembly begins.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-content">
+          <h4>Restoration &amp; Refinishing</h4>
+          <p>Our master horologists restore each component using period-correct tools, materials, and techniques.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-content">
+          <h4>Assembly &amp; Calibration</h4>
+          <p>Precision reassembly followed by amplitude, beat error, and timing calibration to COSC standards.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">05</div>
+        <div class="step-content">
+          <h4>Final Inspection &amp; Delivery</h4>
+          <p>A senior horologist personally verifies every detail before your timepiece is returned, ready for another generation.</p>
+        </div>
+      </div>
+    </div>
   </div>
+</section>
 
-  <div class="status-bar" id="statusBar">
-    <span class="dot demo"></span> Demo Mode — Offline
+<footer id="contact">
+  <p>Temporal Care Restorations &middot; Rue du Rhône 42, 1204 Geneva, Switzerland</p>
+  <p style="margin-top:0.4rem;">&copy; 2026. Crafting time, one movement at a time.</p>
+</footer>
+
+<!-- ═══════════ CHAT FAB ═══════════ -->
+<button class="chat-fab" id="chatFab" onclick="openChat()" title="Speak to Concierge">
+  &#x1F4AC;
+  <span class="fab-badge" id="fabBadge"></span>
+</button>
+
+<!-- ═══════════ CHAT OVERLAY ═══════════ -->
+<div class="chat-overlay" id="chatOverlay">
+  <div class="chat-panel" id="chatPanel">
+    <div class="chat-header">
+      <span class="title">&#x1F565; Concierge</span>
+      <button class="close-btn" onclick="closeChat()">&times;</button>
+    </div>
+
+    <div class="chat-body" id="chatBody">
+      <div class="msg assistant">
+        <div class="sender">Concierge</div>
+        Good day. I am your personal concierge at Temporal Care Restorations. How may I assist you with your timepiece today?
+        <div class="time" id="initTime"></div>
+      </div>
+    </div>
+
+    <div class="chat-input-area">
+      <input type="text" id="userInput" placeholder="Ask about your timepiece..." onkeydown="if(event.key==='Enter')sendMessage()">
+      <button id="sendBtn" onclick="sendMessage()">Send</button>
+    </div>
+
+    <div class="status-bar" id="statusBar">
+      <span class="dot demo"></span> Demo Mode
+    </div>
   </div>
 </div>
 
 <script>
 // ── Particles ──
-(function spawnParticles() {
-  const container = document.getElementById('particles');
-  for (let i = 0; i < 30; i++) {
-    const p = document.createElement('div');
-    p.className = 'particle';
-    p.style.left = Math.random() * 100 + '%';
-    p.style.animationDuration = (8 + Math.random() * 16) + 's';
-    p.style.animationDelay = Math.random() * 12 + 's';
-    p.style.width = p.style.height = (1 + Math.random() * 2.5) + 'px';
-    container.appendChild(p);
+(function(){
+  const c = document.getElementById('particles');
+  for(let i=0;i<25;i++){
+    const p=document.createElement('div');
+    p.className='particle';
+    p.style.left=Math.random()*100+'%';
+    p.style.animationDuration=(8+Math.random()*16)+'s';
+    p.style.animationDelay=Math.random()*12+'s';
+    p.style.width=p.style.height=(1+Math.random()*2.5)+'px';
+    c.appendChild(p);
   }
 })();
 
-// ── Init Time ──
-function fmtTime() {
-  const d = new Date();
-  return d.getHours().toString().padStart(2,'0') + ':' +
-         d.getMinutes().toString().padStart(2,'0');
+document.getElementById('initTime').textContent = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+
+// ── Chat Open/Close ──
+function openChat(){
+  document.getElementById('chatOverlay').classList.add('open');
+  document.getElementById('chatFab').style.opacity='0';
+  setTimeout(()=>document.getElementById('userInput').focus(), 400);
 }
-document.getElementById('initTime').textContent = fmtTime();
+function closeChat(){
+  document.getElementById('chatOverlay').classList.remove('open');
+  document.getElementById('chatFab').style.opacity='1';
+}
+
+// ── ESC to close ──
+document.addEventListener('keydown', e => {
+  if (e.key==='Escape') closeChat();
+});
 
 // ── Demo Responses ──
-const DEMO_RESPONSES = [
-  "Thank you for your inquiry. Your <strong>Patek Philippe Calatrava</strong> (Ref. 5196) is currently in <em>Phase 3</em> of our restoration — the movement overhaul is complete, and our master watchmaker is now hand-polishing the case. Estimated completion: <strong>4–6 business days</strong>.",
-  "I understand the anticipation. Your <strong>Rolex Submariner</strong> (Ref. 5513) is mid-restoration on day 7 of 14. The dial work is delicate and demands patience — every detail is being handled with the utmost precision.",
-  "We source exclusively period-correct components from our Swiss partners. The mainspring for your <strong>Omega Speedmaster</strong> has been ordered and should arrive within 48 hours. Shall I notify you when it lands?",
-  "Your <strong>Heuer Autavia</strong> chronograph is queued for its final quality inspection. Mr. Laurent, our senior horologist, will personally verify the amplitude and beat error within 2 days.",
-  "Your <strong>Jaeger-LeCoultre Reverso</strong> is in excellent hands. The caseback engraving has been preserved beautifully, and the new alligator strap has been fitted. Would you prefer collection in person, or insured shipping?",
-  "Every piece at Temporal Care passes a <strong>47-point inspection</strong> before leaving the atelier. Your watch is at checkpoint 34 — we take immense pride in our craft. Thank you for your patience.",
-  "Wonderful news — your <strong>Breitling Navitimer</strong> restoration is complete and certified. It now rests in our secure vault. Shall we schedule your collection?"
+const DEMO = [
+  "Thank you for your inquiry. Your <strong>Patek Philippe Calatrava</strong> (Ref. 5196) is in Phase 3 of restoration — the movement overhaul is complete and our master watchmaker is hand-polishing the case. Estimated completion: <strong>4–6 business days</strong>.",
+  "Your <strong>Rolex Submariner</strong> (Ref. 5513) is mid-restoration on day 7 of 14. The dial work is delicate — every detail is handled with utmost precision.",
+  "We source exclusively period-correct components from our Swiss partners. The mainspring for your <strong>Omega Speedmaster</strong> has been ordered — arrival in 48 hours. Shall I notify you?",
+  "Your <strong>Heuer Autavia</strong> chronograph is queued for final quality inspection. Mr. Laurent, our senior horologist, will personally verify the amplitude and beat error within 2 days.",
+  "Your <strong>Jaeger-LeCoultre Reverso</strong> is in excellent hands. The caseback engraving is preserved, and the new alligator strap has been fitted. Would you prefer collection or insured shipping?",
+  "Every piece passes a <strong>47-point inspection</strong> before leaving the atelier. Your watch is at checkpoint 34. We take immense pride in our craft.",
+  "Wonderful news — your <strong>Breitling Navitimer</strong> restoration is complete and certified. It rests in our secure vault. Shall we schedule your collection?"
 ];
+let di=0;
 
-let demoIndex = 0;
-
-// ── Helpers ──
-function addMessage(text, sender) {
-  const body = document.getElementById('chatBody');
-  const msg = document.createElement('div');
-  msg.className = 'msg ' + sender;
-
-  if (sender === 'assistant') {
-    msg.innerHTML = '<div class="sender">Concierge</div>' + text + '<div class="time">' + fmtTime() + '</div>';
+function addMsg(text, sender){
+  const body=document.getElementById('chatBody');
+  const m=document.createElement('div');
+  m.className='msg '+sender;
+  const t= new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  if(sender==='assistant'){
+    m.innerHTML='<div class="sender">Concierge</div>'+text+'<div class="time">'+t+'</div>';
   } else {
-    msg.innerHTML = text + '<div class="time">' + fmtTime() + '</div>';
+    m.innerHTML=text+'<div class="time">'+t+'</div>';
   }
-
-  body.appendChild(msg);
-  body.scrollTop = body.scrollHeight;
+  body.appendChild(m);
+  body.scrollTop=body.scrollHeight;
 }
 
-function showTyping() {
-  const body = document.getElementById('chatBody');
-  const el = document.createElement('div');
-  el.className = 'typing-indicator';
-  el.id = 'typingIndicator';
-  el.innerHTML = '<div class="gear"></div><div class="gear"></div><div class="gear"></div>';
+function showTyping(){
+  const body=document.getElementById('chatBody');
+  const el=document.createElement('div');
+  el.className='typing-indicator'; el.id='typingIndicator';
+  el.innerHTML='<div class="gear"></div><div class="gear"></div><div class="gear"></div>';
   body.appendChild(el);
-  body.scrollTop = body.scrollHeight;
+  body.scrollTop=body.scrollHeight;
+}
+function hideTyping(){
+  const el=document.getElementById('typingIndicator');
+  if(el)el.remove();
 }
 
-function hideTyping() {
-  const el = document.getElementById('typingIndicator');
-  if (el) el.remove();
-}
+async function sendMessage(){
+  const inp=document.getElementById('userInput');
+  const btn=document.getElementById('sendBtn');
+  const st=document.getElementById('statusBar');
+  const txt=inp.value.trim();
+  if(!txt)return;
 
-// ── Quick Ask ──
-function quickAsk(chip) {
-  document.getElementById('userInput').value = chip.textContent;
-  sendMessage();
-}
-
-// ── Send ──
-async function sendMessage() {
-  const input = document.getElementById('userInput');
-  const btn = document.getElementById('sendBtn');
-  const status = document.getElementById('statusBar');
-  const text = input.value.trim();
-  if (!text) return;
-
-  addMessage(text, 'user');
-  input.value = '';
-  btn.disabled = true;
+  addMsg(txt,'user');
+  inp.value='';
+  btn.disabled=true;
   showTyping();
-  status.innerHTML = '<span class="dot demo" style="animation:livePulse 1s ease-in-out infinite"></span> Thinking...';
+  st.innerHTML='<span class="dot demo" style="animation:livePulse 1s infinite"></span> Thinking...';
 
-  try {
-    const res = await fetch('/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: text })
+  try{
+    const res=await fetch('/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({message:txt})
     });
-    if (res.ok) {
-      const data = await res.json();
+    if(res.ok){
+      const d=await res.json();
       hideTyping();
-      addMessage(data.response, 'assistant');
-      status.innerHTML = '<span class="dot live"></span> Live — Gemini Connected';
-    } else {
-      throw new Error('Backend unavailable');
-    }
-  } catch {
-    setTimeout(() => {
+      addMsg(d.response,'assistant');
+      st.innerHTML='<span class="dot live"></span> Live — Gemini Connected';
+    }else{throw new Error();}
+  }catch{
+    setTimeout(()=>{
       hideTyping();
-      addMessage(DEMO_RESPONSES[demoIndex % DEMO_RESPONSES.length], 'assistant');
-      demoIndex++;
-      status.innerHTML = '<span class="dot demo"></span> Demo Mode — Offline';
-    }, 1000 + Math.random() * 700);
+      addMsg(DEMO[di%DEMO.length],'assistant');
+      di++;
+      st.innerHTML='<span class="dot demo"></span> Demo Mode';
+    },1000+Math.random()*700);
   }
-
-  btn.disabled = false;
-  input.focus();
+  btn.disabled=false;
+  inp.focus();
 }
 </script>
 </body>
