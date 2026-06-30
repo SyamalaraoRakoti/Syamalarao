@@ -3,245 +3,565 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Temporal Care Restorations — AI Chatbot</title>
+<title>Temporal Care Restorations — Concierge</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500&display=swap');
+  :root {
+    --gold: #d4a85c;
+    --gold-light: #f0d78c;
+    --gold-dark: #9a7028;
+    --bg-deep: #060a14;
+    --bg-card: rgba(14, 18, 34, 0.75);
+    --bg-input: rgba(10, 14, 26, 0.8);
+    --text: #e4d9c6;
+    --text-muted: #8a8070;
+    --border: rgba(212, 168, 92, 0.12);
+    --border-glow: rgba(212, 168, 92, 0.35);
+    --user-bg: linear-gradient(135deg, #1a3050, #142840);
+    --assistant-bg: linear-gradient(135deg, rgba(20, 24, 44, 0.9), rgba(16, 20, 36, 0.95));
+  }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
     font-family: 'Inter', sans-serif;
-    background: #0d0d14;
-    color: #d4c8b8;
+    background: var(--bg-deep);
+    color: var(--text);
     min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 2rem;
+    overflow: hidden;
+    position: relative;
   }
 
+  /* ── Background Ambience ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 10%, rgba(212,168,92,0.04) 0%, transparent 55%),
+      radial-gradient(ellipse at 80% 90%, rgba(30,58,95,0.06) 0%, transparent 55%),
+      radial-gradient(ellipse at 50% 50%, rgba(10,14,26,1) 0%, var(--bg-deep) 100%);
+    pointer-events: none;
+  }
+
+  /* ── Floating Particles ── */
+  .particles {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  }
+  .particle {
+    position: absolute;
+    width: 2px; height: 2px;
+    background: var(--gold);
+    border-radius: 50%;
+    animation: floatUp linear infinite;
+    opacity: 0;
+  }
+  @keyframes floatUp {
+    0%   { transform: translateY(100vh) scale(0); opacity: 0; }
+    10%  { opacity: 0.7; }
+    90%  { opacity: 0.7; }
+    100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+  }
+
+  /* ── Watch Face Decoration ── */
+  .watch-decor {
+    position: fixed;
+    top: 2.5rem; right: 3rem;
+    width: 90px; height: 90px;
+    border: 2px solid rgba(212,168,92,0.15);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.5;
+  }
+  .watch-decor::before {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border: 1px solid rgba(212,168,92,0.08);
+    border-radius: 50%;
+  }
+  .watch-decor .hand {
+    position: absolute;
+    bottom: 50%; left: 50%;
+    transform-origin: bottom center;
+    background: rgba(212,168,92,0.4);
+    border-radius: 1px;
+  }
+  .watch-decor .hand.hour {
+    width: 1.5px; height: 18px;
+    animation: tickHour 60s linear infinite;
+  }
+  .watch-decor .hand.minute {
+    width: 1px; height: 28px;
+    animation: tickMinute 10s linear infinite;
+  }
+  .watch-decor .hand.second {
+    width: 0.5px; height: 32px;
+    background: rgba(212,168,92,0.6);
+    animation: tickSecond 1s steps(60) infinite;
+  }
+  .watch-decor .center-dot {
+    position: absolute;
+    width: 4px; height: 4px;
+    background: var(--gold);
+    border-radius: 50%;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 6px rgba(212,168,92,0.5);
+  }
+  @keyframes tickHour   { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  @keyframes tickMinute { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  @keyframes tickSecond { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+  /* ── Main Chat Card ── */
   .chat-wrapper {
+    position: relative;
+    z-index: 1;
     width: 100%;
-    max-width: 480px;
-    background: linear-gradient(145deg, #1a1a28, #121220);
-    border: 1px solid #2e2e40;
-    border-radius: 16px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    max-width: 500px;
+    background: var(--bg-card);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    box-shadow:
+      0 8px 40px rgba(0,0,0,0.6),
+      0 0 0 1px var(--border),
+      inset 0 1px 0 rgba(255,255,255,0.02);
+    overflow: hidden;
+    animation: cardReveal 0.8s cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+  @keyframes cardReveal {
+    from { opacity: 0; transform: translateY(20px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* ── Header ── */
+  .chat-header {
+    background: linear-gradient(180deg, rgba(20,25,48,0.95), rgba(14,18,34,0.9));
+    padding: 1.8rem 1.6rem 1.4rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    position: relative;
     overflow: hidden;
   }
-
-  .chat-header {
-    background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
-    padding: 1.5rem 1.4rem;
-    text-align: center;
-    border-bottom: 1px solid #2a2a3e;
+  .chat-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 20%; right: 20%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold-dark), transparent);
   }
-
+  .chat-header .brand-icon {
+    font-size: 1.6rem;
+    margin-bottom: 0.3rem;
+    display: inline-block;
+    animation: gentlePulse 3s ease-in-out infinite;
+  }
+  @keyframes gentlePulse {
+    0%, 100% { transform: scale(1); opacity: 0.8; }
+    50%      { transform: scale(1.08); opacity: 1; }
+  }
   .chat-header .brand {
     font-family: 'Playfair Display', serif;
-    font-size: 1.4rem;
-    color: #d4a85c;
-    letter-spacing: 0.5px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--gold-light);
+    letter-spacing: 0.8px;
+    text-shadow: 0 0 30px rgba(212,168,92,0.2);
   }
-
+  .chat-header .brand em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--gold);
+  }
   .chat-header .subtitle {
-    font-size: 0.75rem;
-    color: #7a7a90;
-    margin-top: 0.3rem;
-    letter-spacing: 1px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    letter-spacing: 2.5px;
     text-transform: uppercase;
+    margin-top: 0.2rem;
   }
 
+  /* ── Chat Body ── */
   .chat-body {
-    height: 420px;
+    height: 440px;
     overflow-y: auto;
-    padding: 1.2rem;
+    padding: 1.4rem 1.2rem;
     display: flex;
     flex-direction: column;
-    gap: 0.8rem;
-    background: #0e0e1a;
+    gap: 1rem;
+    background:
+      radial-gradient(circle at 50% 0%, rgba(212,168,92,0.02) 0%, transparent 60%);
+    scroll-behavior: smooth;
+  }
+  .chat-body::-webkit-scrollbar { width: 5px; }
+  .chat-body::-webkit-scrollbar-track { background: transparent; margin: 4px 0; }
+  .chat-body::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--gold-dark), var(--gold));
+    border-radius: 10px;
   }
 
-  .chat-body::-webkit-scrollbar { width: 4px; }
-  .chat-body::-webkit-scrollbar-track { background: transparent; }
-  .chat-body::-webkit-scrollbar-thumb { background: #2e2e40; border-radius: 10px; }
-
+  /* ── Messages ── */
   .msg {
-    max-width: 82%;
-    padding: 0.7rem 1rem;
-    border-radius: 12px;
-    line-height: 1.5;
-    font-size: 0.9rem;
-    animation: fadeIn 0.3s ease;
+    max-width: 84%;
+    padding: 0.8rem 1.1rem;
+    border-radius: 16px;
+    line-height: 1.6;
+    font-size: 0.88rem;
+    position: relative;
   }
-
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
   .msg.user {
     align-self: flex-end;
-    background: #1e3a5f;
-    color: #e0e0e0;
-    border-bottom-right-radius: 4px;
+    background: var(--user-bg);
+    color: #d4dce8;
+    border-bottom-right-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.06);
+    animation: msgInRight 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  }
+  @keyframes msgInRight {
+    from { opacity: 0; transform: translateX(20px); }
+    to   { opacity: 1; transform: translateX(0); }
   }
 
   .msg.assistant {
     align-self: flex-start;
-    background: #1a1a28;
-    color: #d4c8b8;
-    border: 1px solid #2e2e40;
-    border-bottom-left-radius: 4px;
+    background: var(--assistant-bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-bottom-left-radius: 6px;
+    animation: msgInLeft 0.4s cubic-bezier(0.22, 0.61, 0.36, 1);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+  }
+  @keyframes msgInLeft {
+    from { opacity: 0; transform: translateX(-16px); }
+    to   { opacity: 1; transform: translateX(0); }
   }
 
   .msg.assistant .sender {
     font-family: 'Playfair Display', serif;
-    font-size: 0.65rem;
-    color: #d4a85c;
-    letter-spacing: 0.5px;
-    margin-bottom: 0.2rem;
-  }
-
-  .chat-input-area {
+    font-size: 0.62rem;
+    color: var(--gold);
+    letter-spacing: 0.8px;
+    margin-bottom: 0.25rem;
+    text-transform: uppercase;
     display: flex;
-    padding: 1rem 1.2rem;
-    background: #16162a;
-    border-top: 1px solid #2a2a3e;
-    gap: 0.5rem;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .msg.assistant .sender::before {
+    content: '';
+    display: inline-block;
+    width: 6px; height: 6px;
+    background: var(--gold);
+    border-radius: 50%;
+    box-shadow: 0 0 6px var(--gold);
   }
 
-  .chat-input-area input {
-    flex: 1;
-    padding: 0.7rem 1rem;
-    border-radius: 8px;
-    border: 1px solid #2e2e40;
-    background: #0e0e1a;
-    color: #d4c8b8;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.9rem;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-
-  .chat-input-area input:focus { border-color: #d4a85c; }
-  .chat-input-area input::placeholder { color: #5a5a70; }
-
-  .chat-input-area button {
-    padding: 0.7rem 1.2rem;
-    border-radius: 8px;
-    border: none;
-    background: #d4a85c;
-    color: #0d0d14;
-    font-family: 'Inter', sans-serif;
-    font-weight: 600;
-    font-size: 0.85rem;
-    cursor: pointer;
-    transition: background 0.2s, transform 0.1s;
-  }
-
-  .chat-input-area button:hover { background: #c49a4c; }
-  .chat-input-area button:active { transform: scale(0.97); }
-  .chat-input-area button:disabled { opacity: 0.5; cursor: not-allowed; }
-
+  /* ── Typing Indicator ── */
   .typing-indicator {
     align-self: flex-start;
     display: flex;
-    gap: 4px;
-    padding: 0.6rem 1rem;
+    align-items: center;
+    gap: 5px;
+    padding: 0.7rem 1.1rem;
+    background: var(--assistant-bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    border-bottom-left-radius: 6px;
+    animation: msgInLeft 0.3s ease;
   }
-
-  .typing-indicator span {
-    width: 6px; height: 6px;
+  .typing-indicator .gear {
+    width: 10px; height: 10px;
+    border: 1.5px solid var(--gold);
     border-radius: 50%;
-    background: #d4a85c;
-    animation: bounce 1.2s infinite;
+    border-top-color: transparent;
+    animation: gearSpin 0.8s linear infinite;
+  }
+  .typing-indicator .gear:nth-child(2) { animation-delay: 0.15s; width: 8px; height: 8px; }
+  .typing-indicator .gear:nth-child(3) { animation-delay: 0.3s; width: 6px; height: 6px; }
+  @keyframes gearSpin { to { transform: rotate(360deg); } }
+
+  /* ── Input Area ── */
+  .chat-input-area {
+    display: flex;
+    padding: 1rem 1.2rem 1.2rem;
+    background: rgba(12,16,28,0.9);
+    border-top: 1px solid var(--border);
+    gap: 0.6rem;
+    position: relative;
+  }
+  .chat-input-area::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 20%; right: 20%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(212,168,92,0.2), transparent);
+  }
+  .chat-input-area input {
+    flex: 1;
+    padding: 0.8rem 1.1rem;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: var(--bg-input);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.88rem;
+    outline: none;
+    transition: all 0.25s ease;
+  }
+  .chat-input-area input:focus {
+    border-color: var(--border-glow);
+    box-shadow: 0 0 20px rgba(212,168,92,0.08), inset 0 0 20px rgba(212,168,92,0.02);
+  }
+  .chat-input-area input::placeholder { color: #5a5548; font-style: italic; }
+
+  /* ── Send Button ── */
+  .chat-input-area button {
+    padding: 0.8rem 1.4rem;
+    border-radius: 14px;
+    border: none;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    color: #0a0e16;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .chat-input-area button::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent, rgba(255,255,255,0.15), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.5s;
+  }
+  .chat-input-area button:hover::after { transform: translateX(100%); }
+  .chat-input-area button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 24px rgba(212,168,92,0.3);
+  }
+  .chat-input-area button:active { transform: scale(0.96); }
+  .chat-input-area button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
   }
 
-  .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
-  .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
-
-  @keyframes bounce {
-    0%, 60%, 100% { transform: translateY(0); }
-    30% { transform: translateY(-6px); }
-  }
-
+  /* ── Status Bar ── */
   .status-bar {
     text-align: center;
-    padding: 0.3rem;
+    padding: 0.35rem 0.5rem;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    background: rgba(8,10,20,0.8);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    border-top: 1px solid rgba(255,255,255,0.02);
+  }
+  .status-bar .dot {
+    display: inline-block;
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    margin-right: 0.3rem;
+    vertical-align: middle;
+  }
+  .status-bar .dot.live {
+    background: #4ade80;
+    box-shadow: 0 0 6px #4ade80;
+    animation: livePulse 2s ease-in-out infinite;
+  }
+  .status-bar .dot.demo {
+    background: var(--gold);
+    box-shadow: 0 0 6px var(--gold);
+  }
+  @keyframes livePulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.4; }
+  }
+
+  /* ── Suggested Chips ── */
+  .suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    padding: 0.4rem 1.2rem 0;
+    background: rgba(12,16,28,0.9);
+  }
+  .suggestions .chip {
     font-size: 0.7rem;
-    color: #5a5a70;
-    background: #0e0e1a;
+    padding: 0.35rem 0.8rem;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: rgba(212,168,92,0.04);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    font-family: 'Inter', sans-serif;
+  }
+  .suggestions .chip:hover {
+    border-color: var(--border-glow);
+    background: rgba(212,168,92,0.1);
+    color: var(--gold-light);
+  }
+
+  /* ── Timestamp ── */
+  .msg .time {
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    margin-top: 0.3rem;
+    text-align: right;
+    letter-spacing: 0.5px;
+  }
+
+  @media (max-width: 520px) {
+    body { padding: 0.5rem; }
+    .chat-wrapper { border-radius: 12px; max-width: 100%; }
+    .chat-body { height: 380px; }
+    .chat-header { padding: 1.2rem 1rem 1rem; }
+    .chat-header .brand { font-size: 1.2rem; }
+    .watch-decor { display: none; }
   }
 </style>
 </head>
 <body>
 
+<!-- Floating Gold Dust -->
+<div class="particles" id="particles"></div>
+
+<!-- Decorative Watch Face -->
+<div class="watch-decor">
+  <div class="hand hour"></div>
+  <div class="hand minute"></div>
+  <div class="hand second"></div>
+  <div class="center-dot"></div>
+</div>
+
+<!-- Chat Widget -->
 <div class="chat-wrapper">
   <div class="chat-header">
-    <div class="brand">Temporal Care Restorations</div>
-    <div class="subtitle">Vintage Watch Concierge</div>
+    <div class="brand-icon">&#x1F565;</div>
+    <div class="brand"><em>Temporal</em> Care Restorations</div>
+    <div class="subtitle">Haute Horlogerie Concierge</div>
+  </div>
+
+  <div class="suggestions" id="suggestions">
+    <span class="chip" onclick="quickAsk(this)">Repair status?</span>
+    <span class="chip" onclick="quickAsk(this)">Estimated completion?</span>
+    <span class="chip" onclick="quickAsk(this)">Restoration process?</span>
+    <span class="chip" onclick="quickAsk(this)">Shipping options?</span>
   </div>
 
   <div class="chat-body" id="chatBody">
     <div class="msg assistant">
-      <div class="sender">Temporal Care</div>
+      <div class="sender">Concierge</div>
       Good day. I am your personal concierge at Temporal Care Restorations. How may I assist you with your timepiece today?
+      <div class="time" id="initTime"></div>
     </div>
   </div>
 
   <div class="chat-input-area">
-    <input type="text" id="userInput" placeholder="e.g. What is the status of my watch repair?" onkeydown="if(event.key==='Enter')sendMessage()" autofocus>
+    <input type="text" id="userInput" placeholder="Ask about your timepiece..." onkeydown="if(event.key==='Enter')sendMessage()" autofocus>
     <button id="sendBtn" onclick="sendMessage()">Send</button>
   </div>
 
-  <div class="status-bar" id="statusBar">Connected — Demo Mode</div>
+  <div class="status-bar" id="statusBar">
+    <span class="dot demo"></span> Demo Mode — Offline
+  </div>
 </div>
 
 <script>
+// ── Particles ──
+(function spawnParticles() {
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 30; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.animationDuration = (8 + Math.random() * 16) + 's';
+    p.style.animationDelay = Math.random() * 12 + 's';
+    p.style.width = p.style.height = (1 + Math.random() * 2.5) + 'px';
+    container.appendChild(p);
+  }
+})();
+
+// ── Init Time ──
+function fmtTime() {
+  const d = new Date();
+  return d.getHours().toString().padStart(2,'0') + ':' +
+         d.getMinutes().toString().padStart(2,'0');
+}
+document.getElementById('initTime').textContent = fmtTime();
+
+// ── Demo Responses ──
 const DEMO_RESPONSES = [
-  "Thank you for your inquiry. Your Patek Philippe Calatrava (Ref. 5196) is currently in Phase 3 of our restoration process — the movement overhaul is complete and our master watchmaker is now hand-polishing the case. Estimated completion: 4–6 business days.",
-  "I understand the anticipation. Your Rolex Submariner (Ref. 5513) is undergoing dial restoration. This delicate process requires 10–14 days. You are currently on day 7. Rest assured, every detail is being handled with the utmost care.",
-  "For vintage piece repairs, we exclusively use period-correct components sourced from our Swiss suppliers. The mainspring for your Omega Speedmaster has been ordered and should arrive within 48 hours. Would you like me to notify you when it arrives?",
-  "Your Heuer Autavia chronograph is in the queue for its final quality inspection. Mr. Laurent, our senior horologist, will personally verify the amplitude and beat error before we contact you. We expect this within 2 days.",
-  "I see your Jaeger-LeCoultre Reverso is in our care. The engraving on the caseback has been preserved perfectly, and the new alligator strap has been fitted. Would you prefer us to ship it or would you like to collect it in person?",
-  "At Temporal Care, every timepiece undergoes a 47-point inspection before it leaves our workshop. Your watch is currently at step 34. We take immense pride in our craftsmanship — thank you for your patience.",
-  "Good news — your Breitling Navitimer restoration is complete and has passed all quality checks. It is now resting in our secure vault awaiting your collection. Would you like to schedule a pickup time?"
+  "Thank you for your inquiry. Your <strong>Patek Philippe Calatrava</strong> (Ref. 5196) is currently in <em>Phase 3</em> of our restoration — the movement overhaul is complete, and our master watchmaker is now hand-polishing the case. Estimated completion: <strong>4–6 business days</strong>.",
+  "I understand the anticipation. Your <strong>Rolex Submariner</strong> (Ref. 5513) is mid-restoration on day 7 of 14. The dial work is delicate and demands patience — every detail is being handled with the utmost precision.",
+  "We source exclusively period-correct components from our Swiss partners. The mainspring for your <strong>Omega Speedmaster</strong> has been ordered and should arrive within 48 hours. Shall I notify you when it lands?",
+  "Your <strong>Heuer Autavia</strong> chronograph is queued for its final quality inspection. Mr. Laurent, our senior horologist, will personally verify the amplitude and beat error within 2 days.",
+  "Your <strong>Jaeger-LeCoultre Reverso</strong> is in excellent hands. The caseback engraving has been preserved beautifully, and the new alligator strap has been fitted. Would you prefer collection in person, or insured shipping?",
+  "Every piece at Temporal Care passes a <strong>47-point inspection</strong> before leaving the atelier. Your watch is at checkpoint 34 — we take immense pride in our craft. Thank you for your patience.",
+  "Wonderful news — your <strong>Breitling Navitimer</strong> restoration is complete and certified. It now rests in our secure vault. Shall we schedule your collection?"
 ];
 
 let demoIndex = 0;
 
+// ── Helpers ──
 function addMessage(text, sender) {
-  const chatBody = document.getElementById('chatBody');
-  const div = document.createElement('div');
-  div.className = 'msg ' + sender;
+  const body = document.getElementById('chatBody');
+  const msg = document.createElement('div');
+  msg.className = 'msg ' + sender;
 
   if (sender === 'assistant') {
-    div.innerHTML = '<div class="sender">Temporal Care</div>' + text;
+    msg.innerHTML = '<div class="sender">Concierge</div>' + text + '<div class="time">' + fmtTime() + '</div>';
   } else {
-    div.textContent = text;
+    msg.innerHTML = text + '<div class="time">' + fmtTime() + '</div>';
   }
 
-  chatBody.appendChild(div);
-  chatBody.scrollTop = chatBody.scrollHeight;
+  body.appendChild(msg);
+  body.scrollTop = body.scrollHeight;
 }
 
 function showTyping() {
-  const chatBody = document.getElementById('chatBody');
-  const indicator = document.createElement('div');
-  indicator.className = 'typing-indicator';
-  indicator.id = 'typingIndicator';
-  indicator.innerHTML = '<span></span><span></span><span></span>';
-  chatBody.appendChild(indicator);
-  chatBody.scrollTop = chatBody.scrollHeight;
+  const body = document.getElementById('chatBody');
+  const el = document.createElement('div');
+  el.className = 'typing-indicator';
+  el.id = 'typingIndicator';
+  el.innerHTML = '<div class="gear"></div><div class="gear"></div><div class="gear"></div>';
+  body.appendChild(el);
+  body.scrollTop = body.scrollHeight;
 }
 
 function hideTyping() {
-  const indicator = document.getElementById('typingIndicator');
-  if (indicator) indicator.remove();
+  const el = document.getElementById('typingIndicator');
+  if (el) el.remove();
 }
 
+// ── Quick Ask ──
+function quickAsk(chip) {
+  document.getElementById('userInput').value = chip.textContent;
+  sendMessage();
+}
+
+// ── Send ──
 async function sendMessage() {
   const input = document.getElementById('userInput');
   const btn = document.getElementById('sendBtn');
-  const statusBar = document.getElementById('statusBar');
+  const status = document.getElementById('statusBar');
   const text = input.value.trim();
   if (!text) return;
 
@@ -249,7 +569,7 @@ async function sendMessage() {
   input.value = '';
   btn.disabled = true;
   showTyping();
-  statusBar.textContent = 'Typing...';
+  status.innerHTML = '<span class="dot demo" style="animation:livePulse 1s ease-in-out infinite"></span> Thinking...';
 
   try {
     const res = await fetch('/chat', {
@@ -257,29 +577,26 @@ async function sendMessage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ message: text })
     });
-
     if (res.ok) {
       const data = await res.json();
       hideTyping();
       addMessage(data.response, 'assistant');
-      statusBar.textContent = 'Connected — Live Mode';
+      status.innerHTML = '<span class="dot live"></span> Live — Gemini Connected';
     } else {
       throw new Error('Backend unavailable');
     }
   } catch {
     setTimeout(() => {
       hideTyping();
-      const response = DEMO_RESPONSES[demoIndex % DEMO_RESPONSES.length];
+      addMessage(DEMO_RESPONSES[demoIndex % DEMO_RESPONSES.length], 'assistant');
       demoIndex++;
-      addMessage(response, 'assistant');
-      statusBar.textContent = 'Connected — Demo Mode (backend offline)';
-    }, 1200 + Math.random() * 800);
+      status.innerHTML = '<span class="dot demo"></span> Demo Mode — Offline';
+    }, 1000 + Math.random() * 700);
   }
 
   btn.disabled = false;
   input.focus();
 }
 </script>
-
 </body>
 </html>
