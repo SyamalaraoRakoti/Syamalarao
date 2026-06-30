@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Temporal Care Restorations — AI Chatbot</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #0d0d14;
+    color: #d4c8b8;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+  }
+
+  .chat-wrapper {
+    width: 100%;
+    max-width: 480px;
+    background: linear-gradient(145deg, #1a1a28, #121220);
+    border: 1px solid #2e2e40;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    overflow: hidden;
+  }
+
+  .chat-header {
+    background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+    padding: 1.5rem 1.4rem;
+    text-align: center;
+    border-bottom: 1px solid #2a2a3e;
+  }
+
+  .chat-header .brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    color: #d4a85c;
+    letter-spacing: 0.5px;
+  }
+
+  .chat-header .subtitle {
+    font-size: 0.75rem;
+    color: #7a7a90;
+    margin-top: 0.3rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .chat-body {
+    height: 420px;
+    overflow-y: auto;
+    padding: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    background: #0e0e1a;
+  }
+
+  .chat-body::-webkit-scrollbar { width: 4px; }
+  .chat-body::-webkit-scrollbar-track { background: transparent; }
+  .chat-body::-webkit-scrollbar-thumb { background: #2e2e40; border-radius: 10px; }
+
+  .msg {
+    max-width: 82%;
+    padding: 0.7rem 1rem;
+    border-radius: 12px;
+    line-height: 1.5;
+    font-size: 0.9rem;
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  .msg.user {
+    align-self: flex-end;
+    background: #1e3a5f;
+    color: #e0e0e0;
+    border-bottom-right-radius: 4px;
+  }
+
+  .msg.assistant {
+    align-self: flex-start;
+    background: #1a1a28;
+    color: #d4c8b8;
+    border: 1px solid #2e2e40;
+    border-bottom-left-radius: 4px;
+  }
+
+  .msg.assistant .sender {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.65rem;
+    color: #d4a85c;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.2rem;
+  }
+
+  .chat-input-area {
+    display: flex;
+    padding: 1rem 1.2rem;
+    background: #16162a;
+    border-top: 1px solid #2a2a3e;
+    gap: 0.5rem;
+  }
+
+  .chat-input-area input {
+    flex: 1;
+    padding: 0.7rem 1rem;
+    border-radius: 8px;
+    border: 1px solid #2e2e40;
+    background: #0e0e1a;
+    color: #d4c8b8;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .chat-input-area input:focus { border-color: #d4a85c; }
+  .chat-input-area input::placeholder { color: #5a5a70; }
+
+  .chat-input-area button {
+    padding: 0.7rem 1.2rem;
+    border-radius: 8px;
+    border: none;
+    background: #d4a85c;
+    color: #0d0d14;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+
+  .chat-input-area button:hover { background: #c49a4c; }
+  .chat-input-area button:active { transform: scale(0.97); }
+  .chat-input-area button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .typing-indicator {
+    align-self: flex-start;
+    display: flex;
+    gap: 4px;
+    padding: 0.6rem 1rem;
+  }
+
+  .typing-indicator span {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #d4a85c;
+    animation: bounce 1.2s infinite;
+  }
+
+  .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+  .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes bounce {
+    0%, 60%, 100% { transform: translateY(0); }
+    30% { transform: translateY(-6px); }
+  }
+
+  .status-bar {
+    text-align: center;
+    padding: 0.3rem;
+    font-size: 0.7rem;
+    color: #5a5a70;
+    background: #0e0e1a;
+  }
+</style>
+</head>
+<body>
+
+<div class="chat-wrapper">
+  <div class="chat-header">
+    <div class="brand">Temporal Care Restorations</div>
+    <div class="subtitle">Vintage Watch Concierge</div>
+  </div>
+
+  <div class="chat-body" id="chatBody">
+    <div class="msg assistant">
+      <div class="sender">Temporal Care</div>
+      Good day. I am your personal concierge at Temporal Care Restorations. How may I assist you with your timepiece today?
+    </div>
+  </div>
+
+  <div class="chat-input-area">
+    <input type="text" id="userInput" placeholder="e.g. What is the status of my watch repair?" onkeydown="if(event.key==='Enter')sendMessage()" autofocus>
+    <button id="sendBtn" onclick="sendMessage()">Send</button>
+  </div>
+
+  <div class="status-bar" id="statusBar">Connected — Demo Mode</div>
+</div>
+
+<script>
+const DEMO_RESPONSES = [
+  "Thank you for your inquiry. Your Patek Philippe Calatrava (Ref. 5196) is currently in Phase 3 of our restoration process — the movement overhaul is complete and our master watchmaker is now hand-polishing the case. Estimated completion: 4–6 business days.",
+  "I understand the anticipation. Your Rolex Submariner (Ref. 5513) is undergoing dial restoration. This delicate process requires 10–14 days. You are currently on day 7. Rest assured, every detail is being handled with the utmost care.",
+  "For vintage piece repairs, we exclusively use period-correct components sourced from our Swiss suppliers. The mainspring for your Omega Speedmaster has been ordered and should arrive within 48 hours. Would you like me to notify you when it arrives?",
+  "Your Heuer Autavia chronograph is in the queue for its final quality inspection. Mr. Laurent, our senior horologist, will personally verify the amplitude and beat error before we contact you. We expect this within 2 days.",
+  "I see your Jaeger-LeCoultre Reverso is in our care. The engraving on the caseback has been preserved perfectly, and the new alligator strap has been fitted. Would you prefer us to ship it or would you like to collect it in person?",
+  "At Temporal Care, every timepiece undergoes a 47-point inspection before it leaves our workshop. Your watch is currently at step 34. We take immense pride in our craftsmanship — thank you for your patience.",
+  "Good news — your Breitling Navitimer restoration is complete and has passed all quality checks. It is now resting in our secure vault awaiting your collection. Would you like to schedule a pickup time?"
+];
+
+let demoIndex = 0;
+
+function addMessage(text, sender) {
+  const chatBody = document.getElementById('chatBody');
+  const div = document.createElement('div');
+  div.className = 'msg ' + sender;
+
+  if (sender === 'assistant') {
+    div.innerHTML = '<div class="sender">Temporal Care</div>' + text;
+  } else {
+    div.textContent = text;
+  }
+
+  chatBody.appendChild(div);
+  chatBody.scrollTop = chatBody.scrollHeight;
+}
+
+function showTyping() {
+  const chatBody = document.getElementById('chatBody');
+  const indicator = document.createElement('div');
+  indicator.className = 'typing-indicator';
+  indicator.id = 'typingIndicator';
+  indicator.innerHTML = '<span></span><span></span><span></span>';
+  chatBody.appendChild(indicator);
+  chatBody.scrollTop = chatBody.scrollHeight;
+}
+
+function hideTyping() {
+  const indicator = document.getElementById('typingIndicator');
+  if (indicator) indicator.remove();
+}
+
+async function sendMessage() {
+  const input = document.getElementById('userInput');
+  const btn = document.getElementById('sendBtn');
+  const statusBar = document.getElementById('statusBar');
+  const text = input.value.trim();
+  if (!text) return;
+
+  addMessage(text, 'user');
+  input.value = '';
+  btn.disabled = true;
+  showTyping();
+  statusBar.textContent = 'Typing...';
+
+  try {
+    const res = await fetch('/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: text })
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      hideTyping();
+      addMessage(data.response, 'assistant');
+      statusBar.textContent = 'Connected — Live Mode';
+    } else {
+      throw new Error('Backend unavailable');
+    }
+  } catch {
+    setTimeout(() => {
+      hideTyping();
+      const response = DEMO_RESPONSES[demoIndex % DEMO_RESPONSES.length];
+      demoIndex++;
+      addMessage(response, 'assistant');
+      statusBar.textContent = 'Connected — Demo Mode (backend offline)';
+    }, 1200 + Math.random() * 800);
+  }
+
+  btn.disabled = false;
+  input.focus();
+}
+</script>
+
+</body>
+</html>
