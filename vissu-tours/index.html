@@ -562,10 +562,6 @@
   draw();
 })();
 
-// --- Counter Animation ---
-function animateCounter(el,target,dur){let s=0;const inc=target/(dur/16);const t=setInterval(()=>{s+=inc;if(s>=target){el.textContent=Math.floor(target)+"+";clearInterval(t)}else{el.textContent=Math.floor(s)+"+"}},16)}
-setTimeout(()=>{const d=document.getElementById("statDestinations");if(d)animateCounter(d,50,1500)},300);
-
 // --- Scroll Reveal ---
 const observer=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add("visible")})},{threshold:0.15});
 document.querySelectorAll(".reveal").forEach(el=>observer.observe(el));
@@ -573,13 +569,30 @@ document.querySelectorAll(".reveal").forEach(el=>observer.observe(el));
 // --- Mobile Menu ---
 function toggleMobileMenu(){document.getElementById("mobileMenu").classList.toggle("active")}
 
-// --- Tours ---
-const tours=[{id:1,name:"Backwaters Bliss",location:"Kerala, India",price:24999,duration:"5 Days",color:"#06b6d4",tags:["Nature","Houseboat"],desc:"Cruise the serene backwaters of Alleppey on a luxury houseboat.",emoji:"🛶"},{id:2,name:"Golden Triangle",location:"Delhi-Agra-Jaipur",price:32999,duration:"6 Days",color:"#f59e0b",tags:["Heritage","Culture"],desc:"Explore India's iconic heritage circuit with guided tours.",emoji:"🏛️"},{id:3,name:"Himalayan Escape",location:"Manali-Leh, India",price:45999,duration:"8 Days",color:"#8b5cf6",tags:["Adventure","Mountains"],desc:"Epic road trip through the Himalayas with camping & rafting.",emoji:"🏔️"},{id:4,name:"Goa Beach Retreat",location:"Goa, India",price:18999,duration:"4 Days",color:"#ec4899",tags:["Beach","Party"],desc:"Sun, sand, and susegad vibes. Best beaches & nightlife.",emoji:"🏖️"},{id:5,name:"Temple Trail",location:"Tamil Nadu, India",price:27999,duration:"7 Days",color:"#f97316",tags:["Spiritual","Heritage"],desc:"Ancient Dravidian temples across Madurai, Tanjore & Rameshwaram.",emoji:"🛕"},{id:6,name:"Island Paradise",location:"Andaman, India",price:39999,duration:"6 Days",color:"#14b8a6",tags:["Island","Scuba"],desc:"Crystal clear waters, coral reefs, and pristine white beaches.",emoji:"🏝️"},{id:7,name:"Royal Rajasthan",location:"Udaipur-Jodhpur-Jaisalmer",price:36999,duration:"8 Days",color:"#eab308",tags:["Royal","Desert"],desc:"Live like royalty in palaces, camel safaris in the Thar desert.",emoji:"🐪"},{id:8,name:"North East Odyssey",location:"Meghalaya-Assam",price:42999,duration:"9 Days",color:"#22c55e",tags:["Nature","Culture"],desc:"Living root bridges, Kaziranga wildlife, and tea gardens.",emoji:"🌿"},{id:9,name:"Bali Bliss",location:"Bali, Indonesia",price:54999,duration:"7 Days",color:"#06b6d4",tags:["International","Tropical"],desc:"Temples, rice terraces, and stunning beaches of Bali.",emoji:"🌴"},{id:10,name:"Dubai Extravaganza",location:"Dubai, UAE",price:62999,duration:"5 Days",color:"#d4a853",tags:["International","Luxury"],desc:"Burj Khalifa, desert safari, and world-class shopping.",emoji:"✨"},{id:11,name:"Thailand Explorer",location:"Bangkok-Phuket",price:44999,duration:"7 Days",color:"#ef4444",tags:["International","Beach"],desc:"Floating markets, island hopping, and vibrant nightlife.",emoji:"🏯"},{id:12,name:"Vietnam Discovery",location:"Hanoi-Halong-HCMC",price:49999,duration:"8 Days",color:"#10b981",tags:["International","Culture"],desc:"Halong Bay cruise, ancient towns, and amazing street food.",emoji:"🍜"}];
+// --- Tour Data ---
+const fallbackTours=[{id:1,name:"Backwaters Bliss",location:"Kerala, India",price:24999,duration:"5 Days",color:"#06b6d4",tags:["Nature","Houseboat"],desc:"Cruise the serene backwaters of Alleppey on a luxury houseboat.",emoji:"🛶"},{id:2,name:"Golden Triangle",location:"Delhi-Agra-Jaipur",price:32999,duration:"6 Days",color:"#f59e0b",tags:["Heritage","Culture"],desc:"Explore India's iconic heritage circuit with guided tours.",emoji:"🏛️"},{id:3,name:"Himalayan Escape",location:"Manali-Leh, India",price:45999,duration:"8 Days",color:"#8b5cf6",tags:["Adventure","Mountains"],desc:"Epic road trip through the Himalayas with camping & rafting.",emoji:"🏔️"},{id:4,name:"Goa Beach Retreat",location:"Goa, India",price:18999,duration:"4 Days",color:"#ec4899",tags:["Beach","Party"],desc:"Sun, sand, and susegad vibes. Best beaches & nightlife.",emoji:"🏖️"},{id:5,name:"Temple Trail",location:"Tamil Nadu, India",price:27999,duration:"7 Days",color:"#f97316",tags:["Spiritual","Heritage"],desc:"Ancient Dravidian temples across Madurai, Tanjore & Rameshwaram.",emoji:"🛕"},{id:6,name:"Island Paradise",location:"Andaman, India",price:39999,duration:"6 Days",color:"#14b8a6",tags:["Island","Scuba"],desc:"Crystal clear waters, coral reefs, and pristine white beaches.",emoji:"🏝️"},{id:7,name:"Royal Rajasthan",location:"Udaipur-Jodhpur-Jaisalmer",price:36999,duration:"8 Days",color:"#eab308",tags:["Royal","Desert"],desc:"Live like royalty in palaces, camel safaris in the Thar desert.",emoji:"🐪"},{id:8,name:"North East Odyssey",location:"Meghalaya-Assam",price:42999,duration:"9 Days",color:"#22c55e",tags:["Nature","Culture"],desc:"Living root bridges, Kaziranga wildlife, and tea gardens.",emoji:"🌿"},{id:9,name:"Bali Bliss",location:"Bali, Indonesia",price:54999,duration:"7 Days",color:"#06b6d4",tags:["International","Tropical"],desc:"Temples, rice terraces, and stunning beaches of Bali.",emoji:"🌴"},{id:10,name:"Dubai Extravaganza",location:"Dubai, UAE",price:62999,duration:"5 Days",color:"#d4a853",tags:["International","Luxury"],desc:"Burj Khalifa, desert safari, and world-class shopping.",emoji:"✨"},{id:11,name:"Thailand Explorer",location:"Bangkok-Phuket",price:44999,duration:"7 Days",color:"#ef4444",tags:["International","Beach"],desc:"Floating markets, island hopping, and vibrant nightlife.",emoji:"🏯"},{id:12,name:"Vietnam Discovery",location:"Hanoi-Halong-HCMC",price:49999,duration:"8 Days",color:"#10b981",tags:["International","Culture"],desc:"Halong Bay cruise, ancient towns, and amazing street food.",emoji:"🍜"}];
+let tours=[...fallbackTours];
+let dataSource="fallback";
+
+async function loadTours(){
+  try{
+    const r=await fetch("/api/tours");
+    const d=await r.json();
+    if(d.tours&&d.tours.length){
+      tours=d.tours;dataSource=d.source||"api";
+      if(dataSource==="google-sheet"){
+        document.querySelector(".mcp-banner").innerHTML=`<span class="mcp-dot"></span>📊 Live via Google Sheets &bull; ${tours.length} tours loaded`;
+      }
+    }
+  }catch(e){/* use fallback */}
+  const destEl=document.getElementById("statDestinations");if(destEl)destEl.textContent=tours.length+"+";
+  renderTours();
+}
 
 function renderTours(f=""){
   const g=document.getElementById("toursGrid");
-  const ft=f?tours.filter(t=>t.name.toLowerCase().includes(f)||t.location.toLowerCase().includes(f)||t.tags.some(tg=>tg.toLowerCase().includes(f))):tours;
-  g.innerHTML=ft.length?ft.map(t=>`<div class="tour-card" onclick="openBookingModal('${t.name}')"><div class="tour-card-img" style="background:linear-gradient(135deg,${t.color},${t.color}dd)">${t.emoji}<span class="tour-card-badge">${t.duration}</span></div><div class="tour-card-body">${t.tags.map(tg=>`<span class="tag">${tg}</span>`).join("")}<h3>${t.name}</h3><div class="location">📍 ${t.location}</div><div class="desc">${t.desc}</div><div class="meta"><span class="price">₹${t.price.toLocaleString("en-IN")}</span></div></div></div>`).join(""):`<p style="grid-column:1/-1;text-align:center;color:var(--text-light);padding:40px;">😕 No tours found. Try a different search!</p>`;
+  const ft=f?tours.filter(t=>t.name.toLowerCase().includes(f)||t.location.toLowerCase().includes(f)||(t.tags||[]).some(tg=>tg.toLowerCase().includes(f))):tours;
+  g.innerHTML=ft.length?ft.map(t=>`<div class="tour-card" onclick="openBookingModal('${t.name}')"><div class="tour-card-img" style="background:linear-gradient(135deg,${t.color||"#6366f1"},${t.color||"#6366f1"}dd)">${t.emoji||"🌍"}<span class="tour-card-badge">${t.duration}</span></div><div class="tour-card-body">${(t.tags||[]).map(tg=>`<span class="tag">${tg}</span>`).join("")}<h3>${t.name}</h3><div class="location">📍 ${t.location}</div><div class="desc">${t.desc}</div><div class="meta"><span class="price">₹${(t.price||0).toLocaleString("en-IN")}</span></div></div></div>`).join(""):`<p style="grid-column:1/-1;text-align:center;color:var(--text-light);padding:40px;">😕 No tours found. Try a different search!</p>`;
   populateBookingTours();
 }
 function searchTours(){const q=document.getElementById("heroSearch").value.trim().toLowerCase();renderTours(q);document.getElementById("tours").scrollIntoView({behavior:"smooth"})}
@@ -608,7 +621,7 @@ async function sendChat(){
   m.scrollTop=m.scrollHeight;document.getElementById("chatSendBtn").disabled=false;
 }
 function escapeHtml(t){const d=document.createElement("div");d.textContent=t;return d.innerHTML}
-renderTours();
+loadTours();
 </script>
 </body>
 </html>
