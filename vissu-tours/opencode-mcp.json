@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "vissu-tours": {
+      "command": "python3",
+      "args": [
+        "/Users/syamalaraorakoti/Desktop/PGDAIBUS/AI projects/vissu-tours/mcp_server.py"
+      ],
+      "env": {
+        "GEMINI_API_KEY": "YOUR_GEMINI_API_KEY_HERE"
+      },
+      "description": "Vissu Tours MCP Server — Search tours, get AI recommendations, book tours, generate itineraries"
+    }
+  }
+}
