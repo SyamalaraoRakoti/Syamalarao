@@ -101,7 +101,7 @@ def call_gemini(prompt: str, system_prompt: str = "") -> str:
         return "Error: GEMINI_API_KEY environment variable not set. Cannot generate AI recommendations."
 
     api_key_encoded = urllib.parse.quote(api_key, safe="")
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key_encoded}"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key={api_key_encoded}"
 
     body: Any = {
         "contents": [{"role": "user", "parts": [{"text": prompt}]}]
