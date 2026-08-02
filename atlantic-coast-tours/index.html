@@ -483,16 +483,22 @@ async function sendChat() {
       const coords={galway:[53.27,-9.06],doolin:[53.02,-9.38],clifden:[53.49,-10.02],westport:[53.80,-9.52],achill:[53.96,-10.00],ballina:[54.11,-9.15],sligo:[54.28,-8.48],donegal:[54.65,-8.11]};
       const key=loc.toLowerCase(); let [lat,lon]=[53.27,-9.06];
       for(const[k,c]of Object.entries(coords)){if(key.includes(k)){lat=c[0];lon=c[1];break}}
-      const wcodes={0:"Clear sky",2:"Partly cloudy",3:"Overcast",45:"Fog",61:"Slight rain",63:"Moderate rain",65:"Heavy rain",80:"Slight rain showers",95:"Thunderstorm"};
       const wr=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,weather_code,precipitation_sum&timezone=Europe/Dublin&forecast_days=3`);
-      const wd=await wr.json(); ld.remove();
-      if(wd.current){
-        m.innerHTML+=`<div class="chat-msg bot">𖤓 <strong>Live Weather — ${loc}:</strong><br>${wd.current.temperature_2m}°C &bull; ${wcodes[wd.current.weather_code]||"Mixed"} &bull; Wind ${wd.current.wind_speed_10m} km/h<br><br><em>3-Day Forecast:</em><br>${(wd.daily?.time||[]).slice(0,3).map((t,i)=>`${t}: ${wd.daily.temperature_2m_min[i]}°–${wd.daily.temperature_2m_max[i]}°, ${wcodes[wd.daily.weather_code[i]]||"Mixed"}, Rain: ${wd.daily.precipitation_sum[i]}mm`).join("<br>")}<br><small style="color:var(--stone);">Source: Open-Meteo — Live</small></div>`;
-      }
-      m.scrollTop=m.scrollHeight;
-      document.getElementById("chatSendBtn").disabled=false;
-      return;
+      const wd=await wr.json();
+      const wcodes={0:"Clear",1:"Mainly clear",2:"Partly cloudy",3:"Overcast",45:"Fog",61:"Slight rain",63:"Moderate rain",65:"Heavy rain",80:"Rain showers",95:"Thunderstorm"};
+      let wctx=`Weather for ${loc} right now: ${wd.current.temperature_2m}°C, ${wcodes[wd.current.weather_code]||"Mixed"}, Wind ${wd.current.wind_speed_10m}km/h. `;
+      wctx+=`3-day forecast: ${(wd.daily?.time||[]).slice(0,3).map((t,i)=>`${t}: ${wd.daily.temperature_2m_min[i]}°–${wd.daily.temperature_2m_max[i]}°, ${wcodes[wd.daily.weather_code[i]]||"Mixed"}, Rain ${wd.daily.precipitation_sum[i]}mm`).join("; ")}.`;
+
+      // Send to Gemini LLM with weather context included
+      const r = await fetch(BACKEND + "/api/chat", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({message:msg, weather: wctx}) });
+      const d = await r.json(); ld.remove();
+      m.innerHTML += d.reply
+        ? `<div class="chat-msg bot">${escapeHtml(d.reply)}</div>`
+        : `<div class="chat-msg bot">✦ ${escapeHtml(d.error || "I cannot answer that right now.")}</div>`;
     } catch(e) { ld.remove(); }
+    m.scrollTop=m.scrollHeight;
+    document.getElementById("chatSendBtn").disabled=false;
+    return;
   }
 
   try {

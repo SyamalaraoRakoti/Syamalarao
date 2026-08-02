@@ -227,6 +227,7 @@ class ACTHandler(SimpleHTTPRequestHandler):
         cl = int(self.headers.get("Content-Length", 0))
         body = json.loads(self.rfile.read(cl))
         msg = body.get("message", "")
+        weather_ctx = body.get("weather", "")
 
         if not msg:
             self.send_json(400, {"error": "Empty message"})
@@ -260,12 +261,15 @@ class ACTHandler(SimpleHTTPRequestHandler):
             "If a price looks absurd (e.g., millions of euros), report it faithfully — "
             "do not correct, 'fix', or invent a different price. State it and note if it seems unusual.\n"
             "2. If a tour shows 0 slots available, tell the customer honestly.\n"
-            "3. When asked about weather, recommend checking the live weather tool "
-            "(tell the customer you can look up the forecast if they tell you which location).\n"
+            "3. When a customer asks about weather for a specific location AND live weather data is provided below, "
+            "use it to advise the customer. Mention if rain is expected for outdoor tours. "
+            "Combine the weather info with relevant tour recommendations from the sheet.\n"
             "4. Mention special offers when relevant.\n"
-            "5. Do not invent tour data — if something isn't in the sheet, say you don't have that info.\n\n"
+            "5. Do not invent data — if something isn't in the sheet or weather data, say you don't have that info.\n\n"
             "LIVE TOUR DATA FROM GOOGLE SHEET (fetched right now):\n" + "\n".join(tour_text)
         )
+        if weather_ctx:
+            system_prompt += "\n\nLIVE WEATHER DATA FROM OPEN-METEO (fetched right now):\n" + weather_ctx
 
         try:
             enc_key = urllib.parse.quote(GEMINI_API_KEY, safe="")
