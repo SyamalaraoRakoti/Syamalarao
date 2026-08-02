@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CA2 — Screenshot Capture Checklist | Atlantic Coast Tours</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 900px; margin: 40px auto; padding: 20px; color: #222; line-height: 1.7; background: #fff; }
+  h1 { font-size: 1.8rem; border-bottom: 3px solid #1a4731; padding-bottom: 10px; color: #1a4731; }
+  h2 { font-size: 1.3rem; margin-top: 36px; color: #1a4731; border-bottom: 2px solid #d4a017; padding-bottom: 6px; }
+  h3 { font-size: 1.05rem; margin-top: 20px; color: #333; }
+  .red { color: #cc0000; font-weight: 700; }
+  .info { background: #f0f7f4; border-left: 4px solid #1a4731; padding: 12px 16px; margin: 12px 0; border-radius: 0 6px 6px 0; }
+  .action { background: #fff3f3; border-left: 4px solid #cc0000; padding: 12px 16px; margin: 10px 0; border-radius: 0 6px 6px 0; }
+  ul { padding-left: 20px; }
+  li { margin-bottom: 8px; }
+  code { background: #f5f5f5; padding: 2px 6px; border-radius: 3px; font-size: 0.9rem; }
+  .checklist { list-style-type: "☐ "; }
+  .checklist li { margin-bottom: 12px; }
+  .note { background: #fffde7; border: 1px solid #d4a017; padding: 14px; margin: 16px 0; border-radius: 6px; }
+  table { border-collapse: collapse; width: 100%; margin: 16px 0; }
+  th, td { border: 1px solid #ddd; padding: 10px 14px; text-align: left; font-size: 0.9rem; }
+  th { background: #1a4731; color: #fff; }
+  .marks { color: #1a4731; font-weight: 700; }
+  .section-divider { border-top: 2px dashed #ccc; margin: 40px 0 20px; }
+  .page-break { page-break-before: always; }
+  @media print { body { font-size: 12px; } .no-print { display: none; } }
+</style>
+</head>
+<body>
+
+<h1>📋 CA2 — Screenshot Capture Checklist</h1>
+<p><strong>Student:</strong> Syamalarao Rakoti &nbsp;|&nbsp; <strong>Student ID:</strong> [YOUR_ID]</p>
+<p><strong>Module:</strong> H9CEAI — Customer Engagement & AI</p>
+<p><strong>Business:</strong> Atlantic Coast Tours &nbsp;|&nbsp; <strong>Live URL:</strong> <code>https://syamalaraorakoti.github.io/Syamalarao/atlantic-coast-tours/</code></p>
+
+<p class="note"><strong>How to use this:</strong> Open your live site, work through each task, take the screenshots indicated in <span class="red">RED</span>. Paste them into your Word/PDF submission document under each task heading.</p>
+
+<div class="section-divider"></div>
+
+<!-- ==================== TASK 1 ==================== -->
+<h2>Task 1: Build the Chatbot & Prove the Brain is Live <span class="marks">[25 marks]</span></h2>
+
+<p>Your chatbot is deployed at the live GitHub Pages URL above. The chatbot uses Google Gemini as its language model brain — fetched server-side via your Render backend.</p>
+
+<h3>Screenshots Required:</h3>
+
+<div class="action">
+  <span class="red">📸 SCREENSHOT 1.1 — Off-Topic Probe</span><br>
+  Ask the chatbot an absurd, off-domain question like: <strong>"Can I order pizza delivery to Doolin Pier?"</strong><br>
+  Capture the full page showing your question AND the bot's response. The response should demonstrate the bot is a real LLM (it will politely clarify it's a tour company, not a food delivery service).
+</div>
+
+<div class="action">
+  <span class="red">📸 SCREENSHOT 1.2 — Off-Script Question 1</span><br>
+  Ask: <strong>"What's the meaning of life and should I book a tour to find it?"</strong><br>
+  Capture the full response. A real LLM will engage philosophically and tie it back to tours.
+</div>
+
+<div class="action">
+  <span class="red">📸 SCREENSHOT 1.3 — Off-Script Question 2</span><br>
+  Ask: <strong>"Tell me a limerick about a tourist on the Cliffs of Moher"</strong><br>
+  Capture the response showing the bot creates original content, proving it's a live LLM.
+</div>
+
+<div class="info">
+  <strong>Explanation to include:</strong> These off-topic questions prove the chatbot has a genuine language model brain (Google Gemini) because it handles questions it was never scripted for. A hardcoded bot would fail or return canned responses.
+</div>
+
+<div class="section-divider"></div>
+
+<!-- ==================== TASK 2 ==================== -->
+<h2>Task 2: Wire the Live Data & Prove the Connection is Real <span class="marks">[25 marks]</span></h2>
+
+<p>Your chatbot fetches tour data live from the <strong>assigned Google Sheet</strong> on every question. No caching, no hardcoding.</p>
+
+<h3>Screenshots Required:</h3>
+
+<div class="action">
+  <span class="red">📸 SCREENSHOT 2.1 — Price Query from Sheet</span><br>
+  Ask: <strong>"How much does the Cliffs of Moher Guided Cliff Walk cost?"</strong><br>
+  Capture the response. Verify the price matches the Google Sheet (€45).
+</div>
+
+<div class="action">
+  <span class="red">📸 SCREENSHOT 2.2 — Availability Query</span><br>
+  Ask: <strong>"How many slots are available for the Sea Cave Kayaking at Kilkee this week?"</strong><br>
+  Capture the response. The sheet shows <strong>0 slots</strong> — the bot should report this faithfully.
+</div>
+
+<div class="action">
+  <span class="red">📸 SCREENSHOT 2.3 — Special Offer Query</span><br>
+  Ask: <strong>"Are there any special offers on cycling tours?"</strong><br>
+  Capture the response. The sheet has "10% off for groups of 4+" on ACT006 and "Free wetsuit hire" on ACT012.
+</div>
+
+<div class="action">
+  <span class="red">📸 SCREENSHOT 2.4 — Open the Tours tab</span><br>
+  Click the "✦ Tour Catalogue" tab at the top. Capture the full table showing all 30 tours loaded live from the Google Sheet. This proves the live connection — the data is rendered directly from the API response.
+</div>
+
+<div class="info">
+  <strong>Explanation to include:</strong> The tour data is fetched from the Google Sheet at the moment of each question via <code>/api/tours</code>. The server reads the published CSV endpoint of the assigned sheet. The lecturer can verify liveness by changing a value in the sheet and re-querying — the response will reflect the new value.
+</div>
+
+<div class="section-divider"></div>
+
+<!-- ==================== TASK 3 ==================== -->
+<h2>Task 3: Interrogate Live Data & Exercise Judgement <span class="marks">[20 marks]</span></h2>
+
+<p>The assigned Google Sheet contains deliberately implausible values. Your bot must report them faithfully, then you exercise judgement.</p>
+
+<h3>Implausible Data in the Sheet:</h3>
+<table>
+  <tr><th>Tour ID</th><th>Tour Name</th><th>Implausible Value</th></tr>
+  <tr><td>ACT017</td><td>Aran Islands Sunset Boat Cruise</td><td>Price: €4,870,233</td></tr>
+  <tr><td>ACT021</td><td>Wild Atlantic Way Coach & Cliffs Day</td><td>Price: €999,999</td></tr>
+  <tr><td>ACT012</td><td>Sea Cave Kayaking at Kilkee</td><td>Slots this week: 0</td></tr>
+</table>
+
+<h3>Screenshots Required:</h3>
+
+<div class="action">
+  <span class="red">📸 SCREENSHOT 3.1 — Implausible Price 1</span><br>
+  Ask: <strong>"How much is the Aran Islands Sunset Boat Cruise?"</strong><br>
+  Capture the response. The bot should report €4,870,233 faithfully and note it seems unusual — it should NOT invent a lower price.
+</div>
+
+<div class="action">
+  <span class="red">📸 SCREENSHOT 3.2 — Implausible Price 2</span><br>
+  Ask: <strong>"What does the Wild Atlantic Way Coach tour cost?"</strong><br>
+  Capture the response showing €999,999 reported faithfully.
+</div>
+
+<div class="action">
+  <span class="red">📸 SCREENSHOT 3.3 — Zero Availability</span><br>
+  Ask: <strong>"Can I book the Sea Cave Kayaking at Kilkee this week?"</strong><br>
+  Capture the response showing 0 slots available — the bot should honestly state there is no availability.
+</div>
+
+<div class="action">
+  <span class="red">📸 SCREENSHOT 3.4 — Tours Table with Flags</span><br>
+  Open the Tours tab. Scroll to show ACT017, ACT021 (highlighted yellow for implausible prices) and ACT012 (highlighted red for zero slots). Capture this.
+</div>
+
+<h3>Judgement to Write (in your own words):</h3>
+
+<div class="info">
+  <strong>Questions to answer:</strong><br>
+  1. Does your bot report the implausible values faithfully, or does it "correct" them? <em>(Answer: It reports faithfully — the system prompt instructs Gemini to report exact sheet values.)</em><br><br>
+  2. Which of <strong>Grice's Maxims</strong> is at stake? <em>(Answer: The Maxim of Quality — a customer expects truthful, plausible information. Reporting €4.8M for a boat cruise violates this maxim even though the data is "accurate" from the source. The bot is caught between being faithful to the data and being truthful to the customer.)</em><br><br>
+  3. Which values would you distrust, and how should a customer-facing bot handle implausible live data?<br>
+  <em>Write your own reasoning here. Suggested points: distrust obviously absurd prices that are orders of magnitude above normal. The bot should report the live value BUT add a caveat like "This appears unusual — let me check with the team" and offer to escalate to a human. A bot should NOT silently correct or invent data — that would be more deceptive than reporting the truth with a warning.</em>
+</div>
+
+<div class="section-divider"></div>
+
+<!-- ==================== TASK 4 ==================== -->
+<h2>Task 4: Second Live Tool — Public API (Open-Meteo Weather) <span class="marks">[15 marks]</span></h2>
+
+<p>Your chatbot integrates Open-Meteo as a second live tool — real-time weather for Irish coastal destinations.</p>
+
+<h3>Screenshots Required:</h3>
+
+<div class="action">
+  <span class="red">📸 SCREENSHOT 4.1 — Weather Query in Chat</span><br>
+  Ask in chat: <strong>"What's the weather forecast for Galway?"</strong><br>
+  Capture the response showing live temperature, conditions, and 3-day forecast.
+</div>
+
+<div class="action">
+  <span class="red">📸 SCREENSHOT 4.2 — Weather Tab</span><br>
+  Click the "✦ Live Weather" tab. Select <strong>"Achill Island"</strong> and click Fetch Forecast.<br>
+  Capture the full weather panel showing current temperature, conditions, wind, humidity, and 3-day forecast.
+</div>
+
+<div class="action">
+  <span class="red">📸 SCREENSHOT 4.3 — Bonus: Combined Sheet + Weather Query</span><br>
+  Ask: <strong>"I want to hike in Connemara this weekend. What's the weather and what tours do you have there?"</strong><br>
+  Capture the response. This demonstrates combining both live sources (Google Sheet + Open-Meteo) in a single useful reply.
+</div>
+
+<div class="info">
+  <strong>Explanation to include:</strong> The Open-Meteo API is called via the backend's <code>/api/weather</code> endpoint. It returns live temperature, wind speed, humidity, conditions, and a 3-day forecast for any Irish coastal location. This is genuinely useful for Atlantic Coast Tours customers planning outdoor activities.
+</div>
+
+<div class="section-divider"></div>
+
+<!-- ==================== TASK 5 ==================== -->
+<h2>Task 5: Reflect, Disclose, and Defend <span class="marks">[15 marks]</span></h2>
+
+<p>Write a short personal reflection (200–300 words) in your own voice.</p>
+
+<h3>Reflection Points to Cover:</h3>
+
+<ul>
+  <li><strong>What the off-topic probe revealed:</strong> The chatbot handled absurd questions naturally because it has a genuine LLM brain. It understood the absurdity and responded with humour while steering back to the business purpose.</li>
+  <li><strong>How you know the data connection is live and not a copy:</strong> The server fetches from the assigned Google Sheet URL on every request. No data is hardcoded. The lecturer can verify by changing a sheet value and re-querying. The Tours tab shows a "Live Google Sheet" badge and a Refresh button that re-fetches.</li>
+  <li><strong>Which data value you distrusted and why:</strong> ACT017 (€4,870,233) and ACT021 (€999,999). These are 100x+ above normal tour prices. While the bot reports them faithfully, a production system should add a caveat or escalation path for implausible values.</li>
+  <li><strong>EU AI Act Article 50 disclosure (one sentence):</strong> Already present on the page: <em>"You are interacting with an AI-powered assistant. All tour data is fetched live from our Google Sheet at the moment of your question."</em></li>
+  <li><strong>Data protection risk:</strong> The chatbot backend processes customer queries through Google Gemini's API. While no personal data is stored, the queries themselves are transmitted to a third-party AI provider (Google), creating a data transfer risk under GDPR. A live chatbot connected to shared data could inadvertently expose business data (pricing, availability) through the LLM's responses.</li>
+</ul>
+
+<div class="note">
+  <strong>Write this in your own words (200-300 words).</strong> The lecturer wants to hear YOUR voice, your reasoning, and your contact with your own deployed system. Do not copy-paste — reflect genuinely on what you built.
+</div>
+
+<div class="section-divider"></div>
+
+<!-- ==================== SUBMISSION INFO ==================== -->
+<h2>📤 Submission Checklist</h2>
+
+<ul class="checklist">
+  <li>All screenshots embedded in a single Word/PDF document</li>
+  <li>Tasks 1–5 clearly headed with screenshots and explanations</li>
+  <li>Live URL included: <code>https://syamalaraorakoti.github.io/Syamalarao/atlantic-coast-tours/</code></li>
+  <li>Your name and student ID on the document</li>
+  <li>Task 5 reflection written in your own words (200–300 words)</li>
+  <li>NO secret keys or code submitted</li>
+  <li>Chatbot remains deployed and live for 8 weeks after submission</li>
+  <li>Submit via Moodle (Turnitin) by <strong>Monday, 3 August 2026</strong></li>
+</ul>
+
+<p style="text-align:center;margin-top:40px;color:#888;font-size:0.85rem;">— End of Checklist —</p>
+
+</body>
+</html>
