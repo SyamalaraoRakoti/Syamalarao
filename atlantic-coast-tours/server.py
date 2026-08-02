@@ -69,8 +69,17 @@ def fetch_tours_live():
         return None
 
 
+# Simple in-memory cache for weather (avoid Open-Meteo rate limits on shared Render IP)
+_weather_cache = {}  # {location: {"data": ..., "ts": timestamp}}
+
+
 def fetch_weather(location):
-    """Fetch live weather from Open-Meteo for an Irish location."""
+    """Fetch live weather from Open-Meteo with 5-min cache per location."""
+    global _weather_cache
+    now = time.time()
+    key = location.lower().strip()
+    if key in _weather_cache and (now - _weather_cache[key]["ts"]) < 300:
+        return _weather_cache[key]["data"]
     coords = {
         "galway": (53.2707, -9.0568),
         "doolin": (53.0238, -9.3777),
@@ -99,7 +108,7 @@ def fetch_weather(location):
             f"&daily=temperature_2m_max,temperature_2m_min,weather_code,precipitation_sum"
             f"&timezone=Europe/Dublin&forecast_days=3"
         )
-        with urllib.request.urlopen(url, timeout=10) as resp:
+        with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "AtlanticCoastTours/1.0"}), timeout=10) as resp:
             data = json.loads(resp.read().decode())
 
         weather_codes = {
@@ -127,7 +136,7 @@ def fetch_weather(location):
             }
             forecast_days.append(fc)
 
-        return {
+        result = {
             "location": location.title(),
             "coordinates": f"{lat}, {lon}",
             "current": {
@@ -139,6 +148,8 @@ def fetch_weather(location):
             },
             "forecast": forecast_days,
         }
+        _weather_cache[key] = {"data": result, "ts": now}
+        return result
     except Exception as e:
         print(f"[ACT] Weather error: {e}", file=sys.stderr)
         return {"error": f"Weather fetch failed: {e}", "location": location}
