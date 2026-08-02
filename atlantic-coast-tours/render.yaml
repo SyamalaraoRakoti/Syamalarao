@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: atlantic-coast-tours
+    runtime: python
+    buildCommand: ""
+    startCommand: python3 server.py
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GOOGLE_SHEET_CSV_URL
+        value: "https://docs.google.com/spreadsheets/d/1balBGf8QhZ5dc-RCCAPt2kcrcf6m_YRh0HL_r8bBtJw/export?format=csv"
+      - key: PORT
+        value: "8000"

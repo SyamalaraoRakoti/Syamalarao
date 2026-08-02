@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atlantic Coast Tours — AI Chatbot</title>
+<style>
+  :root {
+    --green: #2d6a4f; --ocean: #1b4332; --gold: #d4a017;
+    --cream: #fefae0; --stone: #d4c5b2; --dark: #1a1a2e;
+    --text: #2c2c2c; --text-light: #555;
+    --shadow: 0 1px 3px rgba(0,0,0,0.1);
+    --radius: 12px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: #f5f0e8; color: var(--text); line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* Header */
+  header {
+    background: linear-gradient(135deg, var(--ocean), var(--green));
+    color: #fff; padding: 20px 24px; text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    position: sticky; top: 0; z-index: 50;
+  }
+  header h1 { font-size: clamp(1.3rem, 3vw, 1.8rem); font-weight: 800; }
+  header p { font-size: 0.85rem; opacity: 0.85; margin-top: 2px; }
+  .live-indicator {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,0.12); padding: 4px 14px;
+    border-radius: 20px; font-size: 0.72rem; margin-top: 6px;
+  }
+  .live-dot { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;box-shadow:0 0 6px rgba(34,197,94,0.6)} 50%{opacity:0.3} }
+
+  /* Layout */
+  .container { max-width: 900px; margin: 0 auto; padding: 20px 16px; }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 4px; margin-bottom: 20px; background: var(--stone); border-radius: var(--radius); padding: 3px; }
+  .tabs button {
+    flex: 1; padding: 10px; border: none; background: transparent;
+    font-weight: 600; font-size: 0.88rem; cursor: pointer; border-radius: 10px;
+    transition: background 0.2s; color: var(--text);
+  }
+  .tabs button.active { background: #fff; box-shadow: var(--shadow); }
+
+  /* Chat */
+  .chat-panel { display: block; }
+  .tours-panel, .weather-panel { display: none; }
+  .chat-box {
+    background: #fff; border-radius: var(--radius); box-shadow: var(--shadow);
+    overflow: hidden; border: 1px solid var(--stone);
+  }
+  .chat-messages {
+    height: 420px; overflow-y: auto; padding: 16px;
+    display: flex; flex-direction: column; gap: 10px; background: #fafaf7;
+    scroll-behavior: smooth;
+  }
+  .chat-msg {
+    max-width: 85%; padding: 10px 14px; border-radius: 14px;
+    font-size: 0.88rem; line-height: 1.5; animation: msgIn 0.35s ease;
+  }
+  @keyframes msgIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+  .chat-msg.user {
+    align-self: flex-end; background: var(--green); color: #fff;
+    border-bottom-right-radius: 4px;
+  }
+  .chat-msg.bot {
+    align-self: flex-start; background: #eaf4f0; color: var(--text);
+    border-bottom-left-radius: 4px; border: 1px solid #d4e5dc;
+  }
+  .chat-msg.loading { background: #f0ede6; color: #888; font-style: italic; }
+  .chat-input-area {
+    display: flex; padding: 10px; background: #fff; border-top: 1px solid var(--stone);
+    gap: 8px;
+  }
+  .chat-input-area input {
+    flex: 1; padding: 12px 14px; border: 1.5px solid var(--stone);
+    border-radius: 25px; font-size: 0.9rem; outline: none;
+  }
+  .chat-input-area input:focus { border-color: var(--green); }
+  .chat-input-area button {
+    background: var(--green); color: #fff; border: none;
+    padding: 10px 20px; border-radius: 25px; font-weight: 700; cursor: pointer;
+    transition: background 0.2s;
+  }
+  .chat-input-area button:hover { background: var(--ocean); }
+  .chat-input-area button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* Quick buttons */
+  .quick-btns { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 16px 0; }
+  .quick-btns button {
+    background: #eaf4f0; border: 1px solid #c8ddd2; color: var(--ocean);
+    padding: 6px 12px; border-radius: 16px; font-size: 0.78rem; cursor: pointer;
+    font-weight: 500; transition: background 0.2s; white-space: nowrap;
+  }
+  .quick-btns button:hover { background: #d4e5dc; }
+
+  /* Tours Table */
+  .tours-table-wrap { overflow-x: auto; }
+  .tours-table {
+    width: 100%; border-collapse: collapse; background: #fff;
+    border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow);
+    font-size: 0.82rem;
+  }
+  .tours-table th {
+    background: var(--ocean); color: #fff; padding: 10px 12px; text-align: left;
+    font-size: 0.8rem; position: sticky; top: 0;
+  }
+  .tours-table td { padding: 8px 12px; border-bottom: 1px solid #eee; }
+  .tours-table tr:hover { background: #f8faf5; }
+  .tours-table .implausible { background: #fff3cd; font-weight: 700; }
+  .tours-table .zero-slots { background: #ffe0e0; }
+  .price-highlight { color: var(--ocean); font-weight: 700; }
+
+  /* Weather */
+  .weather-form { display: flex; gap: 8px; margin-bottom: 16px; }
+  .weather-form select {
+    flex: 1; padding: 10px 14px; border: 1.5px solid var(--stone);
+    border-radius: var(--radius); font-size: 0.9rem; background: #fff; outline: none;
+  }
+  .weather-form button {
+    background: var(--green); color: #fff; border: none;
+    padding: 10px 20px; border-radius: var(--radius); font-weight: 700; cursor: pointer;
+  }
+  .weather-result {
+    background: #fff; border-radius: var(--radius); padding: 20px;
+    box-shadow: var(--shadow);
+  }
+  .weather-current { display: flex; align-items: center; gap: 20px; margin-bottom: 16px; }
+  .weather-temp { font-size: 3rem; font-weight: 800; color: var(--ocean); }
+  .weather-detail { color: var(--text-light); font-size: 0.9rem; }
+  .forecast-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
+  .forecast-day {
+    background: #f8faf5; padding: 12px; border-radius: 10px; text-align: center;
+    border: 1px solid #e0e8e3;
+  }
+  .forecast-day .day { font-weight: 700; font-size: 0.85rem; margin-bottom: 4px; }
+  .forecast-day .temps { font-size: 0.9rem; color: var(--ocean); font-weight: 600; }
+  .forecast-day .cond { font-size: 0.8rem; color: var(--text-light); }
+
+  /* Data source badge */
+  .source-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 0.7rem; padding: 2px 8px; border-radius: 10px;
+    background: #eaf4f0; color: var(--green);
+  }
+
+  /* Disclosure bar */
+  .disclosure {
+    background: #fff; border: 1px solid var(--gold); margin: 16px auto;
+    padding: 10px 16px; border-radius: 8px; font-size: 0.75rem; color: var(--text-light);
+    max-width: 900px; text-align: center;
+  }
+  .disclosure strong { color: var(--ocean); }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .chat-messages { height: 340px; }
+    .chat-msg { max-width: 90%; font-size: 0.84rem; }
+    .tours-table { font-size: 0.72rem; }
+    .tours-table th, .tours-table td { padding: 6px 8px; }
+    .weather-temp { font-size: 2.2rem; }
+    header h1 { font-size: 1.2rem; }
+    .tabs button { font-size: 0.78rem; padding: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🌊 Atlantic Coast Tours</h1>
+  <p>Your AI assistant for Ireland's Wild Atlantic Way</p>
+  <div class="live-indicator"><span class="live-dot"></span>Live — Google Sheet + Open-Meteo Weather</div>
+</header>
+
+<div class="disclosure">
+  🤖 <strong>Transparency:</strong> You are chatting with an AI assistant. It reads live tour data from a Google Sheet and live weather from Open-Meteo. Data shown is fetched at the moment of your question.
+</div>
+
+<div class="container">
+  <div class="tabs">
+    <button class="active" onclick="switchTab('chat')">💬 Chat</button>
+    <button onclick="switchTab('tours')">📋 Tours</button>
+    <button onclick="switchTab('weather')">🌤️ Weather</button>
+  </div>
+
+  <!-- CHAT PANEL -->
+  <div class="chat-panel" id="chatPanel">
+    <div class="chat-box">
+      <div class="quick-btns" id="quickBtns"></div>
+      <div class="chat-messages" id="chatMessages"></div>
+      <div class="chat-input-area">
+        <input type="text" id="chatInput" placeholder="Ask about tours, prices, availability, weather..." onkeypress="if(event.key==='Enter')sendChat()">
+        <button onclick="sendChat()" id="chatSendBtn">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOURS PANEL -->
+  <div class="tours-panel" id="toursPanel">
+    <div style="margin-bottom:12px">
+      <span class="source-badge">🔗 Live from Google Sheet</span>
+      <button onclick="refreshTours()" style="float:right;background:var(--green);color:#fff;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:0.8rem;">Refresh</button>
+    </div>
+    <div class="tours-table-wrap">
+      <table class="tours-table" id="toursTable">
+        <thead><tr><th>ID</th><th>Tour</th><th>Category</th><th>Location</th><th>Price (€)</th><th>Duration</th><th>Slots</th><th>Available</th></tr></thead>
+        <tbody id="toursBody"><tr><td colspan="8" style="text-align:center;padding:24px;">Loading live data...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- WEATHER PANEL -->
+  <div class="weather-panel" id="weatherPanel">
+    <div class="weather-form">
+      <select id="weatherLocation">
+        <option value="Galway">Galway</option>
+        <option value="Doolin">Doolin, Co. Clare</option>
+        <option value="Clifden">Clifden, Connemara</option>
+        <option value="Westport">Westport, Co. Mayo</option>
+        <option value="Achill">Achill Island</option>
+        <option value="Ballina">Ballina, Co. Mayo</option>
+        <option value="Sligo">Sligo</option>
+        <option value="Donegal">Donegal</option>
+      </select>
+      <button onclick="checkWeather()">Check Weather</button>
+    </div>
+    <div class="weather-result" id="weatherResult">
+      <p style="color:var(--text-light);text-align:center;">Select a location and check the live weather forecast.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+// Backend URL — set to your Render URL when deploying to GitHub Pages
+const BACKEND = window.location.hostname.includes("github.io")
+  ? "https://YOUR_APP.onrender.com"
+  : "";
+
+let allTours = [];
+
+// --- TAB SWITCHING ---
+function switchTab(tab) {
+  document.querySelectorAll(".tabs button").forEach(b => b.classList.remove("active"));
+  event.target.classList.add("active");
+  document.getElementById("chatPanel").style.display = tab === "chat" ? "block" : "none";
+  document.getElementById("toursPanel").style.display = tab === "tours" ? "block" : "none";
+  document.getElementById("weatherPanel").style.display = tab === "weather" ? "block" : "none";
+  if (tab === "tours") loadToursTable();
+}
+
+// --- LOAD TOURS ---
+async function loadToursTable() {
+  const body = document.getElementById("toursBody");
+  body.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:24px;">Fetching live data from Google Sheet...</td></tr>';
+  try {
+    const r = await fetch(BACKEND + "/api/tours");
+    const d = await r.json();
+    if (!d.tours) throw new Error("No tour data");
+    allTours = d.tours;
+    renderToursTable(d.tours);
+    renderQuickButtons(d.tours);
+  } catch (e) {
+    body.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:24px;color:red;">Error: ${e.message}</td></tr>`;
+  }
+}
+
+function renderToursTable(tours) {
+  const body = document.getElementById("toursBody");
+  body.innerHTML = tours.map(t => {
+    const price = parseInt(t.price_eur) || 0;
+    const slots = parseInt(t.slots_this_week) || 0;
+    const isAbsurd = price > 500000;
+    const isZero = slots === 0 || t.slots_this_week === "0";
+    let cls = "";
+    if (isAbsurd) cls = "implausible";
+    else if (isZero) cls = "zero-slots";
+    return `<tr class="${cls}">
+      <td>${t.tour_id}</td>
+      <td><strong>${t.tour_name}</strong>${t.special_offer ? '<br><small style="color:var(--gold)">🎁 '+t.special_offer+'</small>' : ''}</td>
+      <td>${t.category}</td>
+      <td>${t.location}</td>
+      <td class="${isAbsurd ? '' : 'price-highlight'}">${isAbsurd ? '⚠️ ' : ''}€${t.price_eur}</td>
+      <td>${t.duration_hours}h</td>
+      <td style="color:${isZero ? 'var(--text-light)' : 'inherit'}">${t.slots_this_week}</td>
+      <td>${t.availability}</td>
+    </tr>`;
+  }).join("");
+}
+
+function refreshTours() { loadToursTable(); }
+
+// --- QUICK CHAT BUTTONS ---
+function renderQuickButtons(tours) {
+  const sample = tours.slice(0, 6);
+  const btns = [
+    "What tours are available in Galway?",
+    "Show me any special offers",
+    "Which tours cost under €50?",
+    "Are there any cliff walks?",
+    "Any food tours available?",
+    "What's available in Mayo?",
+  ];
+  document.getElementById("quickBtns").innerHTML = btns.map(q =>
+    `<button onclick="quickAsk('${q}')">${q}</button>`
+  ).join("");
+}
+
+function quickAsk(q) {
+  document.getElementById("chatInput").value = q;
+  sendChat();
+}
+
+// --- AI CHAT ---
+async function sendChat() {
+  const input = document.getElementById("chatInput");
+  const msg = input.value.trim();
+  if (!msg) return;
+
+  const m = document.getElementById("chatMessages");
+  m.innerHTML += `<div class="chat-msg user">${escapeHtml(msg)}</div>`;
+  input.value = "";
+  const ld = document.createElement("div");
+  ld.className = "chat-msg bot loading";
+  ld.textContent = "Seamus is thinking... ☘️";
+  m.appendChild(ld);
+  m.scrollTop = m.scrollHeight;
+  document.getElementById("chatSendBtn").disabled = true;
+
+  // Check if it's a weather query
+  if (msg.toLowerCase().includes("weather") || msg.toLowerCase().includes("forecast")) {
+    const locMatch = msg.match(/in\s+([A-Za-z\s]+?)(\?|$|\.|\,)/i) || msg.match(/(Galway|Doolin|Clifden|Westport|Achill|Ballina|Sligo|Donegal|Connemara|Clare|Mayo)/i);
+    const loc = locMatch ? locMatch[1] : "Galway";
+    try {
+      const wr = await fetch(BACKEND + `/api/weather?location=${encodeURIComponent(loc)}`);
+      const wd = await wr.json();
+      ld.remove();
+      if (wd.weather && wd.weather.current) {
+        const w = wd.weather;
+        m.innerHTML += `<div class="chat-msg bot">
+          🌤️ <strong>Live weather for ${w.location}:</strong><br>
+          ${w.current.temperature_c}°C, ${w.current.condition}, Wind: ${w.current.wind_speed_kmh}km/h<br>
+          <em>3-day forecast:</em> ${(w.forecast||[]).map(f=>`${f.date}: ${f.temp_min}–${f.temp_max}°C, ${f.condition}`).join(" | ")}
+        </div>`;
+      }
+      m.scrollTop = m.scrollHeight;
+      document.getElementById("chatSendBtn").disabled = false;
+      return;
+    } catch (e) { ld.remove(); }
+  }
+
+  // Normal chat via LLM
+  try {
+    const r = await fetch(BACKEND + "/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: msg })
+    });
+    const d = await r.json();
+    ld.remove();
+    if (d.reply) {
+      m.innerHTML += `<div class="chat-msg bot">${escapeHtml(d.reply)}</div>`;
+    } else {
+      m.innerHTML += `<div class="chat-msg bot">❌ ${escapeHtml(d.error || "Error")}</div>`;
+    }
+  } catch (e) {
+    ld.remove();
+    m.innerHTML += `<div class="chat-msg bot">⚠️ Backend unreachable. Make sure the server is running.</div>`;
+  }
+  m.scrollTop = m.scrollHeight;
+  document.getElementById("chatSendBtn").disabled = false;
+}
+
+// --- WEATHER ---
+async function checkWeather() {
+  const loc = document.getElementById("weatherLocation").value;
+  const result = document.getElementById("weatherResult");
+  result.innerHTML = `<p style="text-align:center;color:var(--text-light);">Fetching live weather for ${loc}...</p>`;
+  try {
+    const r = await fetch(BACKEND + `/api/weather?location=${encodeURIComponent(loc)}`);
+    const d = await r.json();
+    if (d.weather && d.weather.current) {
+      const w = d.weather;
+      result.innerHTML = `
+        <div class="weather-current">
+          <div class="weather-temp">${w.current.temperature_c}°C</div>
+          <div class="weather-detail">
+            <div>${w.current.condition}</div>
+            <div>Wind: ${w.current.wind_speed_kmh} km/h</div>
+            <div>Humidity: ${w.current.humidity_pct}%</div>
+            <div style="font-size:0.75rem;color:var(--text-light);margin-top:4px;">📍 ${w.location} | Live from Open-Meteo</div>
+          </div>
+        </div>
+        <h4 style="margin-bottom:8px;">3-Day Forecast</h4>
+        <div class="forecast-grid">
+          ${(w.forecast||[]).map(f => `
+            <div class="forecast-day">
+              <div class="day">${f.date}</div>
+              <div class="temps">${f.temp_min}° – ${f.temp_max}°</div>
+              <div class="cond">${f.condition}</div>
+              <div style="font-size:0.75rem;color:var(--text-light);">Rain: ${f.rain_mm}mm</div>
+            </div>
+          `).join("")}
+        </div>
+      `;
+    } else {
+      result.innerHTML = `<p style="color:red;">Error: ${d.error || "No data"}</p>`;
+    }
+  } catch (e) {
+    result.innerHTML = `<p style="color:red;">Error: ${e.message}</p>`;
+  }
+}
+
+// --- INIT ---
+function escapeHtml(t) { const d = document.createElement("div"); d.textContent = t; return d.innerHTML; }
+
+// Welcome message
+document.getElementById("chatMessages").innerHTML = `
+  <div class="chat-msg bot">
+    ☘️ <strong>Dia dhuit!</strong> I'm Seamus, your Atlantic Coast Tours assistant.<br><br>
+    I can help you find tours along Ireland's Wild Atlantic Way, check real-time availability and prices, and look up live weather forecasts for your trip.<br><br>
+    <em>All data comes from our live Google Sheet and Open-Meteo weather — fetched at the moment you ask.</em><br><br>
+    What can I help you with today?
+  </div>
+`;
+
+// Load initial data
+loadToursTable();
+</script>
+</body>
+</html>
