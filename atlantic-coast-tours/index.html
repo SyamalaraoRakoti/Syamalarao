@@ -543,7 +543,7 @@ async function checkWeather() {
         </div>
       `;
     } else {
-      result.innerHTML = `<p style="color:#c33;">Could not retrieve forecast: ${d.error||'No data'}</p>`;
+      result.innerHTML = `<p style="color:#c33;">Could not retrieve forecast: ${d.error || d.weather?.error || 'No data'}</p>`;
     }
   } catch(e) {
     result.innerHTML = `<p style="color:#c33;">Connection error: ${e.message}</p>`;

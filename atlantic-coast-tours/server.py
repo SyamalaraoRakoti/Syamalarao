@@ -155,7 +155,10 @@ class ACTHandler(SimpleHTTPRequestHandler):
             location = params.get("location", ["Galway"])[0]
             try:
                 weather = fetch_weather(location)
-                self.send_json(200, {"weather": weather})
+                if "error" in weather:
+                    self.send_json(502, {"error": weather["error"], "weather": weather})
+                else:
+                    self.send_json(200, {"weather": weather})
             except Exception as e:
                 self.send_json(500, {"error": str(e)})
         elif self.path == "/api/tours":
