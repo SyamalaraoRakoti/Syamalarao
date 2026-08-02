@@ -480,20 +480,17 @@ async function sendChat() {
     const locM = msg.match(/in\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)/i) || msg.match(/(Galway|Doolin|Clifden|Westport|Achill|Ballina|Sligo|Donegal|Connemara|Clare|Mayo)/i);
     const loc = locM ? locM[1] : "Galway";
     try {
-      const wr = await fetch(BACKEND + `/api/weather?location=${encodeURIComponent(loc)}`);
-      const wd = await wr.json(); ld.remove();
-      if (wd.weather?.current) {
-        const w = wd.weather;
-        m.innerHTML += `<div class="chat-msg bot">
-          𖤓 <strong>Live Weather — ${w.location}:</strong><br>
-          ${w.current.temperature_c}°C &bull; ${w.current.condition} &bull; Wind ${w.current.wind_speed_kmh} km/h<br><br>
-          <em>3-Day Forecast:</em><br>
-          ${(w.forecast||[]).map(f=>`${f.date}: ${f.temp_min}°–${f.temp_max}°, ${f.condition}, Rain: ${f.rain_mm}mm`).join("<br>")}
-          <br><small style="color:var(--stone);">Source: Open-Meteo — Live Forecast</small>
-        </div>`;
+      const coords={galway:[53.27,-9.06],doolin:[53.02,-9.38],clifden:[53.49,-10.02],westport:[53.80,-9.52],achill:[53.96,-10.00],ballina:[54.11,-9.15],sligo:[54.28,-8.48],donegal:[54.65,-8.11]};
+      const key=loc.toLowerCase(); let [lat,lon]=[53.27,-9.06];
+      for(const[k,c]of Object.entries(coords)){if(key.includes(k)){lat=c[0];lon=c[1];break}}
+      const wcodes={0:"Clear sky",2:"Partly cloudy",3:"Overcast",45:"Fog",61:"Slight rain",63:"Moderate rain",65:"Heavy rain",80:"Slight rain showers",95:"Thunderstorm"};
+      const wr=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,weather_code,precipitation_sum&timezone=Europe/Dublin&forecast_days=3`);
+      const wd=await wr.json(); ld.remove();
+      if(wd.current){
+        m.innerHTML+=`<div class="chat-msg bot">𖤓 <strong>Live Weather — ${loc}:</strong><br>${wd.current.temperature_2m}°C &bull; ${wcodes[wd.current.weather_code]||"Mixed"} &bull; Wind ${wd.current.wind_speed_10m} km/h<br><br><em>3-Day Forecast:</em><br>${(wd.daily?.time||[]).slice(0,3).map((t,i)=>`${t}: ${wd.daily.temperature_2m_min[i]}°–${wd.daily.temperature_2m_max[i]}°, ${wcodes[wd.daily.weather_code[i]]||"Mixed"}, Rain: ${wd.daily.precipitation_sum[i]}mm`).join("<br>")}<br><small style="color:var(--stone);">Source: Open-Meteo — Live</small></div>`;
       }
-      m.scrollTop = m.scrollHeight;
-      document.getElementById("chatSendBtn").disabled = false;
+      m.scrollTop=m.scrollHeight;
+      document.getElementById("chatSendBtn").disabled=false;
       return;
     } catch(e) { ld.remove(); }
   }
@@ -516,37 +513,55 @@ async function checkWeather() {
   const loc = document.getElementById("weatherLocation").value;
   const result = document.getElementById("weatherResult");
   result.innerHTML = `<p style="color:var(--stone);text-align:center;font-style:italic;">Consulting the Atlantic forecast for ${loc}...</p>`;
+
+  const coords = {
+    "galway":[53.2707,-9.0568],"doolin":[53.0238,-9.3777],"clifden":[53.4894,-10.0208],
+    "westport":[53.8001,-9.5222],"achill":[53.9646,-10.0045],"ballina":[54.1145,-9.1529],
+    "sligo":[54.2766,-8.4761],"donegal":[54.6538,-8.1094]
+  };
+  let lat=53.2707,lon=-9.0568;
+  const key=loc.toLowerCase().trim();
+  for(const [k,c] of Object.entries(coords)){if(key.includes(k)){lat=c[0];lon=c[1];break}}
+
+  const wcodes={0:"Clear sky",1:"Mainly clear",2:"Partly cloudy",3:"Overcast",45:"Fog",51:"Light drizzle",53:"Moderate drizzle",55:"Dense drizzle",61:"Slight rain",63:"Moderate rain",65:"Heavy rain",80:"Slight rain showers",81:"Moderate rain showers",82:"Violent rain showers",95:"Thunderstorm"};
+
   try {
-    const r = await fetch(BACKEND + `/api/weather?location=${encodeURIComponent(loc)}`);
-    const d = await r.json();
-    if (d.weather?.current) {
-      const w = d.weather;
-      result.innerHTML = `
-        <div class="weather-current">
-          <div class="weather-temp">${w.current.temperature_c}°</div>
-          <div class="weather-detail">
-            <div style="font-size:1.1rem;font-weight:600;">${w.current.condition}</div>
-            <div>Wind: ${w.current.wind_speed_kmh} km/h &bull; Humidity: ${w.current.humidity_pct}%</div>
-            <div style="font-size:0.78rem;margin-top:4px;color:var(--stone);">📍 ${w.location} &bull; Live from Open-Meteo</div>
-          </div>
-        </div>
-        <h4 style="font-family:'Playfair Display',serif;margin-bottom:10px;color:var(--emerald);">Three-Day Outlook</h4>
-        <div class="forecast-grid">
-          ${(w.forecast||[]).map(f => `
-            <div class="forecast-day">
-              <div class="day">${f.date}</div>
-              <div class="temps">${f.temp_min}° – ${f.temp_max}°</div>
-              <div class="cond">${f.condition}</div>
-              <div style="font-size:0.72rem;color:var(--stone);margin-top:4px;">Rain: ${f.rain_mm}mm</div>
-            </div>
-          `).join("")}
-        </div>
-      `;
-    } else {
-      result.innerHTML = `<p style="color:#c33;">Could not retrieve forecast: ${d.error || d.weather?.error || 'No data'}</p>`;
+    const url=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,weather_code,precipitation_sum&timezone=Europe/Dublin&forecast_days=3`;
+    const r=await fetch(url);
+    const d=await r.json();
+    const cur=d.current||{},dy=d.daily||{};
+    const forecast=[];
+    for(let i=0;i<Math.min(3,(dy.time||[]).length);i++){
+      forecast.push({
+        date:dy.time[i],
+        temp_max:dy.temperature_2m_max[i],
+        temp_min:dy.temperature_2m_min[i],
+        condition:wcodes[dy.weather_code[i]]||"Unknown",
+        rain_mm:dy.precipitation_sum[i]
+      });
     }
+    result.innerHTML=`
+      <div class="weather-current">
+        <div class="weather-temp">${cur.temperature_2m}°</div>
+        <div class="weather-detail">
+          <div style="font-size:1.1rem;font-weight:600;">${wcodes[cur.weather_code]||"Unknown"}</div>
+          <div>Wind: ${cur.wind_speed_10m} km/h &bull; Humidity: ${cur.relative_humidity_2m}%</div>
+          <div style="font-size:0.78rem;margin-top:4px;color:var(--stone);">📍 ${loc} &bull; Live from Open-Meteo</div>
+        </div>
+      </div>
+      <h4 style="font-family:'Playfair Display',serif;margin-bottom:10px;color:var(--emerald);">Three-Day Outlook</h4>
+      <div class="forecast-grid">
+        ${forecast.map(f=>`
+          <div class="forecast-day">
+            <div class="day">${f.date}</div>
+            <div class="temps">${f.temp_min}° - ${f.temp_max}°</div>
+            <div class="cond">${f.condition}</div>
+            <div style="font-size:0.72rem;color:var(--stone);margin-top:4px;">Rain: ${f.rain_mm}mm</div>
+          </div>
+        `).join("")}
+      </div>`;
   } catch(e) {
-    result.innerHTML = `<p style="color:#c33;">Connection error: ${e.message}</p>`;
+    result.innerHTML = `<p style="color:#c33;">Could not load weather: ${e.message}</p>`;
   }
 }
 
