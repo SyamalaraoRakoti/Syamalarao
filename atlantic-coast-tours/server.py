@@ -109,8 +109,25 @@ def fetch_weather(location):
             f"&daily=temperature_2m_max,temperature_2m_min,weather_code,precipitation_sum"
             f"&timezone=Europe/Dublin&forecast_days=3"
         )
-        with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "AtlanticCoastTours/1.0"}), timeout=10) as resp:
-            data = json.loads(resp.read().decode())
+        req = urllib.request.Request(url, headers={"User-Agent": "AtlanticCoastTours/1.0"})
+
+        # Retry up to 3 times with backoff for rate limits
+        last_error = None
+        for attempt in range(3):
+            try:
+                if attempt > 0:
+                    time.sleep(2 * attempt)  # 2s, then 4s
+                with urllib.request.urlopen(req, timeout=10) as resp:
+                    data = json.loads(resp.read().decode())
+                break
+            except urllib.error.HTTPError as e:
+                last_error = e
+                if e.code == 429:
+                    print(f"[ACT] Weather 429, retry {attempt+1}/3...", file=sys.stderr)
+                    continue
+                raise
+        else:
+            raise last_error
 
         weather_codes = {
             0: "Clear sky", 1: "Mainly clear", 2: "Partly cloudy", 3: "Overcast",
